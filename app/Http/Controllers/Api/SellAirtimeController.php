@@ -84,11 +84,41 @@ class SellAirtimeController extends Controller
     public function server2($request, $amnt, $phone, $transid, $net, $input, $dada, $requester)
     {
 
+        switch ($net) {
+            case "MTN":
+                $service_id = "MFIN-5-OR";
+                break;
+
+            case "9MOBILE":
+                $service_id = "MFIN-2-OR";
+                break;
+
+            case "GLO":
+                $service_id = "MFIN-6-OR";
+                break;
+
+            case "AIRTEL":
+                $service_id = "MFIN-1-OR";
+                break;
+
+            default:
+                return response()->json(['success' => 0, 'message' => 'Invalid Network. Available are m for MTN, 9 for 9MOBILE, g for GLO, a for AIRTEL.']);
+        }
+
+        $payload='{
+    "serviceCode": "VAR",
+    "msisdn": "' . $phone . '",
+    "amount": "' . $amnt . '",
+    "request_id": "' . $transid . '",
+    "product_id": "'.$service_id.'"
+}';
+
+
         if (env('FAKE_TRANSACTION', 1) == 0) {
             $curl = curl_init();
 
             curl_setopt_array($curl, array(
-                CURLOPT_URL => env('SERVER5'),
+                CURLOPT_URL => env('RINGO_BASEURL'),
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => '',
                 CURLOPT_MAXREDIRS => 10,
@@ -96,16 +126,10 @@ class SellAirtimeController extends Controller
                 CURLOPT_FOLLOWLOCATION => true,
                 CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                 CURLOPT_CUSTOMREQUEST => 'POST',
-                CURLOPT_POSTFIELDS => '{
-   "country": "NG",
-   "customer": "' . $phone . '",
-   "amount": ' . $amnt . ',
-   "recurrence": "ONCE",
-   "type": "AIRTIME",
-   "reference": "' . $transid . '"
-}',
+                CURLOPT_POSTFIELDS => $payload,
                 CURLOPT_HTTPHEADER => array(
-                    'Authorization: Bearer ' . env('RAVE_SECRET_KEY'),
+                    'email: '.env('RINGO_EMAIL'),
+                    'password: '.env('RINGO_PASSWORD'),
                     'Content-Type: application/json'
                 ),
             ));
@@ -114,6 +138,10 @@ class SellAirtimeController extends Controller
             $response = curl_exec($curl);
 
             curl_close($curl);
+
+
+            Log::info("Ringo Electric Payload. - " . $payload);
+            Log::info("Ringo Electric Response. - " . $response);
 
         } else {
 

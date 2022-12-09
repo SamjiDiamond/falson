@@ -51,7 +51,7 @@ class LoginController extends Controller
 
         }else{
             DB::table('audits')->insert(
-                ['user_id' => auth()->user()->id, 'user_type' => 'App\Models\User', 'event' => 'login', 'auditable_id' => auth()->user()->id, 'auditable_type' => 'App\Models\User', 'tags' => 'Failed Login Attempt with email: ' . $input['email'] , 'old_values'=> '[]', 'new_values'=> '[]',  'ip_address' => $_SERVER['REMOTE_ADDR'], 'user_agent' => $_SERVER['HTTP_USER_AGENT'], 'created_at'=>Carbon::now(), 'updated_at'=>Carbon::now()]
+                ['user_id' => '', 'user_type' => '', 'event' => 'login', 'auditable_id' => auth()->user()->id, 'auditable_type' => 'App\Models\User', 'tags' => 'Failed Login Attempt with email: ' . $input['email'] , 'old_values'=> '[]', 'new_values'=> '[]',  'ip_address' => $_SERVER['REMOTE_ADDR'], 'user_agent' => $_SERVER['HTTP_USER_AGENT'], 'created_at'=>Carbon::now(), 'updated_at'=>Carbon::now()]
             );
 
             return redirect('/login')->with('error', 'These credentials do not match our records!');

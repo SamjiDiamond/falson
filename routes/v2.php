@@ -22,7 +22,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::prefix('v2')->middleware("version")->group(function () {
+Route::prefix('v2')->group(function () {
     Route::post('login', [AuthenticationController::class, 'login']);
     Route::post('newdevice', [AuthenticationController::class, 'newdeviceLogin']);
     Route::post('sociallogin', [AuthenticationController::class, 'sociallogin']);

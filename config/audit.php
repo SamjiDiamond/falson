@@ -62,7 +62,8 @@ return [
         'deleted',
         'restored',
         'login',
-        'logout'
+        'logout',
+        'view'
     ],
 
     /*

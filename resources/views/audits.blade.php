@@ -13,9 +13,10 @@
                             <thead>
                             <tr>
                                 <th>S/N</th>
+                                <th>User</th>
                                 <th>Model</th>
                                 <th>Action</th>
-                                <th>User</th>
+                                <th>Note</th>
                                 <th>Time</th>
                                 <th>Old Values</th>
                                 <th>New Values</th>
@@ -28,9 +29,10 @@
                             @foreach($audits as $audit)
                                 <tr>
                                     <td>{{ $audit->id }}</td>
+                                    <td>{{ $audit->user->email }}</td>
                                     <td>{{ explode("\\",$audit->auditable_type)[2] }}</td>
                                     <td>{{ $audit->event }}</td>
-                                    <td>{{ $audit->user->email }}</td>
+                                    <td>{{ $audit->tags }}</td>
                                     <td>{{ $audit->created_at }}</td>
                                     <td>
                                         <table class="table table-bordered table-hover" style="width:100%">

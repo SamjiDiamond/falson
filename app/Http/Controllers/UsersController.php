@@ -638,6 +638,10 @@ class UsersController extends Controller
     public function audits(){
         $data['audits']=Audit::OrderBy('id', 'desc')->limit(500)->get();
 
+        \Illuminate\Support\Facades\DB::table('audits')->insert(
+            ['user_id' => auth()->user()->id, 'user_type' => 'App\Models\User', 'event' => 'view', 'auditable_id' => '1', 'auditable_type' => 'App\Models\Audit', 'tags' => 'View all Audits',  'old_values'=> '[]', 'new_values'=> '[]',  'ip_address' => $_SERVER['REMOTE_ADDR'], 'user_agent' => $_SERVER['HTTP_USER_AGENT'], 'created_at'=>Carbon::now(), 'updated_at'=>Carbon::now()]
+        );
+
         return view('audits',$data);
     }
 

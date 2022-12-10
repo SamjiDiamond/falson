@@ -89,7 +89,9 @@
                                     <td>{{$data->receiver}}</td>
                                     <td>{{$data->created_at}}</td>
                                     <td>
-                                    <a href="{{route('transaction.airtime2cash.success', $data->id)}}" class="btn btn-success">Mark Delivered</a>
+                                        @if($data->status=="pending")
+                                            <a href="{{route('transaction.airtime2cash.success', $data->id)}}" class="btn btn-success">Mark Successful</a>
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach

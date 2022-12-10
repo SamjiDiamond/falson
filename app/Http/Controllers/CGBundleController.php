@@ -234,4 +234,44 @@ class CGBundleController extends Controller
         return redirect()->route('cgbundle.trans')->with(["success" => "Bundle credited successfully"]);
     }
 
+    public function debit(Request $request){
+        $input = $request->all();
+        $rules = array(
+            'user_name' => 'required',
+            'value'      => 'required',
+            'network' => 'required',
+            'type' => 'required'
+        );
+
+        $validator = Validator::make($input, $rules);
+
+
+        if (!$validator->passes()) {
+            return redirect()->route('cgbundle.debit')->with('error', 'Incomplete request. Kindly check and try again');
+        }
+
+
+        $user=User::where("user_name", $input['user_name'])->orWhere("phoneno", $input['user_name'])->orWhere("email", $input['user_name'])->first();
+        if(!$user){
+            return redirect()->route('cgbundle.debit')->with(["error" => "User not found"]);
+        }
+
+        $cw=$input['network']." ".$input['type'];
+
+        $cgwallet=CGWallets::where(["name" => $cw, "user_id" => $user->id])->first();
+
+        if(!$cgwallet){
+            return redirect()->route('cgbundle.debit')->with(["error" => "Customer does not have this data wallet"]);
+        }
+
+        if($input['value'] > $cgwallet->balance){
+            return redirect()->route('cgbundle.debit')->with(["error" => "Customer does not have this data wallet"]);
+        }
+
+        $cgwallet->balance-=$input['value'];
+        $cgwallet->save();
+
+        return redirect()->route('cgbundle.debit')->with(["success" => "Bundle debited successfully"]);
+    }
+
 }

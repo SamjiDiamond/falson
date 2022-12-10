@@ -203,6 +203,10 @@
                                 <li><a href="{{route('cgbundle.apply')}}">Sell CG Bundle</a></li>
                             @endcan
 
+                            @can('debit-cg-bundle-action')
+                                <li><a href="{{route('cgbundle.debit')}}">Debit CG Bundle</a></li>
+                            @endcan
+
                             @can('cg-bundle-transactions-view')
                                 <li><a href="{{route('cgbundle.trans')}}">CG Transactions</a></li>
                             @endcan

@@ -242,6 +242,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('cg-bundle-edit/{id}', [CGBundleController::class, 'edit'])->name('cgbundle.edit');
         Route::post('cg-bundle-update}', [CGBundleController::class, 'update'])->name('cgbundle.update');
         Route::get('cg-bundle-apply-credit/{id}', [CGBundleController::class, 'apply_credit'])->name('cgbundle.apply_credit');
+        Route::view('cg-bundle-debit', 'cg_bundle_debit')->name('cgbundle.debit');
+        Route::post('cg-bundle-debit', [CGBundleController::class, 'debit'])->name('cgbundle.debit');
 
         Route::get('cg-bundle-apply', [CGBundleController::class, 'applyView'])->name('cgbundle.apply');
         Route::post('cg-bundle-apply', [CGBundleController::class, 'apply'])->name('cgbundle.apply');

@@ -22,7 +22,8 @@
                         </script>
                     @endif
                     <p class="text-muted mb-4 font-13">Network List</p>
-                    <table class="table table-striped table-bordered table-hover dataTables-example">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-bordered table-hover dataTables-example">
                         <thead>
                         <tr>
                             <th>id</th>
@@ -77,6 +78,7 @@
                         @endforeach
                         </tbody>
                     </table>
+                        </div>
 
                 </div>
             </div>

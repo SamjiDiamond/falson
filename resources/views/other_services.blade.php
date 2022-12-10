@@ -24,7 +24,8 @@
                     @can('other-service-create')
                         <a href="{{route('otherservices_add')}}" class="btn btn-primary mb-3 text-white">Add New Service</a>
                     @endcan
-                    <table class="table table-striped table-bordered table-hover dataTables-example">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-bordered table-hover dataTables-example">
                         <thead>
                         <tr>
                             <th>id</th>
@@ -67,6 +68,7 @@
                         @endforeach
                         </tbody>
                     </table>
+                        </div>
 
                 </div>
             </div>

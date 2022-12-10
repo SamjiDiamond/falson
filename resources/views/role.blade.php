@@ -62,7 +62,8 @@
             <div class="card">
                 <div class="card-body">
                     <p class="text-muted mb-4 font-13">Users Role</p>
-                    <table class="table table-striped table-bordered table-hover dataTables-example">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered table-hover dataTables-example">
                         <thead>
                         <tr>
                             <th>id</th>
@@ -100,6 +101,7 @@
                         @endforeach
                         </tbody>
                     </table>
+                    </div>
 {{--                    {{$user->links()}}--}}
 
                 </div>

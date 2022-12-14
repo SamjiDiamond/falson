@@ -84,6 +84,14 @@ class UserController extends Controller
 
         return response()->json(['success' => 1, 'message' => 'Fetched successfully', 'data' => ['user' => $me, 'balances' => $balances, 'services' => $services, 'news' => $user->gnews, 'others' => $others]]);
     }
+    public function support()
+    {
+        $settE=Settings::where('name', 'support_email')->first();
+        $settW=Settings::where('name', 'support_whatsapp')->first();
+        $settC=Settings::where('name', 'support_call')->first();
+
+        return response()->json(['success' => 1, 'message' => 'Fetched successfully', 'data' => ['email' => $settE->value, 'whatsapp' => $settW->value, 'call' =>  $settC->value]]);
+    }
 
     public function change_password(Request $request)
     {

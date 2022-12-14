@@ -33,6 +33,8 @@ Route::prefix('v2')->group(function () {
 
     Route::get('referralPlans', [OtherController::class, 'referralPlans']);
 
+    Route::get('support', [UserController::class, 'support']);
+
     Route::get('test-ringo', function (){
 
         $payload='{

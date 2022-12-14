@@ -96,11 +96,11 @@ class CreateProvidusAccountJob implements ShouldQueue
                     CURLOPT_SSL_VERIFYPEER => false,
                     CURLOPT_POSTFIELDS => '{
 	"accountReference": "' . $u->user_name . '",
-	"accountName": "MCD-' . $u->user_name . '",
+	"accountName": "PlanetF-' . $u->user_name . '",
 	"currencyCode": "NGN",
 	"contractCode": "' . $settC->value . '",
 	"customerEmail": "' . $u->email . '",
-	"customerName": "MCD-' . $u->user_name . '",
+	"customerName": "PlanetF-' . $u->user_name . '",
 	"getAllAvailableBanks": true
 }',
                     CURLOPT_HTTPHEADER => array(

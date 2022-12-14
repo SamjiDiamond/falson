@@ -55,7 +55,7 @@ class CreateProvidusAccountJob implements ShouldQueue
                 $curl = curl_init();
 
                 curl_setopt_array($curl, array(
-                    CURLOPT_URL => env("MONNIFY_URL") . "/auth/login",
+                    CURLOPT_URL => env("MONNIFY_URL") . "/v1/auth/login",
                     CURLOPT_RETURNTRANSFER => true,
                     CURLOPT_ENCODING => "",
                     CURLOPT_MAXREDIRS => 10,
@@ -85,7 +85,7 @@ class CreateProvidusAccountJob implements ShouldQueue
 
                 $curl = curl_init();
                 curl_setopt_array($curl, array(
-                    CURLOPT_URL => env("MONNIFY_URL") . "/bank-transfer/reserved-accounts",
+                    CURLOPT_URL => env("MONNIFY_URL") . "/v2/bank-transfer/reserved-accounts",
                     CURLOPT_RETURNTRANSFER => true,
                     CURLOPT_ENCODING => "",
                     CURLOPT_MAXREDIRS => 10,
@@ -94,7 +94,15 @@ class CreateProvidusAccountJob implements ShouldQueue
                     CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                     CURLOPT_CUSTOMREQUEST => "POST",
                     CURLOPT_SSL_VERIFYPEER => false,
-                    CURLOPT_POSTFIELDS => "{\"accountReference\": \"" . $u->user_name . "\", \"accountName\": \"PLANETF-" . $u->user_name . "\",  \"currencyCode\": \"NGN\",  \"contractCode\": \"" . $settC->value . "\",  \"customerEmail\": \"" . $u->email . "\",  \"customerName\": \"PLANETF-" . $u->user_name . "\"}",
+                    CURLOPT_POSTFIELDS => '{
+	"accountReference": "' . $u->user_name . '",
+	"accountName": "MCD-' . $u->user_name . '",
+	"currencyCode": "NGN",
+	"contractCode": "' . $settC->value . '",
+	"customerEmail": "' . $u->email . '",
+	"customerName": "MCD-' . $u->user_name . '",
+	"getAllAvailableBanks": true
+}',
                     CURLOPT_HTTPHEADER => array(
                         "Content-Type: application/json",
                         "Authorization: Bearer " . $token
@@ -109,34 +117,23 @@ class CreateProvidusAccountJob implements ShouldQueue
 
                 $response = json_decode($response, true);
 
-                $contract_code = $response['responseBody']['contractCode'];
-                $account_reference = $response['responseBody']['accountReference'];
-                $currency_code = $response['responseBody']['currencyCode'];
-                $customer_email = $response['responseBody']['customerEmail'];
+
                 $customer_name = $response['responseBody']['customerName'];
-                $account_number = $response['responseBody']['accountNumber'];
-                $bank_name = $response['responseBody']['bankName'];
-                $collection_channel = $response['responseBody']['collectionChannel'];
-                $status = $response['responseBody']['status'];
-                $created_on = $response['responseBody']['createdOn'];
                 $reservation_reference = $response['responseBody']['reservationReference'];
                 $extra = $respons;
 
-                VirtualAccount::create([
-                    "user_id" =>$u->id,
-                    "provider" =>"monnify",
-                    "account_name" =>$customer_name,
-                    "account_number" => $account_number,
-                    "bank_name" =>$bank_name,
-                    "reference" =>$reservation_reference,
-                ]);
+                foreach ($response['responseBody']['accounts'] as $accounts) {
+                    echo $accounts['accountNumber'] . "|| ";
+                    VirtualAccount::create([
+                        "user_id" => $u->id,
+                        "provider" => "monnify",
+                        "account_name" => $customer_name,
+                        "account_number" => $accounts['accountNumber'],
+                        "bank_name" => $accounts['bankName'],
+                        "reference" => $reservation_reference,
+                    ]);
+                }
 
-
-//            DB::table('tbl_reserveaccount_monnify')->insert(['contract_code' => $contract_code, 'account_reference' => $account_reference, 'currency_code' => $currency_code, 'customer_email' => $customer_email, 'customer_name' => $customer_name, 'account_number' => $account_number, 'bank_name' => $bank_name, 'collection_channel' => $collection_channel, 'status' => $status, 'reservation_reference' => $reservation_reference, 'created_on' => $created_on, 'extra' => $extra]);
-//            $u->account_number = $account_number ." | ".$bank_name;
-//            $u->save();
-
-                echo $account_number . "|| ";
             }catch (\Exception $e){
                 echo "Error encountered ";
                 Log::info("Error encountered on Monnify Virtual account generation on ".$u->user_name);

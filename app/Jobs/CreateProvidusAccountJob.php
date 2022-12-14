@@ -115,6 +115,9 @@ class CreateProvidusAccountJob implements ShouldQueue
 
                 echo $response;
 
+                Log::info("Monnify Account Generation");
+                Log::info($response);
+
                 $response = json_decode($response, true);
 
 

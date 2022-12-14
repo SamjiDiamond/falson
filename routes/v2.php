@@ -121,6 +121,7 @@ Route::prefix('v2')->group(function () {
         Route::get('request-agentdoc', [UserController::class, 'requestAgentDocument']);
         Route::post('agentdocument', [UserController::class, 'agentDocumentation']);
         Route::post('uploaddp', [UserController::class, 'uploaddp']);
+        Route::post('uploaddpURL', [UserController::class, 'uploaddpURL']);
         Route::get('vaccounts', [UserController::class, 'vaccounts']);
 
         Route::post('user-upgrade', [UserController::class, 'referral_upgrade']);

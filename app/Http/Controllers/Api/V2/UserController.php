@@ -457,6 +457,33 @@ class UserController extends Controller
 
     }
 
+    public function uploaddpURL(Request $request)
+    {
+        $input = $request->all();
+        $rules = array(
+            'dp_url' => 'required'
+        );
+
+        $validator = Validator::make($input, $rules);
+
+        $input = $request->all();
+
+        if (!$validator->passes()) {
+            return response()->json(['status' => 0, 'message' => 'Some forms are left out', 'error' => $validator->errors()]);
+        }
+
+        $user = User::where('user_name', Auth::user()->user_name)->first();
+        if (!$user) {
+            return response()->json(['success' => 0, 'message' => 'User not found']);
+        }
+
+        $user=User::find(Auth::id());
+        $user->photo=$input['dp_url'];
+        $user->save();
+        return response()->json(['success' => 1, 'message' => 'Image uploaded successfully', 'data' => $input['dp_url']]);
+
+    }
+
     public function add_referral(Request $request)
     {
         $input = $request->all();

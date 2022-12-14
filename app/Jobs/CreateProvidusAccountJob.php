@@ -50,7 +50,7 @@ class CreateProvidusAccountJob implements ShouldQueue
             try {
                 $settA=Settings::where('name', 'fund_monnify_apikey')->first();
                 $settS=Settings::where('name', 'fund_monnify_secretkey')->first();
-                $settC=Settings::where('name', 'fund_monnify_secretkey')->first();
+                $settC=Settings::where('name', 'fund_monnify_contractcode')->first();
 
                 $curl = curl_init();
 
@@ -72,6 +72,9 @@ class CreateProvidusAccountJob implements ShouldQueue
                 $respons = $response;
 
                 curl_close($curl);
+
+                Log::info("Monnify Login");
+                Log::info($response);
 
                 echo $response;
 

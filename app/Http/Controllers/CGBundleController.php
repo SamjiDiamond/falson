@@ -187,6 +187,9 @@ class CGBundleController extends Controller
 
         CGTransaction::create([
             "bundle_id" => $input['bundle_id'],
+            "value" => $data->value,
+            "price" => $data->price,
+            "type" => $cw,
             "user_name" => $user->user_name,
             "charge" => $input['charge'],
             "created_by" => Auth::user()->user_name
@@ -270,6 +273,17 @@ class CGBundleController extends Controller
 
         $cgwallet->balance-=$input['value'];
         $cgwallet->save();
+
+        CGTransaction::create([
+            "bundle_id" => 0,
+            "value" => $input['value'],
+            "price" => "0",
+            "type" => $cw,
+            "action" => "debit",
+            "user_name" => $user->user_name,
+            "charge" => "no",
+            "created_by" => Auth::user()->user_name
+        ]);
 
         return redirect()->route('cgbundle.debit')->with(["success" => "Bundle debited successfully"]);
     }

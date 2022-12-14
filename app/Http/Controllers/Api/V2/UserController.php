@@ -678,6 +678,9 @@ class UserController extends Controller
 
         $cgtrans=CGTransaction::create([
             "bundle_id" => $input['bundle_id'],
+            "value" => $data->value,
+            "price" =>$data->price,
+            "type" => $cw,
             "user_name" => $user->user_name,
             "charge" => $input['charge'],
             "created_by" => Auth::user()->user_name,

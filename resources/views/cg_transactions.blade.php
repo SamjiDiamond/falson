@@ -31,6 +31,7 @@
                             <th>Value</th>
                             <th>Price</th>
                             <th>Status</th>
+                            <th>Trans Type</th>
                             <th>Wallet Charged / Receipt</th>
                             <th>Date Created</th>
                             <th>Action</th>
@@ -41,9 +42,9 @@
                             @foreach($data as $da)
                                 <td>{{$da->id}}</td>
                                 <td>{{$da->user_name}}</td>
-                                <td class="center">{{$da->cgbundle->network}} {{$da->cgbundle->type}}</td>
-                                <td class="center">{{$da->cgbundle->value}} GB</td>
-                                <td class="center">{{number_format($da->cgbundle->price)}}</td>
+                                <td class="center">{{$da->bundle_id != null ? $da->cgbundle->network : $da->type}} {{$da->bundle_id != null ? $da->cgbundle->type : ''}}</td>
+                                <td class="center">{{$da->bundle_id != null ? $da->cgbundle->value : $da->value}} GB</td>
+                                <td class="center">{{number_format($da->bundle_id != null ? $da->cgbundle->price : $da->price)}}</td>
                                 <td class="center">
                                     @if($da->status=="1")
                                         <span class="badge badge-success">Success</span>
@@ -51,7 +52,7 @@
                                         <span class="badge badge-warning">Pending</span>
                                     @endif
                                 </td>
-
+                                <td class="center">{{$da->action}}</td>
                                 <td>
                                     @if($da['charge'] == "no")
                                         <a href="{{route('show.cgtransaction',$da['id'].'.jpg')}}"> <img src="{{route('show.cgtransaction', $da['id'].'.jpg')}}" height="50px" /></a>

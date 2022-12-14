@@ -115,13 +115,10 @@ class SellElectricityController extends Controller
             Log::info("Ringo Electric Response. - " . $response);
 
         } else {
-            $response = '{ "code": "200", "message": "Purchase Successful", "reference": "HONOUR|WORLD|62|20220611021605|347694", "token": "1498-2330-4576-0458-1880", "unit": 2.95, "taxAmount": null, "bonusUnit": null, "bonusToken": null, "amount": 100, "status": "200", "customerName": null, "customerAddress": "232", "date": "2022-06-11 02:16:18", "disco": "IBEDC_PREPAID" }';
+            $response = '{ token: "1234-5543-5436-7657", unit: "20kwh", amount: 1000, message: "successful", status: "200", customerName: "Roy", date: "", transId: "bhu76ryu9ijhy", disco: "IKEDC", }';
         }
 
         $rep = json_decode($response, true);
-
-        Log::info("HW Transaction. - " . $transid);
-        Log::info($response);
 
         $rs = new PayController();
         $ms = new V2\PayController();
@@ -132,7 +129,7 @@ class SellElectricityController extends Controller
             $dada['token'] = $rep['token'];
 
             if ($requester == "reseller") {
-                $dada['server_ref'] = $reqid;
+                $dada['server_ref'] = $rep['transId'];
                 return $rs->outputResponse($request, $transid, 1, $dada);
             } else {
                 return $ms->outputResp($request, $transid, 1, $dada);

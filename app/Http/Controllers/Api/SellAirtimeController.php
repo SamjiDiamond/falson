@@ -145,7 +145,7 @@ class SellAirtimeController extends Controller
 
         } else {
 
-            $response = '{"status":"success","message":"Bill payment Successful","data":{"phone_number":"+2348166939205","amount":101,"network":"MTN","flw_ref":"CF-FLYAPI-20210822051137450241","reference":"BPUSSD16296522980070875117"}}';
+            $response = "{ 'message' : 'successful', 'status' : '200', 'productamount' : '200',  'amountCharged' :'200',  'transref' :'hgwuiuegyu', 'type': 'airtime', 'network' : 'mtn', 'date' : 'date', 'phone' : '09087655643' }";
         }
 
         $rep = json_decode($response, true);
@@ -156,8 +156,8 @@ class SellAirtimeController extends Controller
 
         $dada['server_response'] = $response;
 
-        if ($rep['status'] == 'success') {
-            $dada['server_ref'] = $rep['data']['flw_ref'];
+        if ($rep['status'] == '200') {
+            $dada['server_ref'] = $rep['transref'];
             if ($requester == "reseller") {
                 return $rs->outputResponse($request, $transid, 1, $dada);
             } else {

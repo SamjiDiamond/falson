@@ -16,6 +16,7 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class MonnifyHookController extends Controller
 {
@@ -23,6 +24,9 @@ class MonnifyHookController extends Controller
         $input = $request->all();
 
         $data2= json_encode($input);
+
+        Log::info("Monnify Webhook");
+        Log::info($data2);
 
         $paymentstatus= $input['paymentStatus'];
         $transactionreference= $input['transactionReference'];

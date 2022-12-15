@@ -23,8 +23,14 @@ class SellDataController extends Controller
 
         if (env('FAKE_TRANSACTION', 1) == 0) {
 
+            $network=$rac->network;
+
+            if(str_contains($rac->name, 'CG')){
+                $network.="_CG";
+            }
+
             $payload='{
-  "network" : "' . $rac->network . '",
+  "network" : "' . $network . '",
    "planId" : "' . $rac->plan_id . '",
   "phone" : "' . $phone . '"
 }';

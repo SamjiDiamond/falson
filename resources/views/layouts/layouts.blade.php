@@ -302,7 +302,10 @@
                                 @endcan
 
                                 @can('reseller_data-view')
-                                    <li><a href="{{route('reseller.dataplans')}}">Data Plans</a></li>
+                                        <li><a href="{{route('reseller.dataList', 'MTN')}}">MTN Data Plans</a></li>
+                                        <li><a href="{{route('reseller.dataList', 'AIRTEL')}}">AIRTEL Data Plans</a></li>
+                                        <li><a href="{{route('reseller.dataList', 'GLO')}}">GLO Data Plans</a></li>
+                                        <li><a href="{{route('reseller.dataList', '9MOBILE')}}">9MOBILE Data Plans</a></li>
                                 @endcan
 
                                 @can('reseller_tv-view')

@@ -26,7 +26,12 @@ class ATMmanagerController extends Controller
         $u = User::where('user_name', '=', $reference)->first();
         $w = Wallet::where('ref', $transactionreference)->first();
 
-        $crAmount=$amount - $charges;
+        if($payment_method == "Monnify"){
+            $crAmount=$amount - $charges - $cfee;
+        }else{
+            $crAmount=$amount - $charges;
+        }
+
         $wallet=$u->wallet + $crAmount;
 
         if (!$w) {

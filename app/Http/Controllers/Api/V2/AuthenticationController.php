@@ -70,7 +70,7 @@ class AuthenticationController extends Controller
         $create["mcdpassword"] = Hash::make($input["password"]);
         $create["password"] = "";
         $create["referral"] = $input["referral"];
-        $create["gnews"] = 'Are you looking forward to spending less money on data subscriptions? Or Pay Electricity bills, and even top up your betting platforms conveniently without moving a finger, you just arrived at the right place';
+        $create["gnews"] = 'Are you looking forward to spending less money on data subscriptions? Or Pay Electricity bills, and even buy airtime conveniently without moving a finger, you just arrived at the right place';
         $date = date("Y-m-d H:i:s");
         $create["devices"] = $deviceid;
 

@@ -208,6 +208,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/electricitycontrol', [ServerController::class, 'electricityUpdate'])->name('electricitycontrolUpdate');
 
         Route::prefix('reseller')->name('reseller.')->group(function () {
+            Route::get('/datalist/{network}', [ResellerServiceController::class, 'dataPlans'])->name('dataList');
+            Route::get('/datacontrol-multiple/{network}/{type}/{status}', [ResellerServiceController::class, 'dataserveMultipleedit'])->name('dataserveMultipleedit');
             Route::get('/datacontrol', [ResellerServiceController::class, 'dataserve2'])->name('dataplans');
             Route::get('/datacontrol/{id}', [ResellerServiceController::class, 'dataserveedit'])->name('datacontrolEdit');
             Route::get('/datacontrolED/{id}', [ResellerServiceController::class, 'datacontrolED'])->name('datacontrolED');

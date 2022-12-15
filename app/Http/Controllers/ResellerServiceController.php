@@ -93,6 +93,29 @@ class ResellerServiceController extends Controller
         return view('reseller_control.datacontrol', compact('data'));
     }
 
+    public function dataPlans($network)
+    {
+
+        $data = ResellerDataPlans::where('type','LIKE',strtoupper($network).'%')->paginate(10);
+        $sme= ResellerDataPlans::where([['name','LIKE','%SME%'], ['type','LIKE',strtoupper($network).'%'], ['status',1]])->count() > 0 ? 1 : 0;
+        $cg= ResellerDataPlans::where([['name','LIKE','%CG%'], ['type','LIKE',strtoupper($network).'%'], ['status',1]])->count() > 0 ? 1 : 0;
+        $dg= ResellerDataPlans::where([['name','LIKE','%DG%'], ['type','LIKE',strtoupper($network).'%'], ['status',1]])->count() > 0 ? 1 : 0;
+        $all= ResellerDataPlans::where([['type','LIKE',strtoupper($network).'%'], ['status',1]])->count() > 0 ? 1 : 0;
+
+        return view('reseller_control.datacontrol', compact('data', 'sme', 'cg', 'dg', 'all'));
+    }
+
+    public function dataserveMultipleedit($network, $type, $status)
+    {
+        if($type == "ALL"){
+            ResellerDataPlans::where([['type','LIKE',strtoupper($network).'%']])->update(['status' =>$status]);
+        }else{
+            ResellerDataPlans::where([['name','LIKE','%'.$type.'%'], ['type','LIKE',strtoupper($network).'%']])->update(['status' =>$status]);
+        }
+
+        return redirect()->route('reseller.dataList', $network)->with("success", "$type Status Modified successfully");
+    }
+
     public function dataserveedit($id)
     {
         $data = ResellerDataPlans::find($id);
@@ -155,7 +178,7 @@ class ResellerServiceController extends Controller
 //        $data->note = $input['note'];
         $data->save();
 
-        return redirect()->route('reseller.dataplans')->with('success', $data->name . ' has been updated successfully');
+        return redirect()->route('reseller.dataList', $data->type)->with('success', $data->name . ' has been updated successfully');
     }
 
 

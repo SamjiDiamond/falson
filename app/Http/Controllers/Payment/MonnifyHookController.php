@@ -28,18 +28,18 @@ class MonnifyHookController extends Controller
         Log::info("Monnify Webhook");
         Log::info($data2);
 
-        $paymentstatus= $input['paymentStatus'];
-        $transactionreference= $input['transactionReference'];
-        $paymentreference= $input['paymentReference'];
-        $paymentamount= $input['amountPaid'];
-        $paymentmethod= $input['paymentMethod'];
-        $paymentdesc =$input['paymentDescription'];
-        $paidon= $input['paidOn'];
-        $product_type= $input['product']['type'];
-        $product_reference= $input['product']['reference'];
-        $transactionhash= $input['transactionHash'];
+        $paymentstatus= $input['eventData']['paymentStatus'];
+        $transactionreference= $input['eventData']['transactionReference'];
+        $paymentreference= $input['eventData']['paymentReference'];
+        $paymentamount= $input['eventData']['amountPaid'];
+        $paymentmethod= $input['eventData']['paymentMethod'];
+        $paymentdesc =$input['eventData']['paymentDescription'];
+        $paidon= $input['eventData']['paidOn'];
+        $product_type= $input['eventData']['product']['type'];
+        $product_reference= $input['eventData']['product']['reference'];
+        $transactionhash= "";
         $transactionhashME= hash('SHA512', env("MONNIFY_CLIENTSECRET")."|". $paymentreference."|". $paymentamount ."|".$paidon."|".$transactionreference);
-        $paymentamount= (int)$input['amountPaid'];
+        $paymentamount= (int)$input['eventData']['amountPaid'];
 
 //        echo $transactionhashME;
 
@@ -50,88 +50,25 @@ class MonnifyHookController extends Controller
             return "!Paid transaction";
         }
 
-        if($transactionhash != $transactionhashME){
-            return "Invalid transaction signature";
-        }
+//        if($transactionhash != $transactionhashME){
+//            return "Invalid transaction signature";
+//        }
 
-        $cfee=$input['totalPayable']-$input['settlementAmount'];
+        $cfee=$input['eventData']['totalPayable']-$input['eventData']['settlementAmount'];
 
         if($product_type === "MOBILE_SDK"){
             $this->SDK($paymentamount, $paymentreference, $cfee);
         }
 
         if($product_type === "RESERVED_ACCOUNT"){
-            if($input['accountDetails']== null){
-                $acctd_name=$product_reference;
-            }else{
-                $acctd_name= $input['accountDetails']['accountName'];
-            }
-            if ($product_reference === "Mcdat"){
-                $this->MCDatfundwallet($acctd_name,$paymentamount,$transactionreference, $cfee);
-            }else{
-                $atm=new ATMmanagerController();
-                $atm->RAfundwallet($acctd_name, $paymentamount, $product_reference, $transactionreference, $cfee, $input, "Monnify");
-            }
+            $acctd_name= $input['eventData']['paymentSourceInformation'][0]['accountName'];
+            $my_acctno= $input['eventData']['destinationAccountInformation']['accountNumber'];
+
+            $atm=new ATMmanagerController();
+            $atm->RAfundwallet($acctd_name, $paymentamount, $product_reference, $transactionreference, $cfee, $input, $my_acctno, "Monnify");
         }
 
         return "success";
-    }
-
-    private function MCDatfundwallet($name, $amount, $transactionreference, $cfee){
-        $charge_treshold=2000;
-        $charges=50;
-        $u=User::where('full_name', 'LIKE', '%'.$name.'%')->first();
-
-        if($u){
-            $input['name']="wallet funding";
-            $input['amount']=$amount;
-            $input['status']='successful';
-            $input['description']= $u->user_name .' wallet funded using Bank Transfer with the sum of #'.$amount;
-            $input['user_name']=$u->user_name;
-            $input['code']='afund_Bank Transfer';
-            $input['i_wallet']=$u->wallet;
-            $wallet=$u->wallet + $amount;
-            $input['f_wallet']=$wallet;
-            $input["ip_address"]="127.0.0.1:A";
-            $input["ref"]=$transactionreference;
-            $input["date"]=date("y-m-d H:i:s");
-
-            Transaction::create($input);
-
-            if($amount<$charge_treshold){
-                $input["type"]="income";
-
-                $input["gl"]="MCD Account";
-                $input["amount"]=$charges;
-                $input["narration"]="Being amount charged for funding less than #".$charge_treshold." from ".$u->user_name;
-
-                PndL::create($input);
-
-                $input["description"]="Being amount charged for funding less than #".$charge_treshold;
-                $input["name"]="Auto Charge";
-                $input["code"]="ac50";
-                $input['status']='successful';
-                $input["i_wallet"]=$wallet;
-                $input["f_wallet"]=$input["i_wallet"] - $charges;
-
-                Transaction::create($input);
-
-                $wallet-=$charges;
-            }
-
-
-            if($cfee!=0){
-                $input["type"]="expenses";
-                $input["amount"]=$cfee;
-                $input["narration"]="Payment gateway charges on MCD account with ref ".$transactionreference;
-
-                PndL::create($input);
-            }
-
-            $u->wallet=$wallet;
-            $u->save();
-        }
-
     }
 
     private function SDK($amount, $reference, $cfee){

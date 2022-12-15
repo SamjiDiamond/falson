@@ -54,6 +54,11 @@ class AuthenticationController extends Controller
             return response()->json(['success' => 0, 'message' => 'Email already exist']);
         }
 
+        $user = User::where('phoneno', $input['phoneno'])->get();
+        if (!$user->isEmpty()) {
+            return response()->json(['success' => 0, 'message' => 'Phone Number already exist']);
+        }
+
         //values gotten
         $create["wallet"] = "0";
         $create["status"] = "client";

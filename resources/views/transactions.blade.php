@@ -85,7 +85,7 @@
                         <table id="datatable-buttons" class="table table-striped mb-0">
                             <thead>
                             <tr>
-{{--                                <th>id</th>--}}
+                                <th>id</th>
                                 <th>Username</th>
                                 <th>Amount</th>
                                 <th>Description</th>

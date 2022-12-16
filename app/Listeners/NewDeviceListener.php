@@ -7,6 +7,7 @@ use App\Mail\NewDeviceLoginMail;
 use App\Models\NewDevice;
 use Carbon\Carbon;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class NewDeviceListener implements ShouldQueue
@@ -41,7 +42,11 @@ class NewDeviceListener implements ShouldQueue
 
         NewDevice::create($tr);
 
+        Log::info("New device");
+        Log::info(json_encode($tr));
+
         if (env('APP_ENV') != "local") {
+            Log::info("sending device email");
             Mail::to($user->email)->send(new NewDeviceLoginMail($tr));
         }
     }

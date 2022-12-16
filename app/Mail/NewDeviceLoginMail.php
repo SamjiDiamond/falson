@@ -6,6 +6,7 @@ use App\Models\Settings;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 class NewDeviceLoginMail extends Mailable
 {
@@ -30,6 +31,7 @@ class NewDeviceLoginMail extends Mailable
      */
     public function build()
     {
+        Log::info("sending device email mailer");
         $adminE=Settings::where('name', 'transaction_email_copy')->first();
         return $this->view('mail.newdevicelogin')
             ->bcc(explode(',',$adminE->value))

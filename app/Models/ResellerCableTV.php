@@ -9,5 +9,5 @@ class ResellerCableTV extends Model implements Auditable
 {
     use \OwenIt\Auditing\Auditable;
     protected $table = "tbl_reseller_cabletv";
-    protected $fillable = ["name", "code", "amount", "discount", "status", "type", "server"];
+    protected $fillable = ["name", "code", "amount", "discount", "status", "type", "server", "level1", "level2", "level3", "level4", "level5"];
 }

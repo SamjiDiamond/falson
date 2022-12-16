@@ -10,6 +10,7 @@ use App\Models\Withdraw;
 use Carbon\Carbon;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Validator;
 
 class HomeController extends Controller
@@ -97,4 +98,19 @@ class HomeController extends Controller
 
         return redirect()->route('allsettings')->with('success', $data->name . ' updated successfully');
     }
+
+    public function plansRefresh($type){
+
+        if($type == "data"){
+            Artisan::queue('samji:hw --command=data');
+        }elseif($type == "tv"){
+            Artisan::queue('samji:hw --command=tv');
+        }else{
+            return redirect()->route('allsettings')->with('error', 'Invalid Type');
+        }
+
+        return redirect()->route('allsettings')->with('success', 'Plans has started refreshing in background');
+
+    }
+
 }

@@ -23,7 +23,7 @@
                     @endif
                     <p class="text-muted mb-4 font-13">Settings List</p>
 
-                        <div class="table-responsive">
+                        <div class="table-responsive mb-4">
                             <table class="table table-striped table-bordered table-hover dataTables-example">
                         <thead>
                         <tr>
@@ -53,6 +53,9 @@
                         </tbody>
                     </table>
                         </div>
+
+                        <a href="{{route('plansRefresh', "data")}}" class="btn btn-danger mr-3">Refresh Data Plans</a>
+                        <a href="{{route('plansRefresh', "tv")}}" class="btn btn-danger mr-3">Refresh TV Plans</a>
 
                 </div>
             </div>

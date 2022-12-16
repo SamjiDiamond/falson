@@ -62,6 +62,11 @@ class GenerateHWPlans extends Command
 
     private function dataPlans()
     {
+        $this->info("Truncating Reseller & App Data plans table");
+
+        ResellerDataPlans::truncate();
+        AppDataControl::truncate();
+
         $this->info("Fetching data plans");
 
         $curl = curl_init();
@@ -129,6 +134,11 @@ class GenerateHWPlans extends Command
 
     private function tvPlans()
     {
+        $this->info("Truncating Reseller & App TV plans table");
+
+        ResellerCableTV::truncate();
+        AppCableTVControl::truncate();
+
         $this->info("Fetching tv plans");
 
         $curl = curl_init();
@@ -166,7 +176,11 @@ class GenerateHWPlans extends Command
                     'code' => $plans['code'],
                     'amount' => $plans['price'],
                     'type' =>  strtolower(explode(" ",$plans['name'])[0]),
-                    'discount' => '1%',
+                    'level1' => $plans['price'],
+                    'level2' => $plans['price'],
+                    'level3' => $plans['price'],
+                    'level4' => $plans['price'],
+                    'level5' => $plans['price'],
                     'status' => 1,
                     'server' => 1,
                 ]);

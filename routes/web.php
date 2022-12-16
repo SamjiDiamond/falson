@@ -258,6 +258,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('modify-faq/{id}', [FAQsController::class, 'modify'])->name('faqs.modify');
         Route::get('remove-faq/{id}', [FAQsController::class, 'destroy'])->name('faqs.delete');
 
+        Route::get('plansRefresh/{type}', [HomeController::class, 'plansRefresh'])->name('plansRefresh');
         Route::get('allsettings', [HomeController::class, 'allsettings'])->name('allsettings');
         Route::get('allsettings-edit/{id}', [HomeController::class, 'allsettingsEdit'])->name('allsettingsEdit');
         Route::post('allsettings-update', [HomeController::class, 'allsettingsUpdate'])->name('allsettingsUpdate');

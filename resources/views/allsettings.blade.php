@@ -56,6 +56,7 @@
 
                         <a href="{{route('plansRefresh', "data")}}" class="btn btn-danger mr-3">Refresh Data Plans</a>
                         <a href="{{route('plansRefresh', "tv")}}" class="btn btn-danger mr-3">Refresh TV Plans</a>
+                        <a href="{{route('plansRefresh', "electricity")}}" class="btn btn-danger mr-3">Refresh Electricity Plans</a>
 
                 </div>
             </div>

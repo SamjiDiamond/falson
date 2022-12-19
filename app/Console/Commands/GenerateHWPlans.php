@@ -6,6 +6,7 @@ use App\Models\AppCableTVControl;
 use App\Models\AppDataControl;
 use App\Models\ResellerCableTV;
 use App\Models\ResellerDataPlans;
+use App\Models\ResellerElecticity;
 use Illuminate\Console\Command;
 
 class GenerateHWPlans extends Command
@@ -196,6 +197,55 @@ class GenerateHWPlans extends Command
                     'server' => 1,
                 ]);
             }
+        }
+    }
+
+    private function electricityPlans()
+    {
+        $this->info("Truncating Reseller & App Electricity plans table");
+
+        ResellerElecticity::truncate();
+
+        $this->info("Fetching tv plans");
+
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => env('HW_BASEURL') . "disco/types",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'GET',
+            CURLOPT_HTTPHEADER => array(
+                'Authorization: Basic ' . env('HW_AUTH'),
+                'Content-Type: application/json'
+            ),
+        ));
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+
+        $response = curl_exec($curl);
+
+        echo $response;
+
+        curl_close($curl);
+
+        $rep = json_decode($response, true);
+
+        foreach ($rep as $plans) {
+            $this->info("Inserting record for " . $plans);
+
+            $name=explode("[",$plans)[0];
+
+            ResellerElecticity::create([
+                'name' => $name,
+                'code' => $name,
+                'discount' => '1%',
+                'status' => 1,
+                'server' => 1,
+            ]);
         }
     }
 }

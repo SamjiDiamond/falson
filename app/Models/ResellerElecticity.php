@@ -9,6 +9,6 @@ class ResellerElecticity extends Model implements Auditable
 {
     use \OwenIt\Auditing\Auditable;
     protected $table = "tbl_reseller_electricity";
-    protected $fillable = ['name', 'code', 'discount', 'status'];
+    protected $fillable = ['name', 'code', 'discount', 'status', 'server'];
 
 }

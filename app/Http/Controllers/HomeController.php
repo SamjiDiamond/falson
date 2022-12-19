@@ -105,6 +105,8 @@ class HomeController extends Controller
             Artisan::queue('samji:hw --command=data');
         }elseif($type == "tv"){
             Artisan::queue('samji:hw --command=tv');
+        }elseif($type == "electricity"){
+            Artisan::queue('samji:hw --command=electricity');
         }else{
             return redirect()->route('allsettings')->with('error', 'Invalid Type');
         }

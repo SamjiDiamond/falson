@@ -96,6 +96,7 @@ Route::prefix('v2')->group(function () {
 
         Route::get('airtime-converter', [ListController::class, 'airtimeConverter']);
         Route::get('airtime', [ListController::class, 'airtime']);
+        Route::get('electricity', [ListController::class, 'electricity']);
         Route::get('airtime/countries', [ListController::class, 'airtimeInt']);
         Route::get('data/{network}', [ListController::class, 'data']);
         Route::get('tv/{network}', [ListController::class, 'cabletv']);

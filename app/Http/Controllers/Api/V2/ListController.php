@@ -8,6 +8,7 @@ use App\Models\AirtimeCountry;
 use App\Models\AppAirtimeControl;
 use App\Models\AppCableTVControl;
 use App\Models\AppDataControl;
+use App\Models\ResellerElecticity;
 
 class ListController extends Controller
 {
@@ -27,6 +28,13 @@ class ListController extends Controller
     public function airtimeInt()
     {
         $airsets = AirtimeCountry::get();
+
+        return response()->json(['success' => 1, 'message' => 'Fetch successfully', 'data' => $airsets]);
+    }
+
+    public function electricity()
+    {
+        $airsets = ResellerElecticity::get();
 
         return response()->json(['success' => 1, 'message' => 'Fetch successfully', 'data' => $airsets]);
     }

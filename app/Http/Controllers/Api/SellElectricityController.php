@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Reseller\PayController;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class SellElectricityController extends Controller
@@ -13,6 +14,14 @@ class SellElectricityController extends Controller
     {
 
         $reqid = Carbon::now()->format('YmdHi') . $transid;
+
+        $payload='{
+        "phoneNumber" : "'.Auth::user()->phoneno.'",
+   "type": "PREPAID",
+   "disco" : "' . $code . '",
+   "amount" : ' . $request->get('amount') . ',
+   "meterNo" : "' . $phone . '"
+}';
 
         if (env('FAKE_TRANSACTION', 1) == 0) {
             $curl = curl_init();
@@ -26,7 +35,7 @@ class SellElectricityController extends Controller
                 CURLOPT_FOLLOWLOCATION => true,
                 CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                 CURLOPT_CUSTOMREQUEST => 'POST',
-                CURLOPT_POSTFIELDS => '',
+                CURLOPT_POSTFIELDS => $payload,
                 CURLOPT_HTTPHEADER => array(
                     'Authorization: Bearer ' . env('HW_AUTH'),
                     'Content-Type: application/json'

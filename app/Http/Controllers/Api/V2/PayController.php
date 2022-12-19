@@ -214,7 +214,7 @@ class PayController extends Controller
 
         if (!$validator->passes()) {
 
-            return response()->json(['success' => 0, 'message' => 'Required field(s) is missing']);
+            return response()->json(['success' => 0, 'message' => implode(",", $validator->errors()->all())]);
         }
 
         $input['version'] = $request->header('version');

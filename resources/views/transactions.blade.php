@@ -107,7 +107,7 @@
                                     <td>{{$dat->id}}</td>
                                     <td><a href="profile/{{ $dat->user_name }}" class="btn btn-sm btn-success">{{$dat->user_name}}</a>
                                     </td>
-                                    <td>{{$dat->amount}}</td>
+                                    <td>&#8358;{{number_format($dat->amount)}}</td>
                                     <td>{{$dat->description}}</td>
                                     <td class="center">
 
@@ -120,8 +120,8 @@
                                         @endif
 
                                     </td>
-                                    <td>{{$dat->i_wallet}}</td>
-                                    <td>{{$dat->f_wallet}}</td>
+                                    <td>&#8358;{{number_format($dat->i_wallet)}}</td>
+                                    <td>&#8358;{{number_format($dat->f_wallet)}}</td>
                                     <td>{{$dat->ip_address}}</td>
                                     <td>{{$dat->device_details}}</td>
                                     <td>{{$dat->server}}</td>

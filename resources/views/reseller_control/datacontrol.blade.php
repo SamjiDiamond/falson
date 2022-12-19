@@ -64,12 +64,12 @@
                                 <td class="center">{{$da['type']}}</td>
 
                                 <td>{{$da['name']}}</td>
-                                <td class="center">{{$da['price']}}</td>
-                                <td class="center">{{$da['level1']}}</td>
-                                <td class="center">{{$da['level2']}}</td>
-                                <td class="center">{{$da['level3']}}</td>
-                                <td class="center">{{$da['level4']}}</td>
-                                <td class="center">{{$da['level5']}}</td>
+                                <td class="center">&#8358;{{number_format($da['price'])}}</td>
+                                <td class="center">&#8358;{{number_format($da['level1'])}}</td>
+                                <td class="center">&#8358;{{number_format($da['level2'])}}</td>
+                                <td class="center">&#8358;{{number_format($da['level3'])}}</td>
+                                <td class="center">&#8358;{{number_format($da['level4'])}}</td>
+                                <td class="center">&#8358;{{number_format($da['level5'])}}</td>
                                 <td>
 
                                     {{$da['server']}}</option>

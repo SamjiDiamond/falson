@@ -44,7 +44,7 @@
                                 <td>{{$da->user_name}}</td>
                                 <td class="center">{{$da->bundle_id != null ? $da->cgbundle->network : $da->type}} {{$da->bundle_id != null ? $da->cgbundle->type : ''}}</td>
                                 <td class="center">{{$da->bundle_id != null ? $da->cgbundle->value : $da->value}} GB</td>
-                                <td class="center">{{number_format($da->bundle_id != null ? $da->cgbundle->price : $da->price)}}</td>
+                                <td class="center">&#8358;{{number_format($da->bundle_id != null ? $da->cgbundle->price : $da->price)}}</td>
                                 <td class="center">
                                     @if($da->status=="1")
                                         <span class="badge badge-success">Success</span>

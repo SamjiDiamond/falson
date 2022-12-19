@@ -119,8 +119,8 @@
                                         <td>{{$data->status }}</td>
                                         <td>{{$data->description }}</td>
                                         <td>{{$data->ref}}</td>
-                                        <td>{{$data->i_wallet}}</td>
-                                        <td>{{$data->f_wallet}}</td>
+                                        <td>&#8358;{{number_format($data->i_wallet)}}</td>
+                                        <td>&#8358;{{number_format($data->f_wallet)}}</td>
                                         <td>{{$data->server}}</td>
                                         <td>{{$data->date}}</td>
                                         {{--                                        <td><a href="profile/{{ $user->user_name }}" class="btn btn-sm btn-success"><i class="fas fa-edit"></i></a></td>--}}

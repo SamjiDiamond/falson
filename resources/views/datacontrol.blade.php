@@ -62,8 +62,8 @@
                                 <td class="center">{{$da['network']}}</td>
 
                                 <td>{{$da['name']}}</td>
-                                <td class="center">{{$da['price']}}</td>
-                                <td class="center">{{$da['pricing']}}</td>
+                                <td class="center">&#8358;{{number_format($da['price'])}}</td>
+                                <td class="center">&#8358;{{number_format($da['pricing'])}}</td>
                                 <td>
 
                                     {{$da['server']}}</option>

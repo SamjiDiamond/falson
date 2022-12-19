@@ -42,7 +42,7 @@
                                 <td class="center">{{$da['display_name']}}</td>
                                 <td>{{$da['value']}} GB</td>
                                 <td class="center">{{$da['network']}} {{$da['type']}}</td>
-                                <td class="center">{{number_format($da['price'])}}</td>
+                                <td class="center">&#8358;{{number_format($da['price'])}}</td>
                                 <td class="center">
                                     @if($da->status=="1")
                                         <span class="badge badge-success">Active</span>

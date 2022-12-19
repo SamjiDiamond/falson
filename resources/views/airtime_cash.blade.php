@@ -75,7 +75,7 @@
                                 <tr>
                                     <td>{{$data->id}}</td>
                                     <td>{{$data->ref}}</td>
-                                    <td>{{$data->amount}}</td>
+                                    <td>&#8358;{{number_format($data->amount)}}</td>
                                     <td>{{$data->network}}</td>
                                     <td>{{$data->phoneno}}</td>
                                     <td>

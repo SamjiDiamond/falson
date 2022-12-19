@@ -74,19 +74,19 @@
                                 <tbody>
                                 <tr>
                                     <td>Data</td>
-                                    <td>{{$data_amount}}</td>
+                                    <td>&#8358;{{number_format($data_amount)}}</td>
                                 </tr>
                                 <tr>
                                     <td>Airtime</td>
-                                    <td>{{$airtime_amount}}</td>
+                                    <td>&#8358;{{number_format($airtime_amount)}}</td>
                                 </tr>
                                 <tr>
                                     <td>TV</td>
-                                    <td>{{$tv_amount}}</td>
+                                    <td>&#8358;{{number_format($tv_amount)}}</td>
                                 </tr>
                                 <tr>
                                     <td>Electricity</td>
-                                    <td>{{$electricity_amount}}</td>
+                                    <td>&#8358;{{number_format($electricity_amount)}}</td>
                                 </tr>
                                 </tbody>
                             </table>

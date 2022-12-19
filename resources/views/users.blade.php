@@ -85,7 +85,6 @@
                                 <th>Email</th>
                                 <th>Contact No</th>
                                 <th>Wallet Balance</th>
-                                <th>Account Number</th>
                                 <th>Action</th>
                             </tr>
                             </thead>
@@ -101,8 +100,7 @@
                                     </td>
                                     <td>{{$user->email }}</td>
                                     <td>{{$user->phoneno}}</td>
-                                    <td>{{$user->wallet}}</td>
-                                    <td>{{$user->account_number}}</td>
+                                    <td>&#8358;{{number_format($user->wallet)}}</td>
                                     <td><a href="profile/{{ $user->user_name }}" class="btn btn-sm btn-success"><i class="fas fa-edit"></i></a></td>
                                 </tr>
                             @endforeach

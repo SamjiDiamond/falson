@@ -116,12 +116,12 @@
                                 <tr>
                                     <td>{{$dat->id}}</td>
                                     <td>{{$dat->user_name}}</td>
-                                    <td>&#8358;{{$dat->amount}}</td>
+                                    <td>&#8358;{{number_format($dat->amount)}}</td>
                                     <td>{{$dat->status}}</td>
                                     <td>{{$dat->medium}}</td>
                                     <td>{{$dat->ref}}</td>
-                                    <td>&#8358;{{$dat->o_wallet}}</td>
-                                    <td>&#8358;{{$dat->n_wallet}}</td>
+                                    <td>&#8358;{{number_format($dat->o_wallet)}}</td>
+                                    <td>&#8358;{{number_format($dat->n_wallet)}}</td>
                                     <td>{{$dat->date}}</td>
                                 </tr>
                             @endforeach

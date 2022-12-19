@@ -44,7 +44,7 @@
                                 <td class="center">{{$da['type']}}</td>
 
                                 <td>{{$da['name']}}</td>
-                                <td class="center">{{$da['price']}}</td>
+                                <td class="center">&#8358;{{number_format($da['price'])}}</td>
                                 <td class="center">{{$da['discount']}}</td>
                                 <td>
 

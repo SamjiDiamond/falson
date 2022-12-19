@@ -62,7 +62,7 @@
                                         {{$dat->id}}
                                     </td>
                                     <td>{{$dat->ref}}</td>
-                                    <td>&#8358;{{$dat->amount}}</td>
+                                    <td>&#8358;{{number_format($dat->amount)}}</td>
                                     <td>{{$dat->description}}</td>
                                     <td>
                                         @if($dat->status == 1)

@@ -77,6 +77,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/profile/{id}',  [UsersController::class, 'profile'])->name('profile');
     Route::post('/update-profile', [UsersController::class, 'updateProfile'])->name('updateProfile');
     Route::post('/user-password-reset', [UsersController::class, 'passwordReset'])->name('userPasswordReset');
+    Route::post('/user-pin-reset', [UsersController::class, 'pinReset'])->name('userPinReset');
     Route::get('/admin-password-reset/{id}', [UsersController::class, 'passwordResetAdmin'])->name('adminPasswordReset');
     Route::get('/admin-bann-user/{id}', [UsersController::class, 'bannUnbann'])->name('adminBannUnbann');
     Route::any('/wallet', [WalletController::class, 'index'])->name('wallet');

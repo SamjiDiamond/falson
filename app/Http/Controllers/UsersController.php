@@ -520,6 +520,19 @@ class UsersController extends Controller
         return redirect()->route('profile', $user->user_name)->with("success", "A new password has been sent to the customer mail successfully");
     }
 
+    public function pinReset(Request $request){
+        $input = $request->all();
+
+        $user=User::find($input['id']);
+
+        $user->pin = 1234;
+        $user->save();
+
+        PushNotificationJob::dispatch($user->user_name, "Hi " . $user->user_name . ", your pin has been reset to 1234 by the admin.", "Pin Reset");
+
+        return redirect()->route('profile', $user->user_name)->with("success", "User Pin has been reset to 1234");
+    }
+
     public function passwordResetAdmin($id){
 
         $user=User::find($id);

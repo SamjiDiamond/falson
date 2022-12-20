@@ -314,7 +314,7 @@
                                                     <td>{{$dat->id}}</td>
                                                     <td>{{$dat->user_name}}
                                                     </td>
-                                                    <td>{{$dat->amount}}</td>
+                                                    <td>&#8358;{{number_format($dat->amount)}}</td>
                                                     <td>{{$dat->description}}</td>
                                                     <td class="center">
 
@@ -327,8 +327,8 @@
                                                         @endif
 
                                                     </td>
-                                                    <td>{{$dat->i_wallet}}</td>
-                                                    <td>{{$dat->f_wallet}}</td>
+                                                    <td>&#8358;{{number_format($dat->i_wallet)}}</td>
+                                                    <td>&#8358;{{number_format($dat->f_wallet)}}</td>
                                                     <td>{{$dat->ip_address}}</td>
                                                     <td>{{$dat->server}}</td>
                                                     <td>{{$dat->ref}}</td>
@@ -375,12 +375,12 @@
                                                 <tr>
                                                     <td>{{$dat->id}}</td>
                                                     <td>{{$dat->user_name}}</td>
-                                                    <td>&#8358;{{$dat->amount}}</td>
+                                                    <td>&#8358;{{number_format($dat->amount)}}</td>
                                                     <td>{{$dat->status}}</td>
                                                     <td>{{$dat->medium}}</td>
                                                     <td>{{$dat->ref}}</td>
-                                                    <td>&#8358;{{$dat->o_wallet}}</td>
-                                                    <td>&#8358;{{$dat->n_wallet}}</td>
+                                                    <td>&#8358;{{number_format($dat->o_wallet)}}</td>
+                                                    <td>&#8358;{{number_format($dat->n_wallet)}}</td>
                                                     <td>{{$dat->version}}</td>
                                                 </tr>
                                             @endforeach
@@ -425,7 +425,7 @@
                                                             <span class="badge badge-warning">{{$dat->type}}</span>
                                                         @endif
                                                     </td>
-                                                    <td>&#8358;{{$dat->amount}}</td>
+                                                    <td>&#8358;{{number_format($dat->amount)}}</td>
                                                     <td> {{$dat->narration}} </td>
                                                     <td>{{$dat->date}}</td>
                                                 </tr>
@@ -824,14 +824,6 @@
                                             <h4 class="mt-0 header-title">User Information</h4>
                                         </div>
 
-                                        <div class="col-2">
-                                            <form class="form-horizontal" method="POST" action="{{ route('userPasswordReset') }}">
-                                                @csrf
-                                                <input type="hidden" name="id" class="form-control" value="{{$user->id}}">
-                                                <button class="btn btn-gradient-danger btn-large ml-5" type="submit" style="align-self: center; align-content: center">Password Reset</button>
-                                            </form>
-                                        </div>
-
                                     </div>
 
 
@@ -907,6 +899,19 @@
 
                                                 <div class="input-group mt-5" style="align-content: center">
                                                     <button class="btn btn-gradient-primary btn-large mr-4" type="submit" style="align-self: center; align-content: center">Update Profile</button>
+
+                                                    <form class="form-horizontal" method="POST" action="{{ route('userPasswordReset') }}">
+                                                        @csrf
+                                                        <input type="hidden" name="id" class="form-control" value="{{$user->id}}">
+                                                        <button class="btn btn-gradient-danger btn-large ml-5" type="submit" style="align-self: center; align-content: center">Password Reset</button>
+                                                    </form>
+
+
+                                                    <form class="form-horizontal" method="POST" action="{{ route('userPinReset') }}">
+                                                        @csrf
+                                                        <input type="hidden" name="id" class="form-control" value="{{$user->id}}">
+                                                        <button class="btn btn-gradient-danger btn-large ml-5" type="submit" style="align-self: center; align-content: center">Pin Reset</button>
+                                                    </form>
                                                 </div>
 
                                             </div>

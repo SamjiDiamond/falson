@@ -78,19 +78,22 @@
                     <h4 class="mt-0 header-title">Users Table</h4>
                     <p class="text-muted mb-4 font-13">Use <code>pencil icon</code> to view user profile.</p>
                     <div class="table-responsive">
-                        <table class="table table-striped mb-0">
+                        <table id="datatable-buttons" class="table table-striped mb-0">
                             <thead>
                             <tr>
+                                <th>ID</th>
                                 <th>Customer</th>
                                 <th>Email</th>
                                 <th>Contact No</th>
                                 <th>Wallet Balance</th>
+                                <th>Registered Date</th>
                                 <th>Action</th>
                             </tr>
                             </thead>
                             <tbody>
                             @foreach($users as $user)
                                 <tr>
+                                    <td>{{$user->id }}</td>
                                     <td>
                                         @if($user->photo)
                                             <img src="{{route('show.avatar', $user->photo)}}" alt="" class="rounded-circle thumb-sm mr-1"> {{$user->user_name}}
@@ -101,12 +104,13 @@
                                     <td>{{$user->email }}</td>
                                     <td>{{$user->phoneno}}</td>
                                     <td>&#8358;{{number_format($user->wallet)}}</td>
+                                    <td>{{$user->reg_date}}</td>
                                     <td><a href="profile/{{ $user->user_name }}" class="btn btn-sm btn-success"><i class="fas fa-edit"></i></a></td>
                                 </tr>
                             @endforeach
                             </tbody>
                         </table>
-                        {{ $users->links() }}
+{{--                        {{ $users->links() }}--}}
                     </div>
                 </div>
             </div>

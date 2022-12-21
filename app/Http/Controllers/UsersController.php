@@ -30,7 +30,7 @@ class UsersController extends Controller
     public function index(Request $request)
     {
 
-        $users = DB::table('tbl_agents')->orderBy('id', 'desc')->paginate(25);
+        $users = DB::table('tbl_agents')->orderBy('id', 'desc')->get();
 
         $t_users = DB::table('tbl_agents')->count();
 

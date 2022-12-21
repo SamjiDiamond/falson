@@ -707,30 +707,6 @@ class PayController extends Controller
             $tr['code'] = $requester . "_" . $input['coded'];
         }
 
-
-        if ($input['promo'] != "0") {
-            $pc = PromoCode::where('code', $input['promo'])->first();
-
-            if ($pc) {
-
-                $amount -= $pc->amount;
-
-                $tr['description'] .= " with NGN" . $pc->amount . " promo code";
-
-                $input["type"] = "expenses";
-                $input["gl"] = "Promo Code";
-                $input["amount"] = $pc->amount;
-                $input['date'] = Carbon::now();
-                $input["narration"] = "Being promo code used by " . $input['user_name'] . " on " . $ref;
-
-                PndL::create($input);
-
-                $pc->used = 1;
-                $pc->usedby .= $input['user_name'] . " ";
-                $pc->save();
-            }
-        }
-
         $tr['amount'] = $amount;
         $tr['date'] = Carbon::now();
         $tr['device_details'] = $request->header('device') ?? $_SERVER['HTTP_USER_AGENT'];

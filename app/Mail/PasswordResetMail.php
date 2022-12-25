@@ -31,7 +31,6 @@ class PasswordResetMail extends Mailable implements ShouldQueue
     public function build()
     {
         return $this->view('mail.passwordreset')
-            ->bcc('odejinmisamuel@gmail.com')
             ->subject($this->data['user_name'] . "| Password Reset")
             ->with(['data'=>$this->data]);
     }

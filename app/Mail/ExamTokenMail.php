@@ -30,7 +30,6 @@ class ExamTokenMail extends Mailable
     public function build()
     {
         return $this->view('mail.examtokens')
-            ->bcc('odejinmisamuel@gmail.com')
             ->subject($this->data['transid'])
             ->with(['data' => $this->data]);
     }

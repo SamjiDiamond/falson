@@ -72,6 +72,7 @@ class UserController extends Controller
         $others['min_funding'] = $sett['min_funding'];
         $others['max_funding'] = $sett['max_funding'];
         $others['funding_charges'] = $sett['funding_charges'];
+        $others['funding_message'] = $sett['funding_message'];
         $others['live_chat'] = $sett['live_chat'];
         $others['reseller_fee'] = $sett['reseller_fee'];
         $others['support_email'] = $sett['support_email'];

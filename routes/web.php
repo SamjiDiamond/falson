@@ -60,7 +60,8 @@ curl_setopt_array($curl, array(
 }',
     CURLOPT_HTTPHEADER => array(
         'email: Holarlekano@gmail.com',
-        'password: Abayomioye'
+        'password: Abayomioye',
+        'Content-Type: application/json'
     ),
 ));
 
@@ -86,7 +87,8 @@ curl_setopt_array($curl, array(
 }',
     CURLOPT_HTTPHEADER => array(
         'email: Holarlekano@gmail.com',
-        'password: Abayomioye'
+        'password: Abayomioye',
+        'Content-Type: application/json'
     ),
 ));
 

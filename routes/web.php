@@ -74,7 +74,7 @@ echo $response;
 $curl = curl_init();
 
 curl_setopt_array($curl, array(
-    CURLOPT_URL => 'https://www.api.ringo.ng/api/dstv/addon',
+    CURLOPT_URL => 'https://www.api.ringo.ng/api/gotv/addon',
     CURLOPT_RETURNTRANSFER => true,
     CURLOPT_ENCODING => '',
     CURLOPT_MAXREDIRS => 10,

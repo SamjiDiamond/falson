@@ -47,7 +47,7 @@ Route::get('/ringo-tv', function () {
 $curl = curl_init();
 
 curl_setopt_array($curl, array(
-    CURLOPT_URL => 'https://www.api.ringo.ng/api/dstv/addon',
+    CURLOPT_URL => 'https://www.api.ringo.ng/api/agent/p2',
     CURLOPT_RETURNTRANSFER => true,
     CURLOPT_ENCODING => '',
     CURLOPT_MAXREDIRS => 10,
@@ -56,7 +56,9 @@ curl_setopt_array($curl, array(
     CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
     CURLOPT_CUSTOMREQUEST => 'POST',
     CURLOPT_POSTFIELDS =>'{
-	"code":"PRWE36"
+"serviceCode" : "V-TV",
+"type" : "DSTV",
+"smartCardNo" : "10441003943"
 }',
     CURLOPT_HTTPHEADER => array(
         'email: Holarlekano@gmail.com',
@@ -74,7 +76,7 @@ echo $response;
 $curl = curl_init();
 
 curl_setopt_array($curl, array(
-    CURLOPT_URL => 'https://www.api.ringo.ng/api/gotv/addon',
+    CURLOPT_URL => 'https://www.api.ringo.ng/api/agent/p2',
     CURLOPT_RETURNTRANSFER => true,
     CURLOPT_ENCODING => '',
     CURLOPT_MAXREDIRS => 10,
@@ -83,7 +85,9 @@ curl_setopt_array($curl, array(
     CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
     CURLOPT_CUSTOMREQUEST => 'POST',
     CURLOPT_POSTFIELDS =>'{
-	"code":"PRWE36"
+"serviceCode" : "V-TV",
+"type" : "GOTV",
+"smartCardNo" : "2022188682"
 }',
     CURLOPT_HTTPHEADER => array(
         'email: Holarlekano@gmail.com',

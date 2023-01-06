@@ -134,8 +134,13 @@ class SellElectricityController extends Controller
 
         $dada['server_response'] = $response;
 
-        if ($rep['code'] == '200') {
-            $dada['token'] = $rep['token'];
+        if ($rep['status'] == '200') {
+
+            if(isset($rep['token'])) {
+                $dada['token'] = $rep['token'];
+            }else{
+                $dada['token'] = "";
+            }
 
             if ($requester == "reseller") {
                 $dada['server_ref'] = $rep['transId'];

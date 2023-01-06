@@ -736,6 +736,12 @@ class PayController extends Controller
                 return response()->json(['success' => 0, 'message' => 'Insufficient balance. Kindly replenish your wallet']);
             }
 
+            Log::info("data bundle");
+            Log::info($proceed[7]);
+
+            Log::info("cg balance");
+            Log::info($cg->balance);
+
 
             if(doubleval($proceed[7]) > doubleval($cg->balance)){
                 return response()->json(['success' => 0, 'message' => 'Insufficient balance to handle request']);

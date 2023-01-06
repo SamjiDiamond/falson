@@ -82,6 +82,8 @@ class UserController extends Controller
         $others['reseller_terms'] = $sett['reseller_terms'];
         $others['privacy_policy'] = $sett['privacy_policy'];
         $others['banner'] = $sett['banner'];
+        $others['monnify_funding_message'] = $sett['monnify_funding_message'];
+        $others['budpay_funding_message'] = $sett['budpay_funding_message'];
 
         return response()->json(['success' => 1, 'message' => 'Fetched successfully', 'data' => ['user' => $me, 'balances' => $balances, 'services' => $services, 'news' => $user->gnews, 'others' => $others]]);
     }

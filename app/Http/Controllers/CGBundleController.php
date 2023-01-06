@@ -114,7 +114,7 @@ class CGBundleController extends Controller
 
     public function applyView(){
         $data=CGBundle::where("status", "1")->get();
-        $trans=CGTransaction::with('cgbundle')->latest()->limit(10)->get();
+        $trans=CGTransaction::where("bundle_id" , "!=", '0')->with('cgbundle')->latest()->limit(10)->get();
         return view('cg_bundle_apply', ['data' => $data, 'trans'=>$trans]);
     }
 

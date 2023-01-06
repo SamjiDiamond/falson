@@ -91,7 +91,7 @@ class SellElectricityController extends Controller
     "meterNo": "' . $phone . '",
     "type": "PREPAID",
     "amount": "' . $request->get('amount') . '",
-    "phonenumber": "' . $phone . '",
+    "phonenumber": "' . $request->get('phone') . '",
     "request_id": "' . $transid . '"
 }';
 

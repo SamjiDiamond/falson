@@ -206,6 +206,7 @@ class PayController extends Controller
             'provider' => 'required',
             'number' => 'required',
             'amount' => 'required',
+            'phone' => 'required',
             'payment' => 'required',
             'ref' => 'required'
         );

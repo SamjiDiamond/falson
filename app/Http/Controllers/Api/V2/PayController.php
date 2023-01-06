@@ -147,10 +147,6 @@ class PayController extends Controller
         $proceed['7'] = $rac->dataplan;
 
         return $this->handlePassage($request, $proceed);
-
-
-//        return response()->json(['success' => 1, 'message' => 'Data Sent Successfully']);
-
     }
 
     function buytv(Request $request)
@@ -307,9 +303,6 @@ class PayController extends Controller
         $proceed['5'] = "betting";
 
         return $this->handlePassage($request, $proceed);
-
-//        return response()->json(['success' => 1, 'message' => 'Betting topup will reflect soon']);
-
     }
 
     function buyJamb(Request $request)
@@ -744,7 +737,7 @@ class PayController extends Controller
             }
 
 
-            if($proceed[7] > $cg->balance){
+            if(doubleval($proceed[7]) > doubleval($cg->balance)){
                 return response()->json(['success' => 0, 'message' => 'Insufficient balance to handle request']);
             }
 

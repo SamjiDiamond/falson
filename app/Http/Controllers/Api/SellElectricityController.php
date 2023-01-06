@@ -99,7 +99,7 @@ class SellElectricityController extends Controller
             $curl = curl_init();
 
             curl_setopt_array($curl, array(
-                CURLOPT_URL => env('ringo_baseurl'),
+                CURLOPT_URL => env('RINGO_BASEURL'),
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => '',
                 CURLOPT_MAXREDIRS => 10,

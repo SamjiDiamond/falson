@@ -140,8 +140,8 @@ class SellAirtimeController extends Controller
             curl_close($curl);
 
 
-            Log::info("Ringo Electric Payload. - " . $payload);
-            Log::info("Ringo Electric Response. - " . $response);
+            Log::info("Ringo Airtime Payload. - " . $payload);
+            Log::info("Ringo Airtime Response. - " . $response);
 
         } else {
 

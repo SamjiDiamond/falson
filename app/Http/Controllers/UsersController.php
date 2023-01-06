@@ -341,18 +341,6 @@ class UsersController extends Controller
     {
         $input = $request->all();
 
-        if ($input["user_name"] == "") {
-            User::where('user_name','!=',$input["user_name"])->update(['gnews'=>$input["message"]]);
-
-        }else{
-            $user=User::where('user_name','=',$input["user_name"])->exists();
-            if(!$user){
-                return redirect('/gnews')->with('success', 'Username does not exist!');
-            }
-
-            User::where('user_name','=',$input["user_name"])->update(['gnews'=>$input["message"]]);
-        }
-
         if(isset($input['image'])){
             $storage=Storage::put('public/banners', $input['image']);
             $link=Storage::url($storage);
@@ -365,6 +353,18 @@ class UsersController extends Controller
 
         if(isset($input['push_notification'])){
             PushNotificationJob::dispatch('general_notification', $input['message'], "General Notification");
+        }else{
+            if ($input["user_name"] == "") {
+                User::where('user_name','!=',$input["user_name"])->update(['gnews'=>$input["message"]]);
+
+            }else{
+                $user=User::where('user_name','=',$input["user_name"])->exists();
+                if(!$user){
+                    return redirect('/gnews')->with('success', 'Username does not exist!');
+                }
+
+                User::where('user_name','=',$input["user_name"])->update(['gnews'=>$input["message"]]);
+            }
         }
 
         return redirect('/gnews')->with('success', 'Message sent successfully!');

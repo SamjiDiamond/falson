@@ -52,7 +52,7 @@
 
                                 <div class="form-group row mt-2">
                                     <div class="col-12">
-                                        <div class="custom-control custom-checkbox"><input type="checkbox" class="custom-control-input" name="push_notification" id="remember"> <label class="custom-control-label" for="remember">Send Push Notification</label></div>
+                                        <div class="custom-control custom-checkbox"><input type="checkbox" class="custom-control-input" name="push_notification" id="remember"> <label class="custom-control-label" for="remember">Send Push Notification only </label></div>
                                     </div>
                                 </div>
 

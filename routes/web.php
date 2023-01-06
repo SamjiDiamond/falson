@@ -53,7 +53,7 @@ Route::get('/ringotv', function () {
     $rep=$reps['product'];
 
     foreach ($rep as $plans) {
-        $this->info("Inserting record for " . $plans['name']);
+        echo "Inserting record for " . $plans['name'];
 
         ResellerCableTV::create([
             'name' => $plans['name'],
@@ -89,7 +89,7 @@ Route::get('/ringotv', function () {
     $rep=$reps['product'];
 
     foreach ($rep as $plans) {
-        $this->info("Inserting record for " . $plans['name']);
+        echo "Inserting record for " . $plans['name'];
 
         ResellerCableTV::create([
             'name' => $plans['name'],

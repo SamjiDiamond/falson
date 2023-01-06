@@ -162,14 +162,12 @@ class SellAirtimeController extends Controller
                 return $rs->outputResponse($request, $transid, 1, $dada);
             } else {
                 return $ms->outputResp($request, $transid, 1, $dada);
-//                $tran->addtrans("server5", $response, $amnt, 1, $transid, $input);
             }
         } else {
             if ($requester == "reseller") {
                 return $rs->outputResponse($request, $transid, 0, $dada);
             } else {
                 return $ms->outputResp($request, $transid, 0, $dada);
-//                $tran->addtrans("server5", $response, $amnt, 1, $transid, $input);
             }
         }
     }

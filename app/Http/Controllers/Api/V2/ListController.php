@@ -9,6 +9,7 @@ use App\Models\AppAirtimeControl;
 use App\Models\AppCableTVControl;
 use App\Models\AppDataControl;
 use App\Models\ResellerElecticity;
+use App\Models\Settings;
 
 class ListController extends Controller
 {
@@ -49,8 +50,14 @@ class ListController extends Controller
 
     public function cabletv($network)
     {
+        $server=1;
 
-        $datasets = AppCableTVControl::where([['type', '=', strtolower($network)], ['status', 1]])->select('name', 'coded', 'price', 'type', 'status')->get();
+        if(strtolower($network) != "startimes"){
+            $sett=Settings::where('name', 'tv_server')->first();
+            $server=$sett->value;
+        }
+
+        $datasets = AppCableTVControl::where([['type', '=', strtolower($network)], ['status', 1], ['server', $server]])->select('name', 'coded', 'price', 'type', 'status')->get();
 
         return response()->json(['success' => 1, 'message' => 'Fetch successfully', 'data' => $datasets]);
     }

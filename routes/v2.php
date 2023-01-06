@@ -126,6 +126,7 @@ Route::prefix('v2')->group(function () {
         Route::post('uploaddp', [UserController::class, 'uploaddp']);
         Route::post('uploaddpURL', [UserController::class, 'uploaddpURL']);
         Route::get('vaccounts', [UserController::class, 'vaccounts']);
+        Route::get('vaccounts2', [UserController::class, 'vaccounts2']);
 
         Route::post('user-upgrade', [UserController::class, 'referral_upgrade']);
 

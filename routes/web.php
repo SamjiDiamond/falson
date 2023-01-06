@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\RolesPermissionController;
+use App\Models\AppCableTVControl;
+use App\Models\ResellerCableTV;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
@@ -42,96 +44,79 @@ Route::get('/', function () {
     return redirect()->route('login');
 })->name('welcome');
 
-Route::get('/ringo-tv', function () {
+Route::get('/ringotv', function () {
 
-$curl = curl_init();
+    $response='{"customerName":"GEORGE IGWE-LAGII-INTER","product":[{"name":"DStv Compact","code":"COMPE36","month":1,"price":9000,"period":1},{"name":"DStv Compact Plus","code":"COMPLE36","month":1,"price":14250,"period":1},{"name":"DStv Premium","code":"PRWE36","month":1,"price":21000,"period":1},{"name":"DStv Premium Asia","code":"PRWASIE36","month":1,"price":23500,"period":1},{"name":"Asian Bouqet","code":"ASIAE36","month":1,"price":7100,"period":1},{"name":"DStv Yanga Bouquet E36","code":"NNJ1E36","month":1,"price":2950,"period":1},{"name":"DStv Confam Bouquet E36","code":"NNJ2E36","month":1,"price":5300,"period":1},{"name":"Padi","code":"NLTESE36","month":1,"price":2150,"period":1},{"name":"DStv Premium French","code":"PRWFRNSE36","month":1,"price":29300,"period":1}],"message":"Successful","status":"200","smartCardNo":"10441003943","type":"DSTV"}';
 
-curl_setopt_array($curl, array(
-    CURLOPT_URL => 'https://www.api.ringo.ng/api/agent/p2',
-    CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_ENCODING => '',
-    CURLOPT_MAXREDIRS => 10,
-    CURLOPT_TIMEOUT => 0,
-    CURLOPT_FOLLOWLOCATION => true,
-    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-    CURLOPT_CUSTOMREQUEST => 'POST',
-    CURLOPT_POSTFIELDS =>'{
-"serviceCode" : "V-TV",
-"type" : "DSTV",
-"smartCardNo" : "10441003943"
-}',
-    CURLOPT_HTTPHEADER => array(
-        'email: Holarlekano@gmail.com',
-        'password: Abayomioye',
-        'Content-Type: application/json'
-    ),
-));
+    $reps = json_decode($response, true);
 
-$response = curl_exec($curl);
+    $rep=$reps['product'];
 
-curl_close($curl);
-echo $response;
+    foreach ($rep as $plans) {
+        $this->info("Inserting record for " . $plans['name']);
 
+        ResellerCableTV::create([
+            'name' => $plans['name'],
+            'code' => $plans['code'],
+            'amount' => $plans['price'],
+            'type' =>  strtolower(explode(" ",$plans['name'])[0]),
+            'level1' => $plans['price'],
+            'level2' => $plans['price'],
+            'level3' => $plans['price'],
+            'level4' => $plans['price'],
+            'level5' => $plans['price'],
+            'status' => 1,
+            'server' => 2,
+        ]);
 
-$curl = curl_init();
-
-curl_setopt_array($curl, array(
-    CURLOPT_URL => 'https://www.api.ringo.ng/api/agent/p2',
-    CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_ENCODING => '',
-    CURLOPT_MAXREDIRS => 10,
-    CURLOPT_TIMEOUT => 0,
-    CURLOPT_FOLLOWLOCATION => true,
-    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-    CURLOPT_CUSTOMREQUEST => 'POST',
-    CURLOPT_POSTFIELDS =>'{
-"serviceCode" : "V-TV",
-"type" : "GOTV",
-"smartCardNo" : "2022188682"
-}',
-    CURLOPT_HTTPHEADER => array(
-        'email: Holarlekano@gmail.com',
-        'password: Abayomioye',
-        'Content-Type: application/json'
-    ),
-));
-
-$response = curl_exec($curl);
-
-curl_close($curl);
-echo $response;
+        AppCableTVControl::create([
+            'name' => $plans['name'],
+            'coded' => $plans['code'],
+            'code' => $plans['code'],
+            'price' => $plans['price'],
+            'type' => strtolower(explode(" ",$plans['name'])[0]),
+            'discount' => '1%',
+            'status' => 1,
+            'server' => 2,
+        ]);
+    }
 
 
-$curl = curl_init();
+    $response='{"customerName":"HAMMED OGUNDEJI","product":[{"name":"GOtv Smallie - monthly","code":"GOHAN","month":1,"price":900,"period":""},{"name":"GOtv Smallie - quarterly","code":"GOLITE","month":3,"price":2400,"period":""},{"name":"GOtv Smallie - yearly","code":"GOLTANL","month":12,"price":7000,"period":""},{"name":"GOtv Supa","code":"GOTVSUPA","month":1,"price":5500,"period":""},{"name":"GOtv Max","code":"GOTVMAX","month":1,"price":4150,"period":""},{"name":"GOtv Jinja Bouquet","code":"GOTVNJ1","month":1,"price":1900,"period":""},{"name":"GOtv Jolli Bouquet","code":"GOTVNJ2","month":1,"price":2800,"period":""}],"message":"successful","status":200,"smartCardNo":"2022188682","type":"GOTV"}';
 
-curl_setopt_array($curl, array(
-    CURLOPT_URL => 'https://www.api.ringo.ng/api/agent/p2',
-    CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_ENCODING => '',
-    CURLOPT_MAXREDIRS => 10,
-    CURLOPT_TIMEOUT => 0,
-    CURLOPT_FOLLOWLOCATION => true,
-    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-    CURLOPT_CUSTOMREQUEST => 'POST',
-    CURLOPT_POSTFIELDS =>'{
-"serviceCode" : "V-TV",
-"type" : "STARTIMES",
-"smartCardNo" : "01831595848"
-}',
-    CURLOPT_HTTPHEADER => array(
-        'email: Holarlekano@gmail.com',
-        'password: Abayomioye',
-        'Content-Type: application/json'
-    ),
-));
+    $reps = json_decode($response, true);
 
-$response = curl_exec($curl);
+    $rep=$reps['product'];
 
-curl_close($curl);
-echo $response;
+    foreach ($rep as $plans) {
+        $this->info("Inserting record for " . $plans['name']);
 
-})->name('login');
+        ResellerCableTV::create([
+            'name' => $plans['name'],
+            'code' => $plans['code'],
+            'amount' => $plans['price'],
+            'type' =>  strtolower(explode(" ",$plans['name'])[0]),
+            'level1' => $plans['price'],
+            'level2' => $plans['price'],
+            'level3' => $plans['price'],
+            'level4' => $plans['price'],
+            'level5' => $plans['price'],
+            'status' => 1,
+            'server' => 2,
+        ]);
 
+        AppCableTVControl::create([
+            'name' => $plans['name'],
+            'coded' => $plans['code'],
+            'code' => $plans['code'],
+            'price' => $plans['price'],
+            'type' => strtolower(explode(" ",$plans['name'])[0]),
+            'discount' => '1%',
+            'status' => 1,
+            'server' => 2,
+        ]);
+    }
+})->name('rrrin');
 
 Route::get('/login', function () {
     return view('auth.login');

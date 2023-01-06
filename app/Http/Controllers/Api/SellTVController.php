@@ -80,14 +80,119 @@ class SellTVController extends Controller
                 return $rs->outputResponse($request, $transid, 1, $dada);
             } else {
                 return $ms->outputResp($request, $transid, 1, $dada);
-//                $tran->addtrans("server6",$response,$amnt,1,$transid,$input);
             }
         } else {
             if ($requester == "reseller") {
                 return $rs->outputResponse($request, $transid, 0, $dada);
             } else {
+                return $ms->outputResp($request, $transid, 0, $dada);
+            }
+        }
+    }
+
+    public function server2($request, $code, $phone, $transid, $net, $input, $dada, $requester)
+    {
+
+        if ($requester == "reseller") {
+            $rac = ResellerCableTV::where("code", strtolower($input['coded']))->first();
+        } else {
+            $rac = AppCableTVControl::where("coded", strtolower($input['coded']))->first();
+        }
+
+        $reqid = Carbon::now()->format('YmdHi') . $transid;
+
+        if (env('FAKE_TRANSACTION', 1) == 0) {
+
+            if($rac->type == "GOTV") {
+                $payload = '{
+                    "serviceCode" : "P-TV",
+                    "type" : "' . $rac->type . '",
+                    "smartCardNo" : "' . $phone . '",
+                    "name" : "' . $rac->name . '",
+                    "code": "' . $rac->code . '",
+                    "period": "1",
+                    "request_id": "' . $transid . '"
+                }';
+            }elseif($rac->type == "DSTV"){
+                $payload = '{
+                    "serviceCode": "P-TV",
+                    "type": "' . $rac->type . '",
+                    "smartCardNo": "' . $phone . '",
+                    "name": "' . $rac->name . '",
+                    "code": "' . $rac->code . '",
+                    "period": "1",
+                    "request_id": "' . $transid . '",
+                    "hasAddon": "False",
+                    "addondetails": {
+                        "name": "Asian Add-on",
+                        "addoncode": "ASIADDE36"
+                    }
+                }';
+            }else{
+                $payload = '{
+                    "serviceCode": "P-TV",
+                    "type": "' . $rac->type . '",
+                    "smartCardNo": "' . $phone . '",
+                    "request_id": "' . $transid . '",
+                    "price": "' . $rac->price . '"
+                }';
+            }
+
+            $curl = curl_init();
+
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => env('RINGO_BASEURL'),
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'POST',
+                CURLOPT_POSTFIELDS => $payload,
+                CURLOPT_HTTPHEADER => array(
+                    'email: '.env('RINGO_EMAIL'),
+                    'password: '.env('RINGO_PASSWORD'),
+                    'Content-Type: application/json'
+                ),
+            ));
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+
+            $response = curl_exec($curl);
+
+            curl_close($curl);
+
+            Log::info("RINGO Payload. - " . $payload);
+
+        } else {
+            $response = "{ 'message' : 'Successful', 'status' : '200', 'transref': 'BUBUBCL8238BJO' 'date' : 'date', 'type' : 'GOTV', 'package' : 'GOTV GOHAN', 'amount' : '1000', 'amountCharged' : '1000' }";
+        }
+
+
+
+        $rep = json_decode($response, true);
+
+        Log::info("RINGO Transaction. - " . $transid);
+        Log::info($response);
+
+        $tran = new ServeRequestController();
+        $rs = new PayController();
+        $ms = new V2\PayController();
+
+        $dada['server_response'] = $response;
+
+        if ($rep['status'] == 200) {
+            $dada['server_ref'] = $rep['transref'];
+            if ($requester == "reseller") {
+                return $rs->outputResponse($request, $transid, 1, $dada);
+            } else {
                 return $ms->outputResp($request, $transid, 1, $dada);
-//                $tran->addtrans("server6",$response,$amnt,1,$transid,$input);
+            }
+        } else {
+            if ($requester == "reseller") {
+                return $rs->outputResponse($request, $transid, 0, $dada);
+            } else {
+                return $ms->outputResp($request, $transid, 0, $dada);
             }
         }
     }

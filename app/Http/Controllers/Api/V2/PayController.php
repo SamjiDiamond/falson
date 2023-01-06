@@ -733,7 +733,7 @@ class PayController extends Controller
             }
 
             if($cg->balance == "0"){
-                return response()->json(['success' => 0, 'message' => 'Insufficient balance to handle request']);
+                return response()->json(['success' => 0, 'message' => 'Insufficient balance. Kindly replenish your wallet']);
             }
 
 

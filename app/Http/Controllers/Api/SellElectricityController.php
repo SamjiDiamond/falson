@@ -89,7 +89,7 @@ class SellElectricityController extends Controller
     "serviceCode": "P-ELECT",
     "disco": "' . $code . '",
     "meterNo": "' . $phone . '",
-    "type": "PREPAID",
+    "type": "' . $request->get('type') . '",
     "amount": "' . $request->get('amount') . '",
     "phonenumber": "' . $request->get('phone') . '",
     "request_id": "' . $transid . '"

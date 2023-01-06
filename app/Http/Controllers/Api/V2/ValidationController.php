@@ -32,7 +32,7 @@ class ValidationController extends Controller
                 return $s->electricity_server1($input['number'], strtolower($input['provider']));
             case "tv":
                 $sett=Settings::where('name', 'tv_server')->first();
-                if($sett->value == 1) {
+                if($sett->value == "HW") {
                     return $s->tv_server1($input['number'], strtolower($input['provider']));
                 }else{
                     return $s->tv_server2($input['number'], strtolower($input['provider']));

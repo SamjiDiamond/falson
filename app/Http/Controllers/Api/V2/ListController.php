@@ -54,7 +54,10 @@ class ListController extends Controller
 
         if(strtolower($network) != "startimes"){
             $sett=Settings::where('name', 'tv_server')->first();
-            $server=$sett->value;
+
+            if($sett->value == "RINGO"){
+                $server="2";
+            }
         }
 
         $datasets = AppCableTVControl::where([['type', '=', strtolower($network)], ['status', 1], ['server', $server]])->select('name', 'coded', 'price', 'type', 'status')->get();

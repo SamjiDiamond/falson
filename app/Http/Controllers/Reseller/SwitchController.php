@@ -150,7 +150,7 @@ class SwitchController extends Controller
             return response()->json(['success' => 0, 'message' => 'Invalid API key. Kindly contact support']);
         }
 
-        return response()->json(['success' => 1, 'message' => 'Fetched successfully', 'data' => ['wallet' => $user->wallet, 'commission' => $user->bonus]]);
+        return response()->json(['success' => 1, 'message' => 'Fetched successfully', 'data' => ['wallet' => $user->wallet]]);
     }
 
     public function myTransactions(Request $request)
@@ -287,10 +287,6 @@ class SwitchController extends Controller
         $input["narration"] = "Being withdrawal payout fee on " . $input['ref'] . " via reseller " . $input['wallet'];
 
         PndL::create($input);
-
-
-        $noti = new PushNotificationController();
-        $noti->PushNoti('Izormor2019', "There is a pending withdrawal request, kindly approve on the dashboard.", "Withdrawal Request");
 
         return response()->json(['success' => 1, 'message' => 'Withdrawal logged successfully', 'ref' => $input['ref']]);
     }

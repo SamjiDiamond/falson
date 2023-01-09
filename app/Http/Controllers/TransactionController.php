@@ -6,6 +6,7 @@ use App\Jobs\Airtime2CashNotificationJob;
 use App\Jobs\ATMtransactionserveJob;
 use App\Models\Airtime2Cash;
 use App\Models\Airtime2CashSettings;
+use App\Models\CGWallets;
 use App\Models\PndL;
 use App\Models\Serverlog;
 use App\Models\Transaction;
@@ -722,16 +723,23 @@ class TransactionController extends Controller
                 Transaction::create($input);
             } else {
                 if ($tran->name == "data") {
-                    $amount = $tran->amount + 20;
-                    $nBalance = $user->wallet + $amount;
+                    $extra=explode("|",$tran->extra);
 
-                    $input["type"] = "expenses";
-                    $input["gl"] = "Data";
-                    $input["amount"] = 20;
-                    $input['date'] = Carbon::now();
-                    $input["narration"] = "Being data reversal of " . $tran->ref;
+                    if(isset($extra[2])){
+                        $cg=CGWallets::where([["user_id", $extra[2]], ['name', $extra[1]]])->first();
 
-                    PndL::create($input);
+                        if(!$cg){
+                            return redirect('/reversal')->with('success', 'Invalid payment selected encounter while reversing');
+                        }
+
+                        $cg->balance+=doubleval($extra[0]);
+                        $cg->save();
+                        $nBalance = $user->wallet;
+                    }else{
+                        $amount = $tran->amount;
+                        $nBalance = $user->wallet + $amount;
+                    }
+
                 } else {
                     $nBalance = $user->wallet + $tran->amount;
                 }
@@ -799,16 +807,23 @@ class TransactionController extends Controller
                 Transaction::create($input);
             } else {
                 if ($tran->name == "data") {
-                    $amount = $tran->amount + 20;
-                    $nBalance = $user->wallet + $amount;
+                    $extra=explode("|",$tran->extra);
 
-                    $input["type"] = "expenses";
-                    $input["gl"] = "Data";
-                    $input["amount"] = 20;
-                    $input['date'] = Carbon::now();
-                    $input["narration"] = "Being data reversal of " . $tran->ref;
+                    if(isset($extra[2])){
+                        $cg=CGWallets::where([["user_id", $extra[2]], ['name', $extra[1]]])->first();
 
-                    PndL::create($input);
+                        if(!$cg){
+                            return redirect()->route('trans_pending')->with('success', 'Invalid payment selected encounter while reversing');
+                        }
+
+                        $cg->balance+=doubleval($extra[0]);
+                        $cg->save();
+                        $nBalance = $user->wallet;
+                    }else{
+                        $amount = $tran->amount;
+                        $nBalance = $user->wallet + $amount;
+                    }
+
                 } else {
                     $nBalance = $user->wallet + $tran->amount;
                 }

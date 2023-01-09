@@ -754,6 +754,7 @@ class PayController extends Controller
 
             $tr['i_wallet'] = $user->wallet;
             $tr['f_wallet'] = $tr['i_wallet'];
+            $tr['extra'] = "$proceed[7]|".$input['payment']."|".Auth::id();
         }
 
         $t = Transaction::create($tr);

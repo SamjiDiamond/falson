@@ -1003,7 +1003,28 @@ class PayController extends Controller
                 $user->update(["agent_commision" => $nBalance]);
                 Transaction::create($input);
             } else {
-                $nBalance = $user->wallet + $tran->amount;
+
+                if ($tran->name == "data") {
+                    $extra=explode("|",$tran->extra);
+
+                    if(isset($extra[2])){
+                        $cg=CGWallets::where([["user_id", $extra[2]], ['name', $extra[1]]])->first();
+
+                        if(!$cg){
+                            return redirect()->route('trans_pending')->with('success', 'Invalid payment selected encounter while reversing');
+                        }
+
+                        $cg->balance+=doubleval($extra[0]);
+                        $cg->save();
+                        $nBalance = $user->wallet;
+                    }else{
+                        $amount = $tran->amount;
+                        $nBalance = $user->wallet + $amount;
+                    }
+
+                } else {
+                    $nBalance = $user->wallet + $tran->amount;
+                }
 
                 $input["description"] = "Being reversal of " . $tran->description;
                 $input["name"] = "Reversal";

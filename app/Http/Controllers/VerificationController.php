@@ -67,6 +67,10 @@ class VerificationController extends Controller
         $resp=json_decode($response, true);
 
         if($resp['status'] == "200"){
+
+            $trans->status="delivered";
+            $trans->save();
+
             $status=$resp['message'];
             if(isset($resp["disco"])) {
                 if(isset($resp['token'])){

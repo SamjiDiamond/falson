@@ -81,6 +81,8 @@
                                     <td>
                                         @if($data->status=="successful")
                                             <span class="badge badge-success">{{$data->status}}</span>
+                                        @elseif($data->status=="cancelled")
+                                            <span class="badge badge-danger">{{$data->status}}</span>
                                         @else
                                             <span class="badge badge-warning">{{$data->status}}</span>
                                         @endif
@@ -90,7 +92,8 @@
                                     <td>{{$data->created_at}}</td>
                                     <td>
                                         @if($data->status=="pending")
-                                            <a href="{{route('transaction.airtime2cash.success', $data->id)}}" class="btn btn-success">Mark Successful</a>
+                                            <a href="{{route('transaction.airtime2cash.success', $data->id)}}" class="btn btn-success mb-2">Mark Successful</a>
+                                            <a href="{{route('transaction.airtime2cash.cancel', $data->id)}}" class="btn btn-danger">Mark Cancelled</a>
                                         @endif
                                     </td>
                                 </tr>

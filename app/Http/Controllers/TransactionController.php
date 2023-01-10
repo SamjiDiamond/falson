@@ -992,6 +992,24 @@ class TransactionController extends Controller
         return redirect('/airtime2cash')->with('success', 'Transaction successful!');
     }
 
+    public function airtime2cashpaymentCancel($id)
+    {
+        $ref=Airtime2Cash::find($id);
+
+        if(!$ref){
+            return back()->with('error', 'Invalid Reference Number!');
+        }
+
+        if($ref->status=="successful"){
+            return back()->with('error', 'Payment made already!');
+        }
+
+        $ref->status = "cancelled";
+        $ref->save();
+
+        return redirect('/airtime2cash')->with('success', 'Transaction Cancelled!');
+    }
+
     public function gmhistory(){
 
         $wallet = DB::table('tbl_generalmarket')->orderBy('id', 'desc')->paginate(25);

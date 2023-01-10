@@ -314,9 +314,18 @@
                             </ul>
                         </li>
                     @endcanany
-{{--                    @endif--}}
 
-                    @canany(['report-yearly-view','report-monthly-view','report-daily-view'])
+                    <li class="has_sub">
+                        <a href="javascript:void(0);" class="waves-effect"><i class="dripicons-card"></i><span> Verification </span><span
+                                class="float-right"><i class="mdi mdi-chevron-right"></i></span></a>
+                        <ul class="list-unstyled">
+{{--                            <li><a href="{{route('verification_s1')}}">Server 1</a></li>--}}
+                            <li><a href="{{route('verification_s2')}}">Server 2</a></li>
+                        </ul>
+                    </li>
+
+
+                @canany(['report-yearly-view','report-monthly-view','report-daily-view'])
                     <li class="has_sub">
                         <a href="javascript:void(0);" class="waves-effect"><i class="dripicons-card"></i><span> Reports </span><span
                                 class="float-right"><i class="mdi mdi-chevron-right"></i></span></a>

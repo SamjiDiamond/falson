@@ -259,9 +259,9 @@ Route::middleware(['auth'])->group(function () {
     Route::view('/verification_server5', 'verification_s5');
     Route::view('/verification_server4', 'verification_s4');
     Route::view('/verification_server3', 'verification_s3');
-    Route::view('/verification_server2', 'verification_s2');
+    Route::view('/verification_server2', 'verification_s2')->name('verification_s2');
     Route::view('/verification_server1b', 'verification_s1b');
-    Route::view('/verification_server1', 'verification_s1');
+    Route::view('/verification_server1', 'verification_s1')->name('verification_s1');
     Route::view('/verification_server1dt', 'verification_s1dt');
     Route::post('/verification_server3', [VerificationController::class, 'server3'])->name('verification_server3');
     Route::post('/verification_server2', [VerificationController::class, 'server2'])->name('verification_server2');
@@ -280,6 +280,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/airtime2cash', [TransactionController::class, 'airtime2cash'])->name('transaction.airtime2cash');
         Route::post('/airtime2cash', [TransactionController::class, 'airtime2cashpayment'])->name('transaction.airtime2cash.payment');
         Route::get('/airtime2cash-success/{id}', [TransactionController::class, 'airtime2cashpaymentSuccess'])->name('transaction.airtime2cash.success');
+        Route::get('/airtime2cash-cancel/{id}', [TransactionController::class, 'airtime2cashpaymentCancel'])->name('transaction.airtime2cash.cancel');
 
         Route::get('/airtime2cash-settings', [TransactionController::class, 'airtime2cashSettings'])->name('transaction.airtime2cashSettings');
         Route::get('/airtime2cash-settings-edit/{id}', [TransactionController::class, 'airtime2cashSettingsEdit'])->name('transaction.airtime2cashSettings.edit');

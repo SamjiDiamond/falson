@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\ReverseTransactionJob;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 
@@ -38,18 +39,49 @@ class VerificationController extends Controller
             return back()->with('error', 'Transaction reference not found');
         }
 
-        $url = env("SERVER2_QUERY") . "&RequestID=" . $ref;
+        $curl = curl_init();
 
-        $result = file_get_contents($url);
-        // Convert JSON string to Array
-        $someArray = json_decode($result, true);
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => 'https://www.api.ringo.ng/api/b2brequery',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS =>'{
+"request_id" : "'.$ref.'"
+}',
+            CURLOPT_HTTPHEADER => array(
+                'email: '.env('RINGO_EMAIL'),
+                'password: '.env('RINGO_PASSWORD'),
+                'Content-Type: application/json'
+            ),
+        ));
 
-        if ($someArray["status"] == "MISSING_ORDERID") {
-            $status = "Error";
-            $d = "Invalid reference number";
-        } else {
-            $status = $someArray["remark"];
-            $d=$someArray["mobilenetwork"] ." " .$someArray["ordertype"]." " .$someArray["mobilenumber"];
+        $response = curl_exec($curl);
+
+        curl_close($curl);
+
+        $resp=json_decode($response, true);
+
+        if($resp['status'] == "200"){
+            $status=$resp['message'];
+            if(isset($resp["disco"])) {
+                if(isset($resp['token'])){
+                    $d = $resp["disco"] . " NGN" . $resp["amount"] . " on " . $resp["meterNo"]." Token:".$resp['token'];
+                }else{
+                    $d = $resp["disco"] . " NGN" . $resp["amount"] . " on " . $resp["meterNo"];
+                }
+            }else{
+                $d = $resp["type"] . " NGN" . $resp["amount"] . " on " . $resp["phone"];
+            }
+        }else{
+            $status=$resp['message'];
+            $d=$resp['message'];
+
+            ReverseTransactionJob::dispatch($trans, "Requery");
         }
 
         return view('verification_s2', ['status' => $status, 'description' => $d, 'response'=>true]);
@@ -98,22 +130,50 @@ class VerificationController extends Controller
             return back()->with('error', 'Transaction reference not found');
         }
 
-        $url = env("SERVER1_QUERY") . "&trans_id=" . $trans->server_ref;
+        $curl = curl_init();
 
-        $result = file_get_contents($url);
-        // Convert JSON string to Array
-        $someArray = json_decode($result, true);
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => 'https://www.api.ringo.ng/api/b2brequery',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS =>'{
+"request_id" : "'.$ref.'"
+}',
+            CURLOPT_HTTPHEADER => array(
+                'email: '.env('RINGO_EMAIL'),
+                'password: '.env('RINGO_PASSWORD'),
+                'Content-Type: application/json'
+            ),
+        ));
 
-        $findme = 'trans_id';
-        $pos = strpos($result, $findme);
-        // Note our use of ===.  Simply == would not work as expected
+        $response = curl_exec($curl);
 
-        if ($pos !== false) {
-            $status=$someArray["details"]["status"];
-            $d=$someArray["details"]["network"] ." " .$someArray["details"]["amount"]." " .$someArray["details"]["phone_number"];
-        }else {
+        curl_close($curl);
+
+        $resp=json_decode($response, true);
+
+        if($resp['status'] == "200"){
+            $status=$resp['message'];
+            if(isset($resp["disco"])) {
+                if(isset($resp['token'])){
+                    $d = $resp["disco"] . " NGN" . $resp["amount"] . " on " . $resp["meterNo"]." Token:".$resp['token'];
+                }else{
+                    $d = $resp["disco"] . " NGN" . $resp["amount"] . " on " . $resp["meterNo"];
+                }
+            }else{
+                $d = $resp["type"] . " NGN" . $resp["amount"] . " on " . $resp["phone"];
+            }
+        }elseif ($resp['status'] == "404") {
             $status="Error";
-            $d="Can not find transaction";
+            $d=$resp['message'];
+        }else{
+            $status=$resp['message'];
+            $d=$resp['message'];
         }
 
         return view('verification_s1', ['status' => $status, 'description' => $d, 'response'=>true]);

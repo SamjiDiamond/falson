@@ -118,7 +118,7 @@ Route::get('/ringotv', function () {
     }
 })->name('rrrin');
 
-Route::get('/reringo/:id', function ($id) {
+Route::get('/reringo/{id}', function ($id) {
 
     $curl = curl_init();
 

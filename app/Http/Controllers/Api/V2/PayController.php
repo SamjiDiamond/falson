@@ -710,19 +710,19 @@ class PayController extends Controller
 
         if ($requester == "airtime") {
             $tr['name'] = strtoupper($provider) . " " . $requester;
-            $tr['description'] = $user->user_name . " purchase " . $input['provider'] . " " . $input['amount'] . " airtime on " . $input['number'] . " using " . $input['payment'];
+            $tr['description'] = $input['provider'] . " " . $input['amount'] . " airtime on " . $input['number'] . " using " . $input['payment'];
             $tr['code'] = $requester;
         } elseif ($requester == "electricity" || $requester == "betting") {
             $tr['name'] = strtoupper($provider);
-            $tr['description'] = $user->user_name . " pay " . $input['amount'] . " on " . $input['number'] . " using " . $input['payment'];
+            $tr['description'] = $input['provider'] . " " . $input['amount'] . " on " . $input['number'] . " using " . $input['payment'];
             $tr['code'] = $requester;
         } elseif($requester == "data") {
             $tr['name'] = $requester;
-            $tr['description'] = $user->user_name . " purchase " . " " . $codedName . " on " . $input['number'] . " using " . $input['payment'];
+            $tr['description'] = $codedName . " on " . $input['number'] . " using " . $input['payment'];
             $tr['code'] = $requester . "_" . $input['coded'];
         } else {
             $tr['name'] = $requester;
-            $tr['description'] = $user->user_name . " purchase " . " " . $input['coded'] . " on " . $input['number'] . " using " . $input['payment'];
+            $tr['description'] = $input['coded'] . " on " . $input['number'] . " using " . $input['payment'];
             $tr['code'] = $requester . "_" . $input['coded'];
         }
 

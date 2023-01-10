@@ -26,7 +26,7 @@ class SellTVController extends Controller
         if (env('FAKE_TRANSACTION', 1) == 0) {
 
             $payload='{
-    "type": "' . $rac->type . '",
+    "type": "' . strtoupper($rac->type) . '",
     "smartCardNo": "' . $phone . '",
     "packagename": "' . $rac->name . '",
     "productsCode": "' . $rac->code . '",
@@ -106,7 +106,7 @@ class SellTVController extends Controller
             if($rac->type == "GOTV") {
                 $payload = '{
                     "serviceCode" : "P-TV",
-                    "type" : "' . $rac->type . '",
+                    "type" : "' . strtoupper($rac->type) . '",
                     "smartCardNo" : "' . $phone . '",
                     "name" : "' . $rac->name . '",
                     "code": "' . $rac->code . '",
@@ -116,7 +116,7 @@ class SellTVController extends Controller
             }elseif($rac->type == "DSTV"){
                 $payload = '{
                     "serviceCode": "P-TV",
-                    "type": "' . $rac->type . '",
+                    "type": "' . strtoupper($rac->type) . '",
                     "smartCardNo": "' . $phone . '",
                     "name": "' . $rac->name . '",
                     "code": "' . $rac->code . '",
@@ -131,7 +131,7 @@ class SellTVController extends Controller
             }else{
                 $payload = '{
                     "serviceCode": "P-TV",
-                    "type": "' . $rac->type . '",
+                    "type": "' . strtoupper($rac->type) . '",
                     "smartCardNo": "' . $phone . '",
                     "request_id": "' . $transid . '",
                     "price": "' . $rac->price . '"

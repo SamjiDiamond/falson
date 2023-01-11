@@ -76,7 +76,7 @@ class ReverseTransactionJob implements ShouldQueue
                 $input["user_name"] = $tran->user_name;
                 $input["i_wallet"] = $user->agent_commision;
                 $input["f_wallet"] = $nBalance;
-                $input["extra"] = 'Initiated by ' . Auth::user()->full_name;
+                $input["extra"] = 'Initiated by ' . $initiator;
 
                 $user->update(["agent_commision" => $nBalance]);
                 Transaction::create($input);
@@ -112,7 +112,7 @@ class ReverseTransactionJob implements ShouldQueue
                 $input["user_name"] = $tran->user_name;
                 $input["i_wallet"] = $user->wallet;
                 $input["f_wallet"] = $nBalance;
-                $input["extra"] = 'Initiated by ' . Auth::user()->full_name;
+                $input["extra"] = 'Initiated by ' . $initiator;
 
                 $user->update(["wallet" => $nBalance]);
                 Transaction::create($input);

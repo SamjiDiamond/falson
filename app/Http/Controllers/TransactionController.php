@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Jobs\Airtime2CashNotificationJob;
 use App\Jobs\ATMtransactionserveJob;
+use App\Jobs\PushNotificationJob;
 use App\Models\Airtime2Cash;
 use App\Models\Airtime2CashSettings;
 use App\Models\CGWallets;
@@ -941,7 +942,13 @@ class TransactionController extends Controller
             return back()->with('error', 'Payment made already!');
         }
 
-        $r=0.2 * $ref->amount;
+        $a2cs=Airtime2CashSettings::where("network",$ref->network)->first();
+
+        if(!$a2cs){
+            return back()->with('error', 'Settings for this network not found. Kindly contact system Admin.');
+        }
+
+        $r=($a2cs->discount/100) * $ref->amount;
         $r_amount=round($ref->amount - $r);
 
         $user=User::where("user_name", "=", $ref->user_name)->first();
@@ -961,12 +968,11 @@ class TransactionController extends Controller
         $user->update(["wallet" => $user->wallet + $r_amount]);
         Transaction::create($input);
 
-        if ($ref->webhook_url != "" && $ref->webhook_url != null) {
-            Airtime2CashNotificationJob::dispatch($ref)->delay(now()->addSeconds());
-        }
+//        if ($ref->webhook_url != "" && $ref->webhook_url != null) {
+//            Airtime2CashNotificationJob::dispatch($ref)->delay(now()->addSeconds());
+//        }
 
-        $at = new PushNotificationController();
-        $at->PushNoti($input['user_name'], $input["description"], "Airtime Converter");
+        PushNotificationJob::dispatch($input['user_name'], $input["description"], "Airtime Converter");
 
         return redirect('/airtime2cash')->with('success', 'Transaction successful!');
     }

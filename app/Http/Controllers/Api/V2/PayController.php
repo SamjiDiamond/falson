@@ -599,6 +599,8 @@ class PayController extends Controller
         $air = new SellDataController();
 
         switch (strtolower($server)) {
+            case "3":
+                return $air->server3($request, $input['coded'], $input['number'], $ref, $net, $request, $dada, "mcd");
             case "2":
                 return $air->server2($request, $input['coded'], $input['number'], $ref, $net, $request, $dada, "mcd");
             case "1":

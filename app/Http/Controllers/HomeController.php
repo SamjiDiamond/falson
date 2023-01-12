@@ -103,6 +103,7 @@ class HomeController extends Controller
 
         if($type == "data"){
             Artisan::queue('samji:hw --command=data');
+            Artisan::queue('samji:iyii --command=data');
         }elseif($type == "tv"){
             Artisan::queue('samji:hw --command=tv');
             Artisan::queue('samji:ringo --command=tv');

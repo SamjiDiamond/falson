@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\MCDAssistantController;
 use App\Http\Controllers\Api\UltilityController;
 use App\Http\Controllers\HW_WebhookController;
+use App\Http\Controllers\IyiiWebhookController;
 use App\Http\Controllers\Payment\BudpayController;
 use App\Http\Controllers\Payment\KorapayHookController;
 use App\Http\Controllers\Payment\MonnifyHookController;
@@ -31,5 +32,6 @@ Route::prefix('hook')->group(function () {
     Route::post('payant', [PayantHookController::class, 'index']);
     Route::get('payant', [PayantHookController::class, 'verify']);
     Route::post('hw', [HW_WebhookController::class, 'index']);
+    Route::post('iyii', [IyiiWebhookController::class, 'index']);
 
 });

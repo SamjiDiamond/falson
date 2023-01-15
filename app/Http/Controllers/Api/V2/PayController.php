@@ -905,13 +905,19 @@ class PayController extends Controller
         $t->server_response = $dada['server_response'];
         $t->save();
 
+        $message='Your transaction failed';
+
+        if(isset($dada['message'])){
+            $message=$dada['message'];
+        }
+
         ReverseTransactionJob::dispatch($t, "api");
 
         if (isset($dada['token'])) {
             return response()->json(['success' => 0, 'message' => 'Your transaction failed', 'ref' => $ref, 'debitAmount' => $dada['amount'], 'discountAmount' => $dada['discount'], 'token' => $dada['token']]);
         }
 
-        return response()->json(['success' => 0, 'message' => 'Your transaction failed', 'ref' => $ref, 'debitAmount' => $dada['amount'], 'discountAmount' => $dada['discount']]);
+        return response()->json(['success' => 0, 'message' => $message, 'ref' => $ref, 'debitAmount' => $dada['amount'], 'discountAmount' => $dada['discount']]);
     }
 
 

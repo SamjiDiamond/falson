@@ -85,6 +85,7 @@ class SellDataController extends Controller
                 return $ms->outputResp($request, $transid, 1, $dada);
             }
         } else {
+            $dada['message'] = $rep['message'];
             if ($requester == "reseller") {
                 return $rs->outputResponse($request, $transid, 0, $dada);
             } else {

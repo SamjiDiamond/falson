@@ -165,9 +165,8 @@ class SellTVController extends Controller
             Log::info("RINGO Payload. - " . $payload);
 
         } else {
-            $response = "{ 'message' : 'Successful', 'status' : '200', 'transref': 'BUBUBCL8238BJO' 'date' : 'date', 'type' : 'GOTV', 'package' : 'GOTV GOHAN', 'amount' : '1000', 'amountCharged' : '1000' }";
+            $response = '{ "message": "Successful", "status": 200, "transref": "BUBUBCL8238BJO", "date": "date", "type": "GOTV", "package": "GOTV GOHAN", "amount": "1000", "amountCharged": "1000" }';
         }
-
 
 
         $rep = json_decode($response, true);

@@ -171,7 +171,15 @@ class PayController extends Controller
 
         $input['device'] = $request->header('device') ?? $_SERVER['HTTP_USER_AGENT'];
 
-        $rac = AppCableTVControl::where("coded", strtolower($input['coded']))->first();
+        $server="1";
+
+        $sett=Settings::where('name', 'tv_server')->first();
+
+        if($sett->value == "RINGO"){
+            $server="2";
+        }
+
+        $rac = AppCableTVControl::where([["coded", strtolower($input['coded'])], ["server", $server]])->first();
 
         if ($rac == "") {
             return response()->json(['success' => 0, 'message' => 'Invalid coded supplied']);

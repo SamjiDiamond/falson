@@ -268,11 +268,19 @@ class SellDataController extends Controller
         $dada['server_response'] = $response;
 
         if (isset($rep['ident'])) {
-            $dada['server_ref'] = $rep['ident'];
-            if ($requester == "reseller") {
-                return $rs->outputResponse($request, $transid, 1, $dada);
-            } else {
-                return $ms->outputResp($request, $transid, 1, $dada);
+            if($rep['Status'] == "failed") {
+                if ($requester == "reseller") {
+                    return $rs->outputResponse($request, $transid, 0, $dada);
+                } else {
+                    return $ms->outputResp($request, $transid, 0, $dada);
+                }
+            }else{
+                $dada['server_ref'] = $rep['ident'];
+                if ($requester == "reseller") {
+                    return $rs->outputResponse($request, $transid, 1, $dada);
+                } else {
+                    return $ms->outputResp($request, $transid, 1, $dada);
+                }
             }
         } else {
             if ($requester == "reseller") {

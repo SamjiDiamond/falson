@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V2;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\PushNotificationController;
 use App\Jobs\AgentPdfGeneratorJob;
+use App\Jobs\PushNotificationJob;
 use App\Models\AppAirtimeControl;
 use App\Models\CGBundle;
 use App\Models\CGTransaction;
@@ -306,6 +307,9 @@ class UserController extends Controller
         $inputa['date']=Carbon::now();
 
         PndL::create($inputa);
+
+        $message = "Reseller request from ".$user->user_name;
+        PushNotificationJob::dispatch("Holarmie",$message,"Reseller Upgrade Notice");
 
         return response()->json(['success' => 1, 'message' => 'Data submitted successfully, you can start integrating now.', 'data'=>$key]);
     }
@@ -649,6 +653,10 @@ class UserController extends Controller
         $user->api_key=$key;
         $user->save();
 
+        $message = $user->user_name. " just regenerate api key";
+        PushNotificationJob::dispatch("Holarmie",$message,"Reseller Key Notice");
+
+
         return response()->json(['success' => 1, 'message' => 'Key has been regenerated successfully. Kindly copy now and change it on your platform.', 'data'=>$key]);
     }
 
@@ -756,6 +764,9 @@ class UserController extends Controller
             $input["image"] = "cgtransaction/" . $photo;
         }
 
+        $message="User: ".$user->user_name. " Bundle Name: ".$data->display_name. " Bundle Price".$data->price. " Bundle Type".$data->type;
+        PushNotificationJob::dispatch("Holarmie",$message,"CG Bundle Notice");
+
         if($input['charge'] == "yes") {
             return response()->json(['success' => 1, 'message' => "Bundle bought successfully"]);
         }else{
@@ -839,6 +850,9 @@ class UserController extends Controller
 
         $oCGwallet->balance-=$input['amount'];
         $oCGwallet->save();
+
+        $message="From: ".Auth::user()->user_name. " To: ".$input['user_name']. " Amount".$input['amount']. " Bundle Type".$oCGwallet->name;
+        PushNotificationJob::dispatch("Holarmie",$message,"CG Bundle Transfer Notice");
 
         return response()->json(['success' => 1, 'message' => "Bundle transferred successfully"]);
     }

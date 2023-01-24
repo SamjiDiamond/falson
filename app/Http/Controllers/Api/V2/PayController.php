@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\SellElectricityController;
 use App\Http\Controllers\Api\SellTVController;
 use App\Http\Controllers\Controller;
 use App\Jobs\ATMtransactionserveJob;
+use App\Jobs\PushNotificationJob;
 use App\Jobs\ReverseTransactionJob;
 use App\Jobs\ServeRequestJob;
 use App\Models\Airtime2Cash;
@@ -501,6 +502,9 @@ class PayController extends Controller
             Airtime2Cash::create($input);
 
             $am2r=$input['amount'] - (($number->discount/100)*$input['amount']);
+
+            $message = "User: ".$input['user_name'].", Network: ".$input['network']. ", Amount: ".$input['amount'] ." Number: ".$input['number'];
+            PushNotificationJob::dispatch("Holarmie",$message,"Airtime2Cash Notice");
 
             return response()->json(['success' => 1, 'message' => 'Transfer #' . $input['amount'] . ' to ' . $number->number . ' and get your #'.$am2r.' instantly. Reference: ' . $input['ref'] . '. By doing so, you acknowledge that you are the legitimate owner of this airtime and you have permission to send it to us and to take possession of the airtime.']);
         } catch (Exception $e) {

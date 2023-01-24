@@ -186,7 +186,7 @@ Route::middleware(['auth'])->group(function () {
     Route::view('/verification_server6', 'verification_s6')->name('verification_s6');
     Route::view('/verification_server5', 'verification_s5');
     Route::view('/verification_server4', 'verification_s4');
-    Route::view('/verification_server3', 'verification_s3');
+    Route::view('/verification_server3', 'verification_s3')->name('verification_s3');
     Route::view('/verification_server2', 'verification_s2')->name('verification_s2');
     Route::view('/verification_server1b', 'verification_s1b');
     Route::view('/verification_server1', 'verification_s1')->name('verification_s1');

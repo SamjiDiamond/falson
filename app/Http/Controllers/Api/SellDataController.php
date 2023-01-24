@@ -279,7 +279,7 @@ class SellDataController extends Controller
                     return $ms->outputResp($request, $transid, 0, $dada);
                 }
             }else{
-                $dada['server_ref'] = $rep['ident'];
+                $dada['server_ref'] = $rep['id'];
                 if ($requester == "reseller") {
                     return $rs->outputResponse($request, $transid, 1, $dada);
                 } else {

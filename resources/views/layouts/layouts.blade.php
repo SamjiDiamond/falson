@@ -321,6 +321,7 @@
                         <ul class="list-unstyled">
 {{--                            <li><a href="{{route('verification_s1')}}">Server 1</a></li>--}}
                             <li><a href="{{route('verification_s2')}}">Server 2</a></li>
+                            <li><a href="{{route('verification_s3')}}">Server 3</a></li>
                         </ul>
                     </li>
 

@@ -19,13 +19,31 @@ class VerificationController extends Controller
             return back()->with('error', 'Transaction reference not found');
         }
 
-        $url = env("SERVER3_QUERY") . "&reference=" . $trans->server_ref;
 
-        $result = file_get_contents($url);
-        // Convert JSON string to Array
-        $someArray = json_decode($result, true);
+        $curl = curl_init();
 
-        return view('verification_s3', ['status' => $someArray["status"], 'description' => $someArray["description"], 'response' => true]);
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => env('IYIINSTANT_BASEURL') . "data/".$trans->server_ref,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'GET',
+            CURLOPT_HTTPHEADER => array(
+                'Authorization: Token ' . env('IYIINSTANT_AUTH'),
+                'Content-Type: application/json'
+            ),
+        ));
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+
+        $response = curl_exec($curl);
+
+
+        $someArray=json_decode($response, true);
+
+        return view('verification_s3', ['status' => $someArray["Status"], 'description' => $someArray["api_response"], 'response' => true]);
     }
 
     public function server2(Request $request)

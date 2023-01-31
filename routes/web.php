@@ -106,6 +106,8 @@ $response = curl_exec($curl);
 curl_close($curl);
 echo $response;
 
+return "hello";
+
 })->name('balrin');
 
 Route::get('/login', function () {

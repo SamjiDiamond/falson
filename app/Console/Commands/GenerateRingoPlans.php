@@ -153,7 +153,7 @@ class GenerateRingoPlans extends Command
 
             ResellerCableTV::create([
                 'name' => $plans['name'],
-                'code' => $plans['code'],
+                'code' => "2_".$plans['code'],
                 'amount' => $plans['price'],
                 'type' =>  strtolower(explode(" ",$plans['name'])[0]),
                 'level1' => $plans['price'],
@@ -167,7 +167,7 @@ class GenerateRingoPlans extends Command
 
             AppCableTVControl::create([
                 'name' => $plans['name'],
-                'coded' => $plans['code'],
+                'coded' => "2_".$plans['code'],
                 'code' => $plans['code'],
                 'price' => $plans['price'],
                 'type' => strtolower(explode(" ",$plans['name'])[0]),

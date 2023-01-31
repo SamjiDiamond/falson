@@ -78,6 +78,36 @@ Route::get('/reringo/{id}', function ($id) {
 
 })->name('rrrinu');
 
+Route::get('/balringo', function ($id) {
+
+$curl = curl_init();
+
+curl_setopt_array($curl, array(
+    CURLOPT_URL => 'https://www.api.ringo.ng/api/agent/p2',
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_ENCODING => '',
+    CURLOPT_MAXREDIRS => 10,
+    CURLOPT_TIMEOUT => 0,
+    CURLOPT_FOLLOWLOCATION => true,
+    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+    CURLOPT_CUSTOMREQUEST => 'POST',
+    CURLOPT_POSTFIELDS =>'{
+    "serviceCode": "INFO"
+}',
+    CURLOPT_HTTPHEADER => array(
+        'email: Holarlekano@gmail.com',
+        'password: Abayomioye',
+        'Content-Type: application/json'
+    ),
+));
+
+$response = curl_exec($curl);
+
+curl_close($curl);
+echo $response;
+
+})->name('balrin');
+
 Route::get('/login', function () {
     return view('auth.login');
 })->name('login');

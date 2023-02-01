@@ -109,8 +109,9 @@ return "hello";
 
 })->name('balrin');
 
-Route::get('/ogdamsdata', function ($id) {
+Route::get('/ogdamsdata', function () {
     Artisan::queue('samji:ogdams --command=data');
+    echo "success";
 })->name('ogdams');
 
 

@@ -33,19 +33,8 @@ class HomeController extends Controller
     public function index()
     {
         $today = Carbon::now()->format('Y-m-d');
-//        $data['today_user'] = User::where('reg_date', 'LIKE', '%' . $today . '%')->count();
 
         $data['today_deposits'] = Transaction::where([['name', '=', 'wallet funding'], ['date', 'LIKE', '%' . $today . '%']])->sum('amount');
-
-//        $data['today_transaction'] = Transaction::where('date', 'LIKE', '%' . $today . '%')->count();
-//        $data['yesterday_transaction'] = Transaction::where('date', 'LIKE', '%' . Carbon::now()->subDay()->format('Y-m-d') . '%')->count();
-//        $data['d2_transaction'] = Transaction::where('date', 'LIKE', '%' . Carbon::now()->subDays(2)->format('Y-m-d') . '%')->count();
-//        $data['d3_transaction'] = Transaction::where('date', 'LIKE', '%' . Carbon::now()->subDays(3)->format('Y-m-d') . '%')->count();
-//        $data['d4_transaction'] = Transaction::where('date', 'LIKE', '%' . Carbon::now()->subDays(4)->format('Y-m-d') . '%')->count();
-//        $data['d5_transaction'] = Transaction::where('date', 'LIKE', '%' . Carbon::now()->subDays(5)->format('Y-m-d') . '%')->count();
-//        $data['d6_transaction'] = Transaction::where('date', 'LIKE', '%' . Carbon::now()->subDays(6)->format('Y-m-d') . '%')->count();
-
-//        $data['users'] = User::orderBy('id', 'DESC')->limit(15)->get();
 
         $data['data'] = Transaction::where([['name', 'like', '%data%'], ['status', '=', 'delivered'], ['date', 'LIKE', $today . '%']])->count();
         $data['airtime'] = Transaction::where([['name', 'like', '%airtime%'], ['status', '=', 'delivered'], ['date', 'LIKE', $today . '%']])->count();
@@ -56,13 +45,31 @@ class HomeController extends Controller
         $data['upgrade'] = Transaction::where([['code', 'like', '%aru%'], ['status', 'like', 'successful'], ['date', 'LIKE', $today . '%']])->count();
         $data['airtime2cash'] = Transaction::where([['code', 'like', '%a2b%'], ['status', 'like', 'successful'], ['date', 'LIKE', $today . '%']])->count();
         $data['airtime2wallet'] = Transaction::where([['code', 'like', '%a2w%'], ['status', 'like', 'successful'], ['date', 'LIKE', $today . '%']])->count();
-        $data['virtualaccount'] = VirtualAccountClient::where([['created_at', 'LIKE', $today . '%']])->count();
-        $data['withdraw'] = Withdraw::where([['created_at', 'LIKE', $today . '%']])->count();
-        $data['giveaway'] = GiveAway::where([['created_at', 'LIKE', $today . '%']])->count();
 
-//        $data['p_nd_l'] = PndL::where([['type', '=', 'income'], ['date', 'LIKE', '%' . $today . '%']])->count();
-//        $data['allsettings'] = DB::table('tbl_allsettings')->limit(14)->get();
-//        $data['general_market'] = DB::table('tbl_allsettings')->where("name", "=", "general_market")->first();
+
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => env('OGDAMS_BASEURL') .'get/balances',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'GET',
+            CURLOPT_HTTPHEADER => array(
+                'Authorization: Bearer '.env('OGDAMS_TOKEN')
+            ),
+        ));
+
+        $response = curl_exec($curl);
+
+        curl_close($curl);
+        $og= json_decode($response, true);
+
+        $data['ogdams_cgairtel'] = $og['data']['msg']['cgAirtel'];
+
 
         return view('home', $data);
     }
@@ -104,6 +111,7 @@ class HomeController extends Controller
         if($type == "data"){
             Artisan::queue('samji:hw --command=data');
             Artisan::queue('samji:iyii --command=data');
+            Artisan::queue('samji:ogdams --command=data');
         }elseif($type == "tv"){
             Artisan::queue('samji:hw --command=tv');
             Artisan::queue('samji:ringo --command=tv');

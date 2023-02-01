@@ -119,7 +119,19 @@ class ServerController
         $dg= dataserver::where([['name','LIKE','%DG%'], ['network','LIKE',strtoupper($network).'%'], ['status',1]])->count() > 0 ? 1 : 0;
         $all= dataserver::where([['network','LIKE',strtoupper($network).'%'], ['status',1]])->count() > 0 ? 1 : 0;
 
-        return view('datacontrol', compact('data', 'sme', 'cg', 'dg', 'all'));
+        $server=0;
+        return view('datacontrol', compact('data', 'sme', 'cg', 'dg', 'all', 'server'));
+    }
+
+    public function dataserve3($network, $server)
+    {
+        $data = dataserver::where([['network','LIKE',strtoupper($network).'%'], ['server',$server]])->paginate(10);
+        $sme= dataserver::where([['name','LIKE','%SME%'], ['network','LIKE',strtoupper($network).'%'], ['server',$server],  ['status',1]])->count() > 0 ? 1 : 0;
+        $cg= dataserver::where([['name','LIKE','%CG%'], ['network','LIKE',strtoupper($network).'%'], ['server',$server], ['status',1]])->count() > 0 ? 1 : 0;
+        $dg= dataserver::where([['name','LIKE','%DG%'], ['network','LIKE',strtoupper($network).'%'], ['server',$server], ['status',1]])->count() > 0 ? 1 : 0;
+        $all= dataserver::where([['network','LIKE',strtoupper($network).'%'], ['server',$server], ['status',1]])->count() > 0 ? 1 : 0;
+
+        return view('datacontrol', compact('data', 'sme', 'cg', 'dg', 'all','server'));
     }
 
     public function dataserveedit($id)
@@ -172,15 +184,28 @@ class ServerController
         return redirect()->route('dataplans', $data->network)->with("success", "Status Modified successfully");
     }
 
-    public function dataserveMultipleedit($network, $type, $status)
+    public function dataserveMultipleedit($network, $type, $status, $server)
     {
         if($type == "ALL"){
-            dataserver::where([['network','LIKE',strtoupper($network).'%']])->update(['status' =>$status]);
+            if($server == 0) {
+                dataserver::where([['network', 'LIKE', strtoupper($network) . '%']])->update(['status' => $status]);
+            }else{
+                dataserver::where([['network', 'LIKE', strtoupper($network) . '%'], ['server', $server]])->update(['status' => $status]);
+            }
         }else{
-            dataserver::where([['name','LIKE','%'.$type.'%'], ['network','LIKE',strtoupper($network).'%']])->update(['status' =>$status]);
+            if($server == 0) {
+                dataserver::where([['name', 'LIKE', '%' . $type . '%'], ['network', 'LIKE', strtoupper($network) . '%']])->update(['status' => $status]);
+            }else{
+                dataserver::where([['name', 'LIKE', '%' . $type . '%'], ['network', 'LIKE', strtoupper($network) . '%'], ['server', $server]])->update(['status' => $status]);
+            }
         }
 
-        return redirect()->route('dataplans', $network)->with("success", "$type Status Modified successfully");
+        if($server == 0){
+            return redirect()->route('dataplans', $network)->with("success", "$type Status Modified successfully");
+        }else{
+            return redirect()->route('server_dataplans', [$network, $server])->with("success", "$type Status Modified successfully");
+        }
+
     }
 
     public function dataserveUpdate(Request $request)

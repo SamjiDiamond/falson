@@ -154,7 +154,7 @@ class GenerateHWPlans extends Command
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => 'GET',
             CURLOPT_HTTPHEADER => array(
-                'Authorization: Basic ' . env('HW_AUTH'),
+                'Authorization: Bearer ' . env('HW_AUTH'),
                 'Content-Type: application/json'
             ),
         ));
@@ -220,7 +220,7 @@ class GenerateHWPlans extends Command
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => 'GET',
             CURLOPT_HTTPHEADER => array(
-                'Authorization: Basic ' . env('HW_AUTH'),
+                'Authorization: Bearer ' . env('HW_AUTH'),
                 'Content-Type: application/json'
             ),
         ));

@@ -5,70 +5,70 @@
 @section('content')
     <div class="row">
         <div class="col-lg-12">
-            {{--            <div class="row">--}}
-            {{--                <div class="col-lg-3">--}}
-            {{--                    <div class="card">--}}
-            {{--                        <div class="card-body">--}}
-            {{--                            <div class="icon-contain">--}}
-            {{--                                <div class="row">--}}
-            {{--                                    <div class="col-2 align-self-center"><i--}}
-            {{--                                            class="fas fa-tasks text-gradient-success"></i></div>--}}
-            {{--                                    <div class="col-10 text-right">--}}
-            {{--                                        <h5 class="mt-0 mb-1">{{ $today_transaction ?? 'Today Transactions Calculated' }}</h5>--}}
-            {{--                                        <p class="mb-0 font-12 text-muted">Transactions</p>--}}
-            {{--                                    </div>--}}
-            {{--                                </div>--}}
-            {{--                            </div>--}}
-            {{--                        </div>--}}
-            {{--                    </div>--}}
-            {{--                </div>--}}
-            {{--                <div class="col-lg-3">--}}
-            {{--                    <div class="card">--}}
-            {{--                        <div class="card-body justify-content-center">--}}
-            {{--                            <div class="icon-contain">--}}
-            {{--                                <div class="row">--}}
-            {{--                                    <div class="col-2 align-self-center"><i class="far fa-gem text-gradient-danger"></i></div>--}}
-            {{--                                    <div class="col-10 text-right">--}}
-            {{--                                        <h5 class="mt-0 mb-1">{{ $p_nd_l ?? 'p and l' }}</h5>--}}
-            {{--                                        <p class="mb-0 font-12 text-muted">Today's Charges</p>--}}
-            {{--                                    </div>--}}
-            {{--                                </div>--}}
-            {{--                            </div>--}}
-            {{--                        </div>--}}
-            {{--                    </div>--}}
-            {{--                </div>--}}
-            {{--                <div class="col-lg-3">--}}
-            {{--                    <div class="card">--}}
-            {{--                        <div class="card-body">--}}
-            {{--                            <div class="icon-contain">--}}
-            {{--                                <div class="row">--}}
-            {{--                                    <div class="col-2 align-self-center"><i class="fas fa-users text-gradient-warning"></i></div>--}}
-            {{--                                    <div class="col-10 text-right">--}}
-            {{--                                        <h5 class="mt-0 mb-1">{{ $today_user ?? 'Active User Calculated' }}</h5>--}}
-            {{--                                        <p class="mb-0 font-12 text-muted">Today's Users</p>--}}
-            {{--                                    </div>--}}
-            {{--                                </div>--}}
-            {{--                            </div>--}}
-            {{--                        </div>--}}
-            {{--                    </div>--}}
-            {{--                </div>--}}
-            {{--                <div class="col-lg-3">--}}
-            {{--                    <div class="card">--}}
-            {{--                        <div class="card-body">--}}
-            {{--                            <div class="icon-contain">--}}
-            {{--                                <div class="row">--}}
-            {{--                                    <div class="col-2 align-self-center"><i--}}
-            {{--                                            class="fas fa-database text-gradient-primary"></i></div>--}}
-            {{--                                    <div class="col-10 text-right">--}}
-            {{--                                        <h5 class="mt-0 mb-1">{{ $today_deposits ?? 'Today Deposits' }}</h5>--}}
-            {{--                                        <p class="mb-0 font-12 text-muted">Today's Deposits</p>--}}
-            {{--                                    </div>--}}
-            {{--                                </div>--}}
-            {{--                            </div>--}}
-            {{--                        </div>--}}
-            {{--                    </div>--}}
-            {{--                </div>--}}
-            {{--            </div>--}}
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="icon-contain">
+                                            <div class="row">
+                                                <div class="col-2 align-self-center"><i
+                                                        class="fas fa-wallet text-gradient-primary"></i></div>
+                                                <div class="col-10 text-right">
+                                                    <h5 class="mt-0 mb-1">₦‎ {{ number_format($ogdams_cgairtel) ?? 'ogdams_cgairtel' }}</h5>
+                                                    <p class="mb-0 font-12 text-muted">OGDAMS - Airtel CG Balance </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+{{--                            <div class="col-lg-3">--}}
+{{--                                <div class="card">--}}
+{{--                                    <div class="card-body justify-content-center">--}}
+{{--                                        <div class="icon-contain">--}}
+{{--                                            <div class="row">--}}
+{{--                                                <div class="col-2 align-self-center"><i class="far fa-gem text-gradient-danger"></i></div>--}}
+{{--                                                <div class="col-10 text-right">--}}
+{{--                                                    <h5 class="mt-0 mb-1">{{ $p_nd_l ?? 'p and l' }}</h5>--}}
+{{--                                                    <p class="mb-0 font-12 text-muted">Today's Charges</p>--}}
+{{--                                                </div>--}}
+{{--                                            </div>--}}
+{{--                                        </div>--}}
+{{--                                    </div>--}}
+{{--                                </div>--}}
+{{--                            </div>--}}
+{{--                            <div class="col-lg-3">--}}
+{{--                                <div class="card">--}}
+{{--                                    <div class="card-body">--}}
+{{--                                        <div class="icon-contain">--}}
+{{--                                            <div class="row">--}}
+{{--                                                <div class="col-2 align-self-center"><i class="fas fa-users text-gradient-warning"></i></div>--}}
+{{--                                                <div class="col-10 text-right">--}}
+{{--                                                    <h5 class="mt-0 mb-1">{{ $today_user ?? 'Active User Calculated' }}</h5>--}}
+{{--                                                    <p class="mb-0 font-12 text-muted">Today's Users</p>--}}
+{{--                                                </div>--}}
+{{--                                            </div>--}}
+{{--                                        </div>--}}
+{{--                                    </div>--}}
+{{--                                </div>--}}
+{{--                            </div>--}}
+{{--                            <div class="col-lg-3">--}}
+{{--                                <div class="card">--}}
+{{--                                    <div class="card-body">--}}
+{{--                                        <div class="icon-contain">--}}
+{{--                                            <div class="row">--}}
+{{--                                                <div class="col-2 align-self-center"><i--}}
+{{--                                                        class="fas fa-database text-gradient-primary"></i></div>--}}
+{{--                                                <div class="col-10 text-right">--}}
+{{--                                                    <h5 class="mt-0 mb-1">{{ $today_deposits ?? 'Today Deposits' }}</h5>--}}
+{{--                                                    <p class="mb-0 font-12 text-muted">Today's Deposits</p>--}}
+{{--                                                </div>--}}
+{{--                                            </div>--}}
+{{--                                        </div>--}}
+{{--                                    </div>--}}
+{{--                                </div>--}}
+{{--                            </div>--}}
+                        </div>
 
             <div class="row">
                 <div class="col-lg-3">

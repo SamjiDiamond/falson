@@ -7,6 +7,7 @@ use App\Models\AppDataControl;
 use App\Models\ResellerCableTV;
 use App\Models\ResellerDataPlans;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
@@ -35,8 +36,6 @@ use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\VerificationController;
 use App\Http\Controllers\WalletController;
-use App\Jobs\Airtime2CashNotificationJob;
-use App\Jobs\NewAccountGiveaway;
 use Illuminate\Support\Facades\Auth;
 
 //Auth::routes(['register' => false]);
@@ -110,13 +109,18 @@ return "hello";
 
 })->name('balrin');
 
+Route::get('/ogdamsdata', function ($id) {
+    Artisan::queue('samji:ogdams --command=data');
+})->name('ogdams');
+
+
+
 Route::get('/login', function () {
     return view('auth.login');
 })->name('login');
 
 
 Route::post('/login', [LoginController::class, 'login'])->name('login');
-
 
 Route::middleware(['auth'])->group(function () {
     Route::get('dashboard', [HomeController::class, 'index'])->name('home');
@@ -255,8 +259,9 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/otherservices-update', [ServerController::class, 'othersUpdate'])->name('otherservicesUpdate');
 
         Route::get('/datalist/{network}', [ServerController::class, 'dataserve2'])->name('dataplans');
+        Route::get('/datalist/{network}/{server}', [ServerController::class, 'dataserve3'])->name('server_dataplans');
         Route::get('/datacontrol/{id}', [ServerController::class, 'dataserveedit'])->name('datacontrolEdit');
-        Route::get('/datacontrol-multiple/{network}/{type}/{status}', [ServerController::class, 'dataserveMultipleedit'])->name('dataserveMultipleedit');
+        Route::get('/datacontrol-multiple/{network}/{type}/{status}/{server}', [ServerController::class, 'dataserveMultipleedit'])->name('dataserveMultipleedit');
         Route::get('/dataserveED/{id}', [ServerController::class, 'dataserveED'])->name('dataserveED');
         Route::post('/datacontrol', [ServerController::class, 'dataserveUpdate'])->name('datacontrolUpdate');
         Route::view('/datanew', 'datacontrol_new')->name('datanew');
@@ -279,7 +284,8 @@ Route::middleware(['auth'])->group(function () {
 
         Route::prefix('reseller')->name('reseller.')->group(function () {
             Route::get('/datalist/{network}', [ResellerServiceController::class, 'dataPlans'])->name('dataList');
-            Route::get('/datacontrol-multiple/{network}/{type}/{status}', [ResellerServiceController::class, 'dataserveMultipleedit'])->name('dataserveMultipleedit');
+            Route::get('/datalist/{network}/{server}', [ResellerServiceController::class, 'dataPlans2'])->name('server_dataList');
+            Route::get('/datacontrol-multiple/{network}/{type}/{status}/{server}', [ResellerServiceController::class, 'dataserveMultipleedit'])->name('dataserveMultipleedit');
             Route::get('/datacontrol', [ResellerServiceController::class, 'dataserve2'])->name('dataplans');
             Route::get('/datacontrol/{id}', [ResellerServiceController::class, 'dataserveedit'])->name('datacontrolEdit');
             Route::get('/datacontrolED/{id}', [ResellerServiceController::class, 'datacontrolED'])->name('datacontrolED');

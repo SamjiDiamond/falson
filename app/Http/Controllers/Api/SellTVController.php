@@ -107,6 +107,7 @@ class SellTVController extends Controller
                 $payload = '{
                     "serviceCode" : "P-TV",
                     "type" : "' . strtoupper($rac->type) . '",
+                    "code" : "' . strtoupper($rac->type) . '",
                     "smartCardNo" : "' . $phone . '",
                     "name" : "' . $rac->name . '",
                     "code": "' . $rac->code . '",

@@ -103,7 +103,7 @@ class SellTVController extends Controller
 
         if (env('FAKE_TRANSACTION', 1) == 0) {
 
-            if($rac->type == "GOTV") {
+            if(strtoupper($rac->type) == "GOTV") {
                 $payload = '{
                     "serviceCode" : "P-TV",
                     "type" : "' . strtoupper($rac->type) . '",
@@ -114,7 +114,7 @@ class SellTVController extends Controller
                     "period": "1",
                     "request_id": "' . $transid . '"
                 }';
-            }elseif($rac->type == "DSTV"){
+            }elseif(strtoupper($rac->type) == "DSTV"){
                 $payload = '{
                     "serviceCode": "P-TV",
                     "type": "' . strtoupper($rac->type) . '",

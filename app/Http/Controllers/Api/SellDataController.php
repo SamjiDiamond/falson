@@ -367,11 +367,13 @@ class SellDataController extends Controller
             $rs = new PayController();
             $ms = new V2\PayController();
 
-            $dada['server_response'] = $response;
-
             $rep = json_decode($response, true);
 
+            $dada['server_response'] = $response;
+            $dada['message'] = $rep['data']['msg'];
+
             if ($rep['status']) {
+                $dada['server_ref'] = $rep['data']['ref'];
                 if ($requester == "reseller") {
                     return $rs->outputResponse($request, $transid, 1, $dada);
                 } else {

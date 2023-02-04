@@ -22,6 +22,23 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="col-lg-3">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="icon-contain">
+                                            <div class="row">
+                                                <div class="col-2 align-self-center"><i
+                                                        class="fas fa-wallet text-gradient-primary"></i></div>
+                                                <div class="col-10 text-right">
+                                                    <h5 class="mt-0 mb-1">₦‎ {{ number_format($hw_bal) ?? 'hw_bal' }}</h5>
+                                                    <p class="mb-0 font-12 text-muted">HW - Wallet Balance </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 {{--                            <div class="col-lg-3">--}}
 {{--                                <div class="card">--}}
 {{--                                    <div class="card-body justify-content-center">--}}

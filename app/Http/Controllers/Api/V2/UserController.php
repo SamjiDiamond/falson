@@ -296,7 +296,7 @@ class UserController extends Controller
         $user->bvn = $input['bvn'];
         $user->target = "";
         $user->api_key=$key;
-        $user->status = "reseller";
+        $user->target = "Reseller in Progress";
         $user->wallet -= $set->value;
         $user->save();
 
@@ -310,6 +310,7 @@ class UserController extends Controller
 
         $message = "Reseller request from ".$user->user_name;
         PushNotificationJob::dispatch("Holarmie",$message,"Reseller Upgrade Notice");
+        PushNotificationJob::dispatch("Softconnet",$message,"Reseller Upgrade Notice");
 
         return response()->json(['success' => 1, 'message' => 'Data submitted successfully, you can start integrating now.', 'data'=>$key]);
     }
@@ -766,6 +767,7 @@ class UserController extends Controller
 
         $message="User: ".$user->user_name. " Bundle Name: ".$data->display_name. " Bundle Price".$data->price. " Bundle Type".$data->type;
         PushNotificationJob::dispatch("Holarmie",$message,"CG Bundle Notice");
+        PushNotificationJob::dispatch("Softconnet",$message,"CG Bundle Notice");
 
         if($input['charge'] == "yes") {
             return response()->json(['success' => 1, 'message' => "Bundle bought successfully"]);
@@ -853,6 +855,7 @@ class UserController extends Controller
 
         $message="From: ".Auth::user()->user_name. " To: ".$input['user_name']. " Amount".$input['amount']. " Bundle Type".$oCGwallet->name;
         PushNotificationJob::dispatch("Holarmie",$message,"CG Bundle Transfer Notice");
+        PushNotificationJob::dispatch("Softconnet",$message,"CG Bundle Transfer Notice");
 
         return response()->json(['success' => 1, 'message' => "Bundle transferred successfully"]);
     }

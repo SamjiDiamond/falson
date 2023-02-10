@@ -47,52 +47,60 @@ class HomeController extends Controller
         $data['airtime2wallet'] = Transaction::where([['code', 'like', '%a2w%'], ['status', 'like', 'successful'], ['date', 'LIKE', $today . '%']])->count();
 
 
-        $curl = curl_init();
+        try {
+            $curl = curl_init();
 
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => env('OGDAMS_BASEURL') .'get/balances',
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'GET',
-            CURLOPT_HTTPHEADER => array(
-                'Authorization: Bearer '.env('OGDAMS_TOKEN')
-            ),
-        ));
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => env('OGDAMS_BASEURL') . 'get/balances',
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'GET',
+                CURLOPT_HTTPHEADER => array(
+                    'Authorization: Bearer ' . env('OGDAMS_TOKEN')
+                ),
+            ));
 
-        $response = curl_exec($curl);
+            $response = curl_exec($curl);
 
-        curl_close($curl);
-        $og= json_decode($response, true);
+            curl_close($curl);
+            $og = json_decode($response, true);
 
-        $data['ogdams_cgairtel'] = $og['data']['msg']['cgAirtel'];
+            $data['ogdams_cgairtel'] = $og['data']['msg']['cgAirtel'];
+        }catch (\Exception $e){
+            $data['ogdams_cgairtel'] = "0";
+        }
 
 
-        $curl = curl_init();
+        try {
+            $curl = curl_init();
 
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => env('HW_BASEURL') .'fetch/balance',
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'GET',
-            CURLOPT_HTTPHEADER => array(
-                'Authorization: Bearer '.env('HW_AUTH')
-            ),
-        ));
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => env('HW_BASEURL') . 'fetch/balance',
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'GET',
+                CURLOPT_HTTPHEADER => array(
+                    'Authorization: Bearer ' . env('HW_AUTH')
+                ),
+            ));
 
-        $response = curl_exec($curl);
+            $response = curl_exec($curl);
 
-        curl_close($curl);
-        $hw= json_decode($response, true);
+            curl_close($curl);
+            $hw = json_decode($response, true);
 
-        $data['hw_bal'] = $hw['data']['balance'];
+            $data['hw_bal'] = $hw['data']['balance'];
+        }catch (\Exception $e){
+            $data['hw_bal'] = "0";
+        }
 
 
         return view('home', $data);

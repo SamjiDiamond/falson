@@ -73,6 +73,7 @@ class AuthenticationController extends Controller
         $create["gnews"] = 'Are you looking forward to spending less money on data subscriptions? Or Pay Electricity bills, and even buy airtime conveniently without moving a finger, you just arrived at the right place';
         $date = date("Y-m-d H:i:s");
         $create["devices"] = $deviceid;
+        $create["reg_date"] = Carbon::now();
 
         if (User::create($create)) {
             // successfully inserted into database

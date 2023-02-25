@@ -25,7 +25,7 @@ class User extends Authenticatable implements Auditable
     protected $table ='tbl_agents';
 
     protected $fillable = [
-        'name', 'email', 'password', 'user_name', 'wallet', 'gnews', 'account_number', 'account_number2', 'mcdpassword', 'status', 'level', 'phoneno', 'devices', 'dob', 'bvn', 'company_name', 'address', 'target', 'photo'
+        'name', 'email', 'password', 'user_name', 'wallet', 'gnews', 'account_number', 'account_number2', 'mcdpassword', 'status', 'level', 'phoneno', 'devices', 'dob', 'bvn', 'company_name', 'address', 'target', 'photo', 'reg_date'
     ];
 
     /**

@@ -25,7 +25,7 @@
 
                         <div class="row ml-3 mb-3">
                             @can('data-plans-disable_all')
-                                <a href="{{route('reseller.dataserveMultipleedit', [$data[0]->type, 'ALL', $cg == 1 ? 0 : 1, $server ])}}" class="btn btn-secondary mr-3">@if($all == 1)Disable @else Enable @endif All Data</a>
+                                <a href="{{route('reseller.dataserveMultipleedit', [$data[0]->type, 'ALL', $all == 1 ? 0 : 1, $server ])}}" class="btn btn-secondary mr-3">@if($all == 1)Disable @else Enable @endif All Data</a>
                             @endcan
                             @can('data-plans-disable_cg')
                                 <a href="{{route('reseller.dataserveMultipleedit', [$data[0]->type, 'CG', $cg == 1 ? 0 : 1, $server ])}}" class="btn btn-secondary mr-3">@if($cg == 1)Disable @else Enable @endif CG Data</a>

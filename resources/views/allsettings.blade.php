@@ -60,7 +60,7 @@
                             <a href="{{route('plansRefresh', "electricity")}}" class="btn btn-danger mr-3">Refresh Electricity Plans</a>
                         </div>
 
-                        <div class="row">
+                        <div class="row mt-3">
                             <a href="{{route('plansRefresh', "data_hw")}}" class="btn btn-danger mr-3">Refresh HW Data Plans</a>
                             <a href="{{route('plansRefresh', "data_iyii")}}" class="btn btn-danger mr-3">Refresh IYII Data Plans</a>
                             <a href="{{route('plansRefresh', "data_ogdams")}}" class="btn btn-danger mr-3">Refresh OGDAMS Data Plans</a>

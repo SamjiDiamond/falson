@@ -132,7 +132,7 @@ class ServerController
         $all= dataserver::where([['network','LIKE',strtoupper($network).'%'], ['server',$server], ['status',1]])->count() > 0 ? 1 : 0;
         
         if($data['total'] == 0){
-            return redirect()->route('datacontrol')->with('error', 'Plan does not exist for this server');
+            return redirect()->route('dataplans','MTN')->with('error', 'Plan does not exist for this server');
         }
 
         return view('datacontrol', compact('data', 'sme', 'cg', 'dg', 'all','server'));

@@ -46,8 +46,8 @@ class GenerateOGDAMS extends Command
     {
 //        $this->info("Truncating Reseller & App Data plans table");
 //
-//        ResellerDataPlans::truncate();
-//        AppDataControl::truncate();
+       ResellerDataPlans::where('server','4')->truncate();
+       AppDataControl::where('server','4')->truncate();
 
         $this->info("Fetching data plans");
 

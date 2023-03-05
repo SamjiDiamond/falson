@@ -46,7 +46,7 @@ class GenerateIYIINSTANTPlans extends Command
 //        $this->info("Truncating Reseller & App Data plans table");
 //
 //        ResellerDataPlans::truncate();
-//        AppDataControl::truncate();
+       AppDataControl::where('server','3')->truncate();
 
         $this->info("Fetching data plans");
 

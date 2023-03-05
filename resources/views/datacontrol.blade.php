@@ -7,6 +7,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
+                
                     @if (session('success'))
                         <div class="alert alert-success" role="alert">
                             <strong>{{ session('success') }}</strong>
@@ -21,6 +22,15 @@
                             toastr.success('{{ session('success') }}', 'Success');
                         </script>
                     @endif
+                    
+                    
+                    @if (session('error'))
+                        <div class="alert alert-danger alert-dismissable">
+                            <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+                            {{ session('error') }}
+                        </div>
+                    @endif
+
                     <p class="text-muted mb-4 font-13">Data Plans</p>
 
                         <div class="row ml-3 mb-3">

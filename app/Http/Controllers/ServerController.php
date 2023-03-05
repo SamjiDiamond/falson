@@ -130,6 +130,10 @@ class ServerController
         $cg= dataserver::where([['name','LIKE','%CG%'], ['network','LIKE',strtoupper($network).'%'], ['server',$server], ['status',1]])->count() > 0 ? 1 : 0;
         $dg= dataserver::where([['name','LIKE','%DG%'], ['network','LIKE',strtoupper($network).'%'], ['server',$server], ['status',1]])->count() > 0 ? 1 : 0;
         $all= dataserver::where([['network','LIKE',strtoupper($network).'%'], ['server',$server], ['status',1]])->count() > 0 ? 1 : 0;
+        
+        if($data['total'] == 0){
+            return redirect()->route('datacontrol')->with('error', 'Plan does not exist for this server');
+        }
 
         return view('datacontrol', compact('data', 'sme', 'cg', 'dg', 'all','server'));
     }

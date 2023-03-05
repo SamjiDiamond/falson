@@ -65,8 +65,8 @@ class GenerateHWPlans extends Command
     {
         $this->info("Truncating Reseller & App Data plans table");
 
-        ResellerDataPlans::truncate();
-        AppDataControl::truncate();
+        ResellerDataPlans::where('server','1')->truncate();
+        AppDataControl::where('server','1')->truncate();
 
         $this->info("Fetching data plans");
 

@@ -153,7 +153,7 @@
                         </div>
                         <div class="features-content">
                             <h4>Data Subscription</h4>
-                            <p>MTN SME- MTN GIFTING- MTNCG.-GLO GIFTING, Glo Gifting(cooming soon)-Airtel CG, Airtel Gifting-9mobile Gifting</p>
+                            <p>MTN SME, MTN GIFTING, MTN CG, GLO GIFTING, Glo Gifting, Airtel CG, Airtel Gifting, 9mobile Gifting</p>
                         </div>
                     </div>
                 </div>
@@ -183,113 +183,6 @@
         </div>
     </section>
     <!-- features-area-end -->
-
-    <!-- fact-area -->
-    <section class="fact-area">
-        <div class="container">
-            <div class="row">
-                <div class="col-12">
-                    <div class="fact-box">
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="single-fact text-center mb-50 wow fadeInUp" data-wow-delay=".2s">
-                                    <h2><span class="count">80</span>k+</h2>
-                                    <span>Total Downloads</span>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="single-fact text-center mb-50 wow fadeInUp" data-wow-delay=".4s">
-                                    <h2><span class="count">76</span>k+</h2>
-                                    <span>Happy Users</span>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="single-fact text-center mb-50 wow fadeInUp" data-wow-delay=".6s">
-                                    <h2><span class="count">37</span>k+</h2>
-                                    <span>Good Reviews</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <!-- fact-area-end -->
-    <!-- testimonial-area -->
-    <section id="testimonial" class="testimonial-area testi-bg" data-background="landing/img/bg/testi_bg.png">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-xl-6 col-lg-8">
-                    <div class="section-title white-title text-center mb-80">
-                        <div class="title-icon mb-15">
-                            <img src="landing/img/icon/title_icon02.png" alt="icon">
-                        </div>
-                        <h2>User’s Review</h2>
-                    </div>
-                </div>
-            </div>
-            <div class="row testimonial-active">
-                <div class="col-xl-4">
-                    <div class="single-testimonial text-align-sm">
-                        <div class="testimonial-img">
-                            <img src="landing/img/images/testimonial_img01.jpg" alt="img">
-                        </div>
-                        <div class="testimonial-content fix">
-                            <h5>"Really impressive and fast! easily the best tool for use anyone"</h5>
-                            <div class="testi-avatar">
-                                <h6>David Miller</h6>
-                                <span>Journalist</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xl-4">
-                    <div class="single-testimonial text-align-sm">
-                        <div class="testimonial-img">
-                            <img src="landing/img/images/testimonial_img02.jpg" alt="img">
-                        </div>
-                        <div class="testimonial-content fix">
-                            <h5>"Really impressive and fast! easily the best tool for use anyone"</h5>
-                            <div class="testi-avatar">
-                                <h6>Andrew Maker</h6>
-                                <span>Actor</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xl-4">
-                    <div class="single-testimonial text-align-sm">
-                        <div class="testimonial-img">
-                            <img src="landing/img/images/testimonial_img03.jpg" alt="img">
-                        </div>
-                        <div class="testimonial-content fix">
-                            <h5>"Really impressive and fast! easily the best tool for use anyone"</h5>
-                            <div class="testi-avatar">
-                                <h6>David Miller</h6>
-                                <span>Actress</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xl-4">
-                    <div class="single-testimonial text-align-sm">
-                        <div class="testimonial-img">
-                            <img src="landing/img/images/testimonial_img02.jpg" alt="img">
-                        </div>
-                        <div class="testimonial-content fix">
-                            <h5>"Really impressive and fast! easily the best tool for use anyone"</h5>
-                            <div class="testi-avatar">
-                                <h6>Cordy Alain</h6>
-                                <span>Designer</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <!-- testimonial-area-end -->
 
     <!-- download-area -->
     <section class="download-area download-bg" data-background="landing/img/bg/download_bg.png">

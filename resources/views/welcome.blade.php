@@ -53,7 +53,7 @@
                             <ul class="navbar-nav ml-auto m-lg-auto">
                                 <li class="nav-item active"><a class="nav-link" href="#home">Home</a></li>
                                 <li class="nav-item"><a class="nav-link" href="#features">Services</a></li>
-                                <li class="nav-item"><a class="nav-link" href="#faq">About Us</a></li>
+                                <li class="nav-item"><a class="nav-link" href="#testimonial">About Us</a></li>
                             </ul>
                         </div>
                         <div class="header-btn d-none d-lg-block">
@@ -217,7 +217,7 @@
     </section>
     <!-- fact-area-end -->
     <!-- testimonial-area -->
-    <section class="testimonial-area testi-bg" data-background="landing/img/bg/testi_bg.png">
+    <section id="testimonial" class="testimonial-area testi-bg" data-background="landing/img/bg/testi_bg.png">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-xl-6 col-lg-8">

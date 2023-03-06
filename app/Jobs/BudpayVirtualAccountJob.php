@@ -92,6 +92,9 @@ class BudpayVirtualAccountJob implements ShouldQueue
 
                     $payload2 = '{ "customer": "' . $response['data']['customer_code'] . '"}';
 
+                    Log::info(env("BUDPAY_URL") . "/dedicated_virtual_account");
+                    Log::info($payload);
+
                     $curl = curl_init();
 
                     curl_setopt_array($curl, array(

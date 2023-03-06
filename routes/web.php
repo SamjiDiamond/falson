@@ -41,8 +41,7 @@ use Illuminate\Support\Facades\Auth;
 //Auth::routes(['register' => false]);
 
 Route::get('/', function () {
-//    return view('welcome');
-    return redirect()->route('login');
+    return view('welcome');
 })->name('welcome');
 
 Route::get('/reringo/{id}', function ($id) {

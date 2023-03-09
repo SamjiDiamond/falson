@@ -244,21 +244,6 @@
 {{--                    </div>--}}
                 </div>
                 <div class="col-lg-2 col-md-3 col-sm-6 col-6">
-{{--                    <div class="footer-widget mb-30">--}}
-{{--                        <div class="fw-title">--}}
-{{--                            <h5>Product</h5>--}}
-{{--                        </div>--}}
-{{--                        <div class="fw-link">--}}
-{{--                            <ul>--}}
-{{--                                <li><a href="#">Feature</a></li>--}}
-{{--                                <li><a href="#">Pricing</a></li>--}}
-{{--                                <li><a href="#">Credit</a></li>--}}
-{{--                                <li><a href="#">FAQ</a></li>--}}
-{{--                            </ul>--}}
-{{--                        </div>--}}
-{{--                    </div>--}}
-                </div>
-                <div class="col-lg-2 col-md-3 col-sm-6 col-6">
                     <div class="footer-widget mb-30">
                         <div class="fw-title">
                             <h5>Download</h5>
@@ -281,9 +266,24 @@
                         <div class="fw-link">
                             <ul>
                                 <li><a href="/PlanetF_privacy.pdf">Privacy</a></li>
-                                <li><a href="mailto:PlanetFCare@gmail.com">Help</a></li>
+                                <li><a href="mailto:info@softconnet.com.ng">Help</a></li>
 {{--                                <li><a href="#">Terms</a></li>--}}
 {{--                                <li><a href="#">FAQ</a></li>--}}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-3 col-sm-6 col-6">
+                    <div class="footer-widget mb-30">
+                        <div class="fw-title">
+                            <h5>Contact Information</h5>
+                        </div>
+                        <div class="fw-link">
+                            <ul>
+                                <li><a href="mailto:info@softconnet.com.ng">Email: info@softconnet.com.ng</a></li>
+                                <li><a href="https://wa.me/+2348031230068">Whatsapp: +2348031230068</a></li>
+                                <li><a href="tel:+2348031230068">Call: +2348031230068</a></li>
+                                {{--                                <li><a href="#">FAQ</a></li>--}}
                             </ul>
                         </div>
                     </div>

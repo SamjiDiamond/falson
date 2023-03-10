@@ -144,12 +144,15 @@ class HomeController extends Controller
             Artisan::queue('samji:hw --command=data');
             Artisan::queue('samji:iyii --command=data');
             Artisan::queue('samji:ogdams --command=data');
+            Artisan::queue('samji:uzobest --command=data');
         }elseif($type == "data_hw"){
             Artisan::queue('samji:hw --command=data');
         }elseif($type == "data_iyii"){
             Artisan::queue('samji:iyii --command=data');
         }elseif($type == "data_ogdams"){
             Artisan::queue('samji:ogdams --command=data');
+        }elseif($type == "data_uzobest"){
+            Artisan::queue('samji:uzobest --command=data');
         }elseif($type == "tv"){
             Artisan::queue('samji:hw --command=tv');
             Artisan::queue('samji:ringo --command=tv');

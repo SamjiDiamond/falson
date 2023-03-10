@@ -53,7 +53,7 @@
                         </tbody>
                     </table>
                         </div>
-                        
+
                         <div class="row">
                             <a href="{{route('plansRefresh', "data")}}" class="btn btn-danger mr-3">Refresh Data Plans</a>
                             <a href="{{route('plansRefresh', "tv")}}" class="btn btn-danger mr-3">Refresh TV Plans</a>
@@ -64,9 +64,10 @@
                             <a href="{{route('plansRefresh', "data_hw")}}" class="btn btn-danger mr-3">Refresh HW Data Plans</a>
                             <a href="{{route('plansRefresh', "data_iyii")}}" class="btn btn-danger mr-3">Refresh IYII Data Plans</a>
                             <a href="{{route('plansRefresh', "data_ogdams")}}" class="btn btn-danger mr-3">Refresh OGDAMS Data Plans</a>
+                            <a href="{{route('plansRefresh', "data_uzobest")}}" class="btn btn-danger mr-3">Refresh UZOBEST Data Plans</a>
                         </div>
 
-                        
+
 
                 </div>
             </div>

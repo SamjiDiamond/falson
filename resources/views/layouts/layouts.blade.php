@@ -321,21 +321,25 @@
                                         <li><a href="{{route('reseller.server_dataList', ['MTN', "1"])}}">HW MTN Data Plans</a></li>
                                         <li><a href="{{route('reseller.server_dataList', ['MTN', "3"])}}">IYII MTN Data Plans</a></li>
                                         <li><a href="{{route('reseller.server_dataList', ['MTN', "4"])}}">OGDAMS MTN Data Plans</a></li>
+                                        <li><a href="{{route('reseller.server_dataList', ['MTN', "5"])}}">UZOBEST MTN Data Plans</a></li>
 
                                         <li><a href="{{route('reseller.dataList', 'AIRTEL')}}">All AIRTEL Data Plans</a></li>
                                         <li><a href="{{route('reseller.server_dataList', ['AIRTEL', "1"])}}">HW AIRTEL Data Plans</a></li>
                                         <li><a href="{{route('reseller.server_dataList', ['AIRTEL', "3"])}}">IYII AIRTEL Data Plans</a></li>
                                         <li><a href="{{route('reseller.server_dataList', ['AIRTEL', "4"])}}">OGDAMS AIRTEL Data Plans</a></li>
+                                        <li><a href="{{route('reseller.server_dataList', ['AIRTEL', "5"])}}">UZOBEST AIRTEL Data Plans</a></li>
 
                                         <li><a href="{{route('reseller.dataList', 'GLO')}}">All GLO Data Plans</a></li>
                                         <li><a href="{{route('reseller.server_dataList', ['GLO', "1"])}}">HW GLO Data Plans</a></li>
                                         <li><a href="{{route('reseller.server_dataList', ['GLO', "3"])}}">IYII GLO Data Plans</a></li>
                                         <li><a href="{{route('reseller.server_dataList', ['GLO', "4"])}}">OGDAMS GLO Data Plans</a></li>
+                                        <li><a href="{{route('reseller.server_dataList', ['GLO', "5"])}}">UZOBEST GLO Data Plans</a></li>
 
                                         <li><a href="{{route('reseller.dataList', '9MOBILE')}}">All 9MOBILE Data Plans</a></li>
                                         <li><a href="{{route('reseller.server_dataList', ['9MOBILE', "1"])}}">HW 9MOBILE Data Plans</a></li>
                                         <li><a href="{{route('reseller.server_dataList', ['9MOBILE', "3"])}}">IYII 9MOBILE Data Plans</a></li>
                                         <li><a href="{{route('reseller.server_dataList', ['9MOBILE', "4"])}}">OGDAMS 9MOBILE Data Plans</a></li>
+                                        <li><a href="{{route('reseller.server_dataList', ['9MOBILE', "5"])}}">UZOBEST 9MOBILE Data Plans</a></li>
 
                                 @endcan
 

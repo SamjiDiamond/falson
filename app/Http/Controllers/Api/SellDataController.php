@@ -388,4 +388,98 @@ class SellDataController extends Controller
             }
         }
     }
+
+    public function server5($request, $code, $phone, $transid, $net, $input, $dada, $requester)
+    {
+
+        if ($requester == "reseller") {
+            $rac = ResellerDataPlans::where("code", strtolower($input['coded']))->first();
+        } else {
+            $rac = AppDataControl::where("coded", strtolower($input['coded']))->first();
+        }
+
+        switch ($rac->network) {
+            case "MTN":
+                $service_id = 1;
+                break;
+
+            case "9MOBILE":
+                $service_id = 3;
+                break;
+
+            case "GLO":
+                $service_id = 4;
+                break;
+
+            case "AIRTEL":
+                $service_id = 2;
+                break;
+
+            default:
+                return response()->json(['success' => 0, 'message' => 'Invalid Network. Available are m for MTN, 9 for 9MOBILE, g for GLO, a for AIRTEL.']);
+        }
+
+        $payload = '{
+    "network_id" : ' . $service_id . ',
+    "plan_id" : ' . $rac->plan_id . ',
+    "phone_number" : "' . $phone . '",
+    "ported":true
+}';
+
+        if (env('FAKE_TRANSACTION', 1) == 0) {
+
+
+            $curl = curl_init();
+
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => env('UZOBEST_BASEURL') . 'purchase_data',
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'POST',
+                CURLOPT_POSTFIELDS => $payload,
+                CURLOPT_HTTPHEADER => array(
+                    'Authorization: ' . env('UZOBEST_TOKEN'),
+                    'Content-Type: application/json'
+                ),
+            ));
+
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+
+            $response = curl_exec($curl);
+
+            curl_close($curl);
+
+            Log::info("UZOBEST Payload. - " . $payload);
+            Log::info("UZOBEST Transaction. - " . $transid);
+            Log::info($response);
+
+            $tran = new ServeRequestController();
+            $rs = new PayController();
+            $ms = new V2\PayController();
+
+            $rep = json_decode($response, true);
+
+            $dada['server_response'] = $response;
+            $dada['message'] = $rep['message'];
+
+            if ($rep['status'] != "Failed" ) {
+                $dada['server_ref'] = $rep['transaction_id'];
+                if ($requester == "reseller") {
+                    return $rs->outputResponse($request, $transid, 1, $dada);
+                } else {
+                    return $ms->outputResp($request, $transid, 1, $dada);
+                }
+            } else {
+                if ($requester == "reseller") {
+                    return $rs->outputResponse($request, $transid, 0, $dada);
+                } else {
+                    return $ms->outputResp($request, $transid, 0, $dada);
+                }
+            }
+        }
+    }
 }

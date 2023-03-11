@@ -272,6 +272,7 @@ class SellDataController extends Controller
         $dada['server_response'] = $response;
 
         if (isset($rep['ident'])) {
+            $dada['message'] = $rep['api_response'];
             if($rep['Status'] == "failed") {
                 if ($requester == "reseller") {
                     return $rs->outputResponse($request, $transid, 0, $dada);

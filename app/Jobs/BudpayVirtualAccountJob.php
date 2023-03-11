@@ -63,7 +63,7 @@ class BudpayVirtualAccountJob implements ShouldQueue
                 $curl = curl_init();
 
                 curl_setopt_array($curl, array(
-                    CURLOPT_URL => env("BUDPAY_URL") . "/customer",
+                    CURLOPT_URL => env("BUDPAY_URL") . "/v1/customer",
                     CURLOPT_RETURNTRANSFER => true,
                     CURLOPT_ENCODING => "",
                     CURLOPT_MAXREDIRS => 10,
@@ -92,13 +92,13 @@ class BudpayVirtualAccountJob implements ShouldQueue
 
                     $payload2 = '{ "customer": "' . $response['data']['customer_code'] . '"}';
 
-                    Log::info(env("BUDPAY_URL") . "/dedicated_virtual_account");
+                    Log::info(env("BUDPAY_URL") . "/v2/dedicated_virtual_account");
                     Log::info($payload2);
 
                     $curl = curl_init();
 
                     curl_setopt_array($curl, array(
-                        CURLOPT_URL => env("BUDPAY_URL") . "/dedicated_virtual_account",
+                        CURLOPT_URL => env("BUDPAY_URL") . "/v2/dedicated_virtual_account",
                         CURLOPT_RETURNTRANSFER => true,
                         CURLOPT_ENCODING => "",
                         CURLOPT_MAXREDIRS => 10,

@@ -90,7 +90,7 @@ class GenerateUzobest extends Command
 
             if(str_contains($plans['type'], "SME")){
                 $type = "SME";
-            }elseif (str_contains($plans['type'], "CG")){
+            }elseif (str_contains($plans['type'], "CG") || str_contains($plans['type'], "CDG")){
                 $type ="CG";
             }
 

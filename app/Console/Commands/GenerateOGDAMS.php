@@ -105,7 +105,7 @@ class GenerateOGDAMS extends Command
             }
 
             ResellerDataPlans::create([
-                'name' => $plans['name'],
+                'name' => $type == "DG" ? str_replace("GIFTING","DG",$plans['name']) : $plans['name'],
                 'product_code' => $allowance,
                 'code' => "4_".$plans['planId'],
                 'level1' => $plans['price'],
@@ -121,7 +121,7 @@ class GenerateOGDAMS extends Command
             ]);
 
             AppDataControl::create([
-                'name' => $plans['name'],
+                'name' => $type == "DG" ? str_replace("GIFTING","DG",$plans['name']) : $plans['name'],
                 'dataplan' => $allowance,
                 'network' => $network,
                 'coded' => "4_".$plans['planId'],

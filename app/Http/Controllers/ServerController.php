@@ -128,7 +128,7 @@ class ServerController
         $data = dataserver::where([['network','LIKE',strtoupper($network).'%'], ['server',$server]])->paginate(10);
         $sme= dataserver::where([['name','LIKE','%SME%'], ['network','LIKE',strtoupper($network).'%'], ['server',$server],  ['status',1]])->count() > 0 ? 1 : 0;
         $cg= dataserver::where([['name','LIKE','%CG%'], ['network','LIKE',strtoupper($network).'%'], ['server',$server], ['status',1]])->count() > 0 ? 1 : 0;
-        $dg= dataserver::where([['name','LIKE','%DG%'], ['network','LIKE',strtoupper($network).'%'], ['server',$server], ['status',1]])->orwhere([['name','LIKE','%GIFTING%'], ['network','LIKE',strtoupper($network).'%'], ['server',$server], ['status',1]])->count() > 0 ? 1 : 0;
+        $dg= dataserver::where([['name','LIKE','%DG%'], ['network','LIKE',strtoupper($network).'%'], ['server',$server], ['status',1]])->count() > 0 ? 1 : 0;
         $all= dataserver::where([['network','LIKE',strtoupper($network).'%'], ['server',$server], ['status',1]])->count() > 0 ? 1 : 0;
 
         return view('datacontrol', compact('data', 'sme', 'cg', 'dg', 'all','server'));
@@ -193,20 +193,10 @@ class ServerController
                 dataserver::where([['network', 'LIKE', strtoupper($network) . '%'], ['server', $server]])->update(['status' => $status]);
             }
         }else{
-            if($type == "DG"){
-                $type_alt="GIFTING";
-
-                if($server == 0) {
-                    dataserver::where([['name', 'LIKE', '%' . $type . '%'],['network', 'LIKE', strtoupper($network) . '%']])->orWhere([['name', 'LIKE', '%' . $type_alt . '%'], ['network', 'LIKE', strtoupper($network) . '%']])->update(['status' => $status]);
-                }else{
-                    dataserver::where([['name', 'LIKE', '%' . $type . '%'], ['network', 'LIKE', strtoupper($network) . '%'], ['server', $server]])->orwhere([['name', 'LIKE', '%' . $type_alt . '%'],['network', 'LIKE', strtoupper($network) . '%'], ['server', $server]])->update(['status' => $status]);
-                }
+            if($server == 0) {
+                dataserver::where([['name', 'LIKE', '%' . $type . '%'], ['network', 'LIKE', strtoupper($network) . '%']])->update(['status' => $status]);
             }else{
-                if($server == 0) {
-                    dataserver::where([['name', 'LIKE', '%' . $type . '%'], ['network', 'LIKE', strtoupper($network) . '%']])->update(['status' => $status]);
-                }else{
-                    dataserver::where([['name', 'LIKE', '%' . $type . '%'], ['network', 'LIKE', strtoupper($network) . '%'], ['server', $server]])->update(['status' => $status]);
-                }
+                dataserver::where([['name', 'LIKE', '%' . $type . '%'], ['network', 'LIKE', strtoupper($network) . '%'], ['server', $server]])->update(['status' => $status]);
             }
         }
 

@@ -84,8 +84,8 @@
                         </div>
                     </div>
                     <div class="col-lg-6 d-none d-lg-block">
-                        <div class="slider-img slider-img-lg wow slideInRight" data-wow-delay=".6s" data-wow-duration="1.2s">
-                            <img src="landing/img/slider/slider_img01.png" alt="img">
+                        <div class="ml-2 slider-img slider-img-lg wow slideInRight" data-wow-delay=".6s" data-wow-duration="1.2s">
+                            <img src="landing/img/display.jpeg" alt="img">
                         </div>
                     </div>
                 </div>
@@ -294,7 +294,7 @@
             <div class="row">
                 <div class="col-12">
                     <div class="copyright-text text-center">
-                        <p>2023 &copy; Copyright PlanetF. All Rights Reserved</p>
+                        <p>2023 &copy; Copyright Falson Global Services. All Rights Reserved</p>
                     </div>
                 </div>
             </div>

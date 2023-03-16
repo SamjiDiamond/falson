@@ -202,7 +202,7 @@
             <div class="row justify-content-center">
                 <div class="col-xl-10" data-aos="fade-up">
                     <div class="download-img mt-40 text-center">
-                        <img src="landing/img/images/download_img.png" alt="img">
+                        <img src="landing/img/display.jpeg" alt="img">
                     </div>
                 </div>
             </div>

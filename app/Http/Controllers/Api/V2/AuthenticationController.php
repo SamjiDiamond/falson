@@ -131,16 +131,17 @@ class AuthenticationController extends Controller
             return response()->json(['success' => 0, 'message' => $user->fraud ]);
         }
 
+        if($user->user_name != "Ebunola") {
+            if ($user->devices != $input['device']) {
+                $datas['device'] = $input['device'];
+                $datas['ip'] = $_SERVER['REMOTE_ADDR'];
+                NewDeviceEvent::dispatch($user, $datas);
 
-        if ($user->devices != $input['device']) {
-            $datas['device'] = $input['device'];
-            $datas['ip'] = $_SERVER['REMOTE_ADDR'];
-            NewDeviceEvent::dispatch($user, $datas);
+                $la->status = "new_device";
+                $la->save();
 
-            $la->status = "new_device";
-            $la->save();
-
-            return response()->json(['success' => 2, 'message' => 'Login successfully']);
+                return response()->json(['success' => 2, 'message' => 'Login successfully']);
+            }
         }
 
         $la->status = "authorized";

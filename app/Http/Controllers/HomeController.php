@@ -11,6 +11,7 @@ use Carbon\Carbon;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class HomeController extends Controller
@@ -58,6 +59,8 @@ class HomeController extends Controller
                 CURLOPT_TIMEOUT => 0,
                 CURLOPT_FOLLOWLOCATION => true,
                 CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_SSL_VERIFYPEER =>0,
+                CURLOPT_SSL_VERIFYHOST=>false,
                 CURLOPT_CUSTOMREQUEST => 'GET',
                 CURLOPT_HTTPHEADER => array(
                     'Authorization: Bearer ' . env('OGDAMS_TOKEN')
@@ -69,7 +72,15 @@ class HomeController extends Controller
             curl_close($curl);
             $og = json_decode($response, true);
 
-            $data['ogdams_cgairtel'] = $og['data']['msg']['cgAirtel'];
+            Log::info("OGDAMS BALANCE CHECK");
+            Log::info($response);
+
+            if(isset($og['data']['msg']['cgAirtel'])){
+                $data['ogdams_cgairtel'] = $og['data']['msg']['cgAirtel'];
+            }else{
+                $data['ogdams_cgairtel'] = "0";
+            }
+
         }catch (\Exception $e){
             $data['ogdams_cgairtel'] = "0";
         }

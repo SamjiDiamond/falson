@@ -35,52 +35,7 @@ Route::prefix('v2')->group(function () {
 
     Route::get('support', [UserController::class, 'support']);
 
-    Route::get('test-ringo', function (){
-
-        $payload='{
-    "serviceCode": "VAR",
-    "msisdn": "08166939205",
-    "amount": "100",
-    "request_id": "f3456789876544",
-    "product_id": "MFIN-5-OR"
-}';
-
-        $curl = curl_init();
-
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => env('RINGO_BASEURL'),
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_POSTFIELDS => $payload,
-            CURLOPT_HTTPHEADER => array(
-                'email: '.env('RINGO_EMAIL'),
-                'password: '.env('RINGO_PASSWORD'),
-                'Content-Type: application/json'
-            ),
-        ));
-        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-
-        $response = curl_exec($curl);
-
-        curl_close($curl);
-
-
-        Log::info("Ringo Electric Payload. - " . $payload);
-        Log::info("Ringo Electric Response. - " . $response);
-
-
-        $rep = json_decode($response, true);
-
-        return $response;
-
-    });
-
-    Route::middleware('auth:sanctum')->group(function () {
+    Route::middleware(['auth:sanctum', 'general_middleware'])->group(function () {
         Route::get('biometriclogin', [AuthenticationController::class, 'biometricLogin']);
         Route::get('dashboard', [UserController::class, 'dashboard']);
         Route::post('changepin', [UserController::class, 'change_pin']);

@@ -107,6 +107,9 @@ class WalletTransferController extends Controller
             return response()->json(['success' => 0, 'message' => 'Reference already exist']);
         }
 
+        $user->wallet-=$amount;
+        $user->save();
+
         $input['name']="wallet transfer";
         $input['amount']=$amount;
         $input['status']='successful';
@@ -129,9 +132,6 @@ class WalletTransferController extends Controller
         $input['f_wallet']=$r_user->wallet + $amount;
 
         Transaction::create($input);
-
-        $user->wallet-=$amount;
-        $user->save();
 
         $r_user->wallet+=$amount;
         $r_user->save();

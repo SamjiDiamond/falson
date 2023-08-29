@@ -256,20 +256,7 @@ class TransactionController extends Controller
                         $user->update(["agent_commision" => $nBalance]);
                         Transaction::create($input);
                     } else {
-                        if ($tran->name == "data") {
-                            $amount = $tran->amount + 20;
-                            $nBalance = $user->wallet + $amount;
-
-                            $input["type"] = "expenses";
-                            $input["gl"] = "Data";
-                            $input["amount"] = 20;
-                            $input['date'] = Carbon::now();
-                            $input["narration"] = "Being data reversal of " . $tran->ref;
-
-                            PndL::create($input);
-                        } else {
-                            $nBalance = $user->wallet + $tran->amount;
-                        }
+                        $nBalance = $user->wallet + $tran->amount;
 
                         $input["description"] = "Being reversal of " . $tran->description;
                         $input["name"] = "Reversal";

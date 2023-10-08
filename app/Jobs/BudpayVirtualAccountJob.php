@@ -42,7 +42,7 @@ class BudpayVirtualAccountJob implements ShouldQueue
             return;
         }
 
-        $w = VirtualAccount::where(["user_id" => $u->id, "provider" => "budpay"])->exists();
+        $w = VirtualAccount::where(["user_id" => $u->id, "provider" => "budpay","status" => 1])->exists();
 
         if (!$w) {
             Log::info("Running BUDPAY Virtual account generation on ".$u->user_name);

@@ -43,7 +43,7 @@ class CreateProvidusAccountJob implements ShouldQueue
             echo "invalid account";
         }
 
-        $w=VirtualAccount::where(["user_id" =>$u->id, "provider" =>"monnify",])->exists();
+        $w=VirtualAccount::where(["user_id" =>$u->id, "provider" =>"monnify", "status" => 1])->exists();
 
         if (!$w){
 

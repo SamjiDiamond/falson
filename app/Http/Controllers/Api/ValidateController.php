@@ -10,6 +10,11 @@ class ValidateController extends Controller
     public function electricity_server1($phone, $type, $requester = "nm", $sender = "nm")
     {
 
+        $payload='{
+    "type": "PREPAID",
+    "disco": "' . strtoupper($type) . '",
+    "meterNo": "' . $phone . '"
+}';
         try {
             $curl = curl_init();
 
@@ -22,11 +27,7 @@ class ValidateController extends Controller
                 CURLOPT_FOLLOWLOCATION => true,
                 CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                 CURLOPT_CUSTOMREQUEST => 'POST',
-                CURLOPT_POSTFIELDS => '{
-    "type": "PREPAID",
-    "disco": "' . strtoupper($type) . '",
-    "meterNo": "' . $phone . '"
-}',
+                CURLOPT_POSTFIELDS => $payload,
                 CURLOPT_HTTPHEADER => array(
                     'Authorization: Bearer ' . env('HW_AUTH'),
                     'Content-Type: application/json'
@@ -39,6 +40,11 @@ class ValidateController extends Controller
             curl_close($curl);
 
             $rep = json_decode($response, true);
+
+            
+            Log::info("HW Validate Electricity. - " . $type);
+            Log::info("Payload : " . $payload);
+            Log::info($response);
 
             if ($rep['code'] == 200) {
                 return response()->json(['success' => 1, 'message' => 'Validated successfully', 'data' => $rep['customerName'], 'others' => $rep]);
@@ -53,6 +59,11 @@ class ValidateController extends Controller
 
     public function tv_server1($phone, $type, $requester = "nm", $sender = "nm")
     {
+
+        $payload= '{
+    "type": "' . strtoupper($type) . '",
+    "smartCardNo": "' . $phone . '"
+}';
         try {
             $curl = curl_init();
 
@@ -65,10 +76,7 @@ class ValidateController extends Controller
                 CURLOPT_FOLLOWLOCATION => true,
                 CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                 CURLOPT_CUSTOMREQUEST => 'POST',
-                CURLOPT_POSTFIELDS => '{
-    "type": "' . strtoupper($type) . '",
-    "smartCardNo": "' . $phone . '"
-}',
+                CURLOPT_POSTFIELDS =>$payload,
                 CURLOPT_HTTPHEADER => array(
                     'Authorization: Bearer ' . env('HW_AUTH'),
                     'Accept: application/json',
@@ -84,6 +92,11 @@ class ValidateController extends Controller
 
             $rep = json_decode($response, true);
 
+            Log::info("HW Validate TV. - " . $type);
+            Log::info("Payload : " . $payload);
+            Log::info($response);
+
+
 
             if ($rep['code'] == 200) {
                 return response()->json(['success' => 1, 'message' => 'Validated successfully', 'data' => $rep['customerName'], 'details' => $rep]);
@@ -98,6 +111,11 @@ class ValidateController extends Controller
 
     public function tv_server2($phone, $type, $requester = "nm", $sender = "nm")
     {
+        $payload='{
+"serviceCode" : "V-TV",
+"type" : "' . strtoupper($type) . '",
+"smartCardNo" : "' . $phone . '"
+}';
         try {
             $curl = curl_init();
 
@@ -110,12 +128,7 @@ class ValidateController extends Controller
                 CURLOPT_FOLLOWLOCATION => true,
                 CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                 CURLOPT_CUSTOMREQUEST => 'POST',
-                CURLOPT_POSTFIELDS => '
-                {
-"serviceCode" : "V-TV",
-"type" : "' . strtoupper($type) . '",
-"smartCardNo" : "' . $phone . '"
-}',
+                CURLOPT_POSTFIELDS => $payload,
                 CURLOPT_HTTPHEADER => array(
                     'email: '.env('RINGO_EMAIL'),
                     'password: '.env('RINGO_PASSWORD'),
@@ -132,6 +145,7 @@ class ValidateController extends Controller
             $rep = json_decode($response, true);
 
             Log::info("RINGO Validate TV. - " . $type);
+            Log::info("Payload : " . $payload);
             Log::info($response);
 
 

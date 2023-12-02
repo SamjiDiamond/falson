@@ -29,7 +29,7 @@ class ValidationController extends Controller
 
         switch ($input['service']) {
             case "electricity":
-                return $s->electricity_server1($input['number'], strtolower($input['provider']));
+                return $s->electricity_server2($input['number'], strtolower($input['provider']));
             case "tv":
                 $sett=Settings::where('name', 'tv_server')->first();
                 if($sett->value == "HW") {

@@ -57,14 +57,14 @@ class ValidateController extends Controller
 
     }
 
-    public function electricity_server2($phone, $type, $requester = "nm", $sender = "nm")
+    public function electricity_server2($phone, $provider, $type, $requester = "nm", $sender = "nm")
     {
 
         $payload='{
     "serviceCode": "V-ELECT",
-    "disco": "' . strtoupper($type) . '",
+    "disco": "' . $provider . '",
     "meterNo": "' . $phone . '",
-    "type": "PREPAID"
+    "type": "' . $type . '"
 }';
         try {
             $curl = curl_init();

@@ -4,6 +4,7 @@ namespace App\Http;
 
 use App\Http\Middleware\AuthorizationCheck;
 use App\Http\Middleware\GeneralMiddleware;
+use App\Http\Middleware\ResellerAuth;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel

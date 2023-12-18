@@ -60,7 +60,12 @@ class SwitchController extends Controller
 
         switch ($input['service']) {
             case "electricity":
-                return $s->electricity_server6($input['phone'], $input['coded']);
+
+                if (!isset($input['type'])){
+                    return response()->json(['success' => 0, 'message' => 'Kindly add type to your request. E.g PREPAID|POSTPAID']);
+                }
+
+                return $s->electricity_server2($input['phone'], $input['coded'], $input['type']);
             case "tv":
                 return $s->tv_server1($input['phone'], $input['coded']);
             case "betting":

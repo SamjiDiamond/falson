@@ -16,7 +16,7 @@ class ListController extends Controller
     public function airtime()
     {
         //get airtime discounts
-        $airsets = AppAirtimeControl::where('name', '=', 'discount')->first();
+        $airsets = AppAirtimeControl::where('network', '=', 'discount')->first();
 
         $uinfo['discount_mtn'] = $airsets->mtn;
         $uinfo['discount_glo'] = $airsets->glo;

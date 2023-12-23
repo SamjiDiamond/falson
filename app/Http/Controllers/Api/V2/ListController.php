@@ -16,14 +16,9 @@ class ListController extends Controller
     public function airtime()
     {
         //get airtime discounts
-        $airsets = AppAirtimeControl::where('network', '=', 'discount')->first();
+        $airsets = AppAirtimeControl::get();
 
-        $uinfo['discount_mtn'] = $airsets->mtn;
-        $uinfo['discount_glo'] = $airsets->glo;
-        $uinfo['discount_etisalat'] = $airsets->etisalat;
-        $uinfo['discount_airtel'] = $airsets->airtel;
-
-        return response()->json(['success' => 1, 'message' => 'Fetch successfully', 'data' => $uinfo]);
+        return response()->json(['success' => 1, 'message' => 'Fetch successfully', 'data' => $airsets]);
     }
 
     public function airtimeInt()

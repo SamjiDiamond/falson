@@ -467,7 +467,7 @@ class SellDataController extends Controller
             $dada['server_response'] = $response;
             $dada['message'] = $rep['message'];
 
-            if ($rep['status'] == "successful" ) {
+            if ($rep['status'] == "successful" || $rep['status'] == "processing" ) {
                 $dada['server_ref'] = $rep['transaction_id'];
                 if ($requester == "reseller") {
                     return $rs->outputResponse($request, $transid, 1, $dada);

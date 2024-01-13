@@ -35,7 +35,15 @@ Route::prefix('v2')->group(function () {
 
     Route::get('support', [UserController::class, 'support']);
 
-    Route::middleware(['auth:sanctum', 'general_middleware'])->group(function () {
+    Route::get('airtime-converter', [ListController::class, 'airtimeConverter']);
+    Route::get('airtime', [ListController::class, 'airtime']);
+    Route::get('electricity', [ListController::class, 'electricity']);
+    Route::get('airtime/countries', [ListController::class, 'airtimeInt']);
+    Route::get('data/{network}', [ListController::class, 'data']);
+    Route::get('tv/{network}', [ListController::class, 'cabletv']);
+    Route::get('jamb', [ListController::class, 'jamb']);
+
+    Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('biometriclogin', [AuthenticationController::class, 'biometricLogin']);
         Route::get('dashboard', [UserController::class, 'dashboard']);
         Route::post('changepin', [UserController::class, 'change_pin']);
@@ -49,28 +57,23 @@ Route::prefix('v2')->group(function () {
         Route::post('changepassword', [UserController::class, 'change_password']);
         Route::get('paymentcheckout', [OtherController::class, 'paymentcheckout']);
 
-        Route::get('airtime-converter', [ListController::class, 'airtimeConverter']);
-        Route::get('airtime', [ListController::class, 'airtime']);
-        Route::get('electricity', [ListController::class, 'electricity']);
-        Route::get('airtime/countries', [ListController::class, 'airtimeInt']);
-        Route::get('data/{network}', [ListController::class, 'data']);
-        Route::get('tv/{network}', [ListController::class, 'cabletv']);
-        Route::get('jamb', [ListController::class, 'jamb']);
 
-        Route::post('airtime', [PayController::class, 'buyairtime']);
-        Route::post('data', [PayController::class, 'buydata']);
-        Route::post('tv', [PayController::class, 'buytv']);
-        Route::post('electricity', [PayController::class, 'buyelectricity']);
-        Route::post('betting', [PayController::class, 'buybetting']);
-        Route::post('jamb', [PayController::class, 'buyJamb']);
-        Route::post('bizverification', [PayController::class, 'bizverification']);
+        Route::middleware(['general_middleware'])->group(function () {
+            Route::post('airtime', [PayController::class, 'buyairtime']);
+            Route::post('data', [PayController::class, 'buydata']);
+            Route::post('tv', [PayController::class, 'buytv']);
+            Route::post('electricity', [PayController::class, 'buyelectricity']);
+            Route::post('betting', [PayController::class, 'buybetting']);
+            Route::post('jamb', [PayController::class, 'buyJamb']);
+            Route::post('bizverification', [PayController::class, 'bizverification']);
 
-        Route::post('bulkairtime', [UserController::class, 'bulkAirtime']);
+            Route::post('bulkairtime', [UserController::class, 'bulkAirtime']);
 
-        Route::post('airtimeconverter', [PayController::class, 'a2ca2b']);
-        Route::post('resultchecker', [PayController::class, 'resultchecker']);
+            Route::post('airtimeconverter', [PayController::class, 'a2ca2b']);
+            Route::post('resultchecker', [PayController::class, 'resultchecker']);
 
-        Route::post('epins', [OtherController::class, 'insertRechargecard']);
+            Route::post('epins', [OtherController::class, 'insertRechargecard']);
+        });
 
         Route::get('profile', [UserController::class, 'profile']);
         Route::get('agentstatus', [UserController::class, 'agentStatus']);

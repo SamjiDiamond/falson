@@ -141,7 +141,7 @@ class ValidationController extends Controller
             }
 
         }catch (\Exception $e){
-            echo "Error encountered ";
+//            echo "Error encountered ";
             Log::info("Error encountered on Monnify account update on ".json_encode($input));
             Log::info($e);
 

@@ -65,7 +65,6 @@ class ValidationController extends Controller
             return response()->json(['success' => 0, 'message' => 'Email does not exist']);
         }
 
-
         try {
             $settA=Settings::where('name', 'fund_monnify_apikey')->first();
             $settS=Settings::where('name', 'fund_monnify_secretkey')->first();
@@ -135,6 +134,9 @@ class ValidationController extends Controller
             $response = json_decode($response, true);
 
             if($response['requestSuccessful']){
+                $username->bvn=$input['bvn'];
+                $username->save();
+
                 return response()->json(['success' => 1, 'message' => 'Verified Successfully', 'data'=>$response['responseBody']['accountName']]);
             }else{
                 return response()->json(['success' => 0, 'message' => $response['responseMessage']]);

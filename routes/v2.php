@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\V2\AuthenticationController;
 use App\Http\Controllers\Api\V2\ListController;
 use App\Http\Controllers\Api\V2\OtherController;
 use App\Http\Controllers\Api\V2\PayController;
+use App\Http\Controllers\Api\V2\ReportController;
 use App\Http\Controllers\Api\V2\UserController;
 use App\Http\Controllers\Api\V2\ValidationController;
 use App\Http\Controllers\Api\V2\WalletTransferController;
@@ -52,6 +53,7 @@ Route::prefix('v2')->group(function () {
         Route::post('addreferral', [UserController::class, 'add_referral']);
 
         Route::get('transactions', [UserController::class, 'transactions']);
+        Route::get('commissions', [UserController::class, 'commissions']);
         Route::get('gmtransactions', [OtherController::class, 'getGmTrans']);
 
         Route::post('changepassword', [UserController::class, 'change_password']);
@@ -116,6 +118,12 @@ Route::prefix('v2')->group(function () {
         Route::get('cg-bundles', [UserController::class, 'cgBundles']);
         Route::post('cg-bundles-buy', [UserController::class, 'cgBundleBuy']);
         Route::post('cg-bundles-transfer', [UserController::class, 'cgBundleTransfer']);
+
+        Route::post('report_yearly', [ReportController::class, 'yearly']);
+        Route::post('report_monthly', [ReportController::class, 'monthly']);
+        Route::post('report_daily', [ReportController::class, 'daily']);
+
+        Route::get('getPromoCode', [OtherController::class, 'getPromoCode']);
     });
 
 });

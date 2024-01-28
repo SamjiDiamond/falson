@@ -947,9 +947,9 @@ class ServeRequestController extends Controller
             $user->save();
         }
 
-        $job = (new ServeRequestJob($input, $status, $tr, $user->id))
-            ->delay(Carbon::now()->addSeconds(1));
-        dispatch($job);
+//        $job = (new ServeRequestJob($input, $status, $tr, $user->id))
+//            ->delay(Carbon::now()->addSeconds(1));
+//        dispatch($job);
 
         $uinfo['full_name']=$user->full_name;
         $uinfo['company_name']=$user->company_name;

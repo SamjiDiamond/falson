@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V2\ValidationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -17,6 +18,8 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::post('kycUpdate', [ValidationController::class, 'kycUpdate']);
 
 require __DIR__ . '/reseller.php';
 require __DIR__ . '/v2.php';

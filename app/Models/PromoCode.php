@@ -8,5 +8,5 @@ class PromoCode extends Model
 {
     protected $table = "tbl_promocode";
 
-    protected $fillable = ['code'];
+    protected $fillable = ['code', 'generated_for'];
 }

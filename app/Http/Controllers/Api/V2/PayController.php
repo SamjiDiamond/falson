@@ -795,9 +795,9 @@ class PayController extends Controller
 //        }
 
         $input["service"] = $requester;
-        $job = (new ServeRequestJob($input, "1", $tr, $user->id))
-            ->delay(Carbon::now()->addSeconds(1));
-        dispatch($job);
+//        $job = (new ServeRequestJob($input, "1", $tr, $user->id))
+//            ->delay(Carbon::now()->addSeconds(1));
+//        dispatch($job);
 
         $dada['tid'] = $t->id;
         $dada['amount'] = $amount;

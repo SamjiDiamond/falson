@@ -175,6 +175,14 @@ class UserController extends Controller
         return response()->json(['success' => 1, 'message' => 'Fetched successfully', 'data' => $trans]);
     }
 
+    public function commissions()
+    {
+        $user = Auth::user();
+        $trans = Transaction::where([['user_name', $user->user_name],['name', 'Commission']])->OrderBy('id', 'desc')->simplepaginate();
+
+        return response()->json(['success' => 1, 'message' => 'Fetched successfully', 'data' => $trans]);
+    }
+
     public function freemoney()
     {
         $user = Auth::user();

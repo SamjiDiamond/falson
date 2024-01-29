@@ -160,10 +160,34 @@ class HomeController extends Controller
             Artisan::queue('samji:hw --command=data');
         }elseif($type == "data_iyii"){
             Artisan::queue('samji:iyii --command=data');
+        }elseif($type == "data_iyii_mtn"){
+            Artisan::queue('samji:iyii --command=data --type=MTN');
+        }elseif($type == "data_iyii_glo"){
+            Artisan::queue('samji:iyii --command=data --type=GLO');
+        }elseif($type == "data_iyii_airtel"){
+            Artisan::queue('samji:iyii --command=data --type=AIRTEL');
+        }elseif($type == "data_iyii_9mobile"){
+            Artisan::queue('samji:iyii --command=data --type=9MOBILE');
         }elseif($type == "data_ogdams"){
             Artisan::queue('samji:ogdams --command=data');
+        }elseif($type == "data_ogdams_mtn"){
+            Artisan::queue('samji:ogdams --command=data --type=MTN');
+        }elseif($type == "data_ogdams_glo"){
+            Artisan::queue('samji:ogdams --command=data --type=GLO');
+        }elseif($type == "data_ogdams_airtel"){
+            Artisan::queue('samji:ogdams --command=data --type=AIRTEL');
+        }elseif($type == "data_ogdams_9mobile"){
+            Artisan::queue('samji:ogdams --command=data --type=9MOBILE');
         }elseif($type == "data_uzobest"){
             Artisan::queue('samji:uzobest --command=data');
+        }elseif($type == "data_uzobest_mtn"){
+            Artisan::queue('samji:uzobest --command=data --type=MTN');
+        }elseif($type == "data_uzobest_glo"){
+            Artisan::queue('samji:uzobest --command=data --type=GLO');
+        }elseif($type == "data_uzobest_airtel"){
+            Artisan::queue('samji:uzobest --command=data --type=AIRTEL');
+        }elseif($type == "data_uzobest_9mobile"){
+            Artisan::queue('samji:uzobest --command=data --type=9MOBILE');
         }elseif($type == "tv"){
             Artisan::queue('samji:hw --command=tv');
             Artisan::queue('samji:ringo --command=tv');

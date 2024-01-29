@@ -79,7 +79,7 @@
                             <a href="{{route('plansRefresh', "data_uzobest_mtn")}}" class="btn btn-gradient-purple mr-3">Refresh UZOBEST Data Plans (MTN)</a>
                             <a href="{{route('plansRefresh', "data_uzobest_glo")}}" class="btn btn-gradient-purple mr-3">Refresh UZOBEST Data Plans (GLO)</a>
                             <a href="{{route('plansRefresh', "data_uzobest_airtel")}}" class="btn btn-gradient-purple mr-3">Refresh UZOBEST Data Plans (AIRTEL)</a>
-                            <a href="{{route('plansRefresh', "data_uzobest_9mobile")}}" class="btn btn-gradientphp -purple mr-3">Refresh UZOBEST Data Plans (9MOBILE)</a>
+                            <a href="{{route('plansRefresh', "data_uzobest_9mobile")}}" class="btn btn-gradient-purple mr-3">Refresh UZOBEST Data Plans (9MOBILE)</a>
                         </div>
 
 

@@ -140,12 +140,12 @@ class GenerateOGDAMS extends Command
 
     }
 
-    private function sDataPlans($type)
+    private function sDataPlans($types)
     {
         $this->info("Deleting Reseller & App Data plans records");
 
-        ResellerDataPlans::where([['server','4'], ['type', $type]])->delete();
-        AppDataControl::where([['server','4'], ['network', $type]])->delete();
+        ResellerDataPlans::where([['server','4'], ['type', $types]])->delete();
+        AppDataControl::where([['server','4'], ['network', $types]])->delete();
 
         $this->info("Fetching data plans");
 
@@ -187,7 +187,7 @@ class GenerateOGDAMS extends Command
                 $network = "GLO";
             }
 
-            if ($network == $type) {
+            if ($network == $types) {
                 if (str_contains($plans['name'], "MB")) {
                     $allowance = (explode("MB", $plans['name'])[0] / 1000);
                 } elseif (str_contains($plans['name'], "TB")) {

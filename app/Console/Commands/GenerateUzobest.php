@@ -134,12 +134,12 @@ class GenerateUzobest extends Command
 
     }
 
-    private function sDataPlans($type)
+    private function sDataPlans($types)
     {
-        $this->info("Deleting Reseller & App Data plans table for $type");
+        $this->info("Deleting Reseller & App Data plans table for $types");
 //
-        ResellerDataPlans::where([['server','5'], ['type', $type]])->delete();
-        AppDataControl::where([['server','5'], ['network', $type]])->delete();
+        ResellerDataPlans::where([['server','5'], ['type', $types]])->delete();
+        AppDataControl::where([['server','5'], ['network', $types]])->delete();
 
         $this->info("Fetching data plans");
 
@@ -171,7 +171,10 @@ class GenerateUzobest extends Command
 
 
         foreach ($rep as $plans) {
-            if($plans['network'] == $type){
+            echo $plans['network'];
+//            echo $type;
+            if($plans['network'] == $types){
+                echo json_encode($plans);
                 if(str_contains($plans['size'], "MB")){
                     $allowance=(explode("MB", $plans['size'])[0]/1000);
                 }elseif(str_contains($plans['size'], "TB")){

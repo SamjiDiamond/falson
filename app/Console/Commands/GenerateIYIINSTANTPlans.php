@@ -13,7 +13,7 @@ class GenerateIYIINSTANTPlans extends Command
      *
      * @var string
      */
-    protected $signature = 'samji:iyii {--command= : <tv|data|electricity> command to execute}';
+    protected $signature = 'samji:iyii {--command= : <tv|data|electricity> command to execute} {--type= : <mtn|airtel|gotv|dstv> type to execute}';
 
     /**
      * The console command description.
@@ -32,7 +32,11 @@ class GenerateIYIINSTANTPlans extends Command
         switch ($this->option('command')) {
 
             case 'data':
-                $this->dataPlans();
+                if($this->option('type') == ""){
+                    $this->dataPlans();
+                }else{
+                    $this->sDataPlans($this->option('type'));
+                }
                 break;
 
             default:
@@ -95,6 +99,69 @@ class GenerateIYIINSTANTPlans extends Command
 
         $this->item($repi);
 
+
+    }
+
+    private function sDataPlans($type)
+    {
+       $this->info("Truncating Reseller & App Data plans table for $type");
+
+       echo "Truncating Reseller & App Data plans table for $type";
+
+        ResellerDataPlans::where([['server','3'], ['type', $type]])->delete();
+        AppDataControl::where([['server','3'], ['network', $type]])->delete();
+
+
+        $this->info("Fetching data plans");
+
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => env('IYIINSTANT_BASEURL') . "network/",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'GET',
+            CURLOPT_HTTPHEADER => array(
+                'Authorization: Token ' . env('IYIINSTANT_AUTH'),
+                'Content-Type: application/json'
+            ),
+        ));
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+
+        $response = curl_exec($curl);
+
+        echo $response;
+
+        curl_close($curl);
+
+        $rep = json_decode($response, true);
+
+        if($type == 'AIRTEL') {
+            $repi = $rep['AIRTEL_PLAN'];
+            $this->item($repi);
+        }
+
+
+        if($type == '9MOBILE') {
+            $repi = $rep['9MOBILE_PLAN'];
+            $this->item($repi);
+        }
+
+
+        if($type == 'GLO') {
+            $repi = $rep['GLO_PLAN'];
+            $this->item($repi);
+        }
+
+
+        if($type == 'MTN') {
+            $repi = $rep['MTN_PLAN'];
+            $this->item($repi);
+        }
 
     }
 

@@ -17,6 +17,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
@@ -137,10 +138,10 @@ class AuthenticationController extends Controller
                     $datas['device'] = $input['device'];
                     $datas['ip'] = $_SERVER['REMOTE_ADDR'];
                     NewDeviceEvent::dispatch($user, $datas);
-    
+
                     $la->status = "new_device";
                     $la->save();
-    
+
                     return response()->json(['success' => 2, 'message' => 'Login successfully']);
                 }
             }
@@ -394,5 +395,55 @@ class AuthenticationController extends Controller
             return response()->json(['success' => 1, 'message' => 'Pin changed successfully']);
         }
     }
+
+    public function sendcode(Request $request)
+    {
+        $input = $request->all();
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email|max:255'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'message' => implode(",", $validator->errors()->all()), 'errors' => $validator->errors()]);
+        }
+
+        Log::info("App sendcode endpoint: " . json_encode($input));
+
+        $em = User::where("email", $input['email'])->first();
+
+        if ($em) {
+            return response()->json(['success' => 0, 'message' => 'Email already exist']);
+        }
+
+        $cr=CodeRequest::where("mobile", $input['email'])->latest()->first();
+
+        if($cr){
+            if(Carbon::parse($cr->created_at)->diffInMinutes() < 10){
+                return response()->json(['success' => 0, 'message' => 'Code has been sent to your mail. Kindly check your inbox, promotions or spam']);
+            }
+        }
+
+        $type="register";
+
+        $code = substr(rand(), 0, 8);
+
+        CodeRequest::create([
+            'mobile' => trim($input['email']),
+            'code' => $code,
+            'status' => 0,
+            'type' => $type
+        ]);
+
+        $edata['code']=$code;
+        $edata['email']=$input['email'];
+        $edata['ip']=$request->ip();
+
+        if ($type == "register") {
+            Mail::to($input['email'])->send(new EmailVerificationMail($edata));
+        }
+
+        return response()->json(['success' => 1, 'message' => 'Code sent to your mail successfully']);
+    }
+
 
 }

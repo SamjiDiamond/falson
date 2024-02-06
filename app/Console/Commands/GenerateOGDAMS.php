@@ -13,7 +13,7 @@ class GenerateOGDAMS extends Command
      *
      * @var string
      */
-    protected $signature = 'samji:ogdams {--command= : <tv|data|electricity> command to execute}';
+    protected $signature = 'samji:ogdams {--command= : <tv|data|electricity> command to execute} {--type= : <mtn|airtel|gotv|dstv> type to execute}';
 
     /**
      * The console command description.
@@ -32,7 +32,11 @@ class GenerateOGDAMS extends Command
         switch ($this->option('command')) {
 
             case 'data':
-                $this->dataPlans();
+                if($this->option('type') == ""){
+                    $this->dataPlans();
+                }else{
+                    $this->sDataPlans($this->option('type'));
+                }
                 break;
 
             default:
@@ -44,8 +48,8 @@ class GenerateOGDAMS extends Command
 
     private function dataPlans()
     {
-//        $this->info("Truncating Reseller & App Data plans table");
-//
+        $this->info("Deleting Reseller & App Data plans records");
+
        ResellerDataPlans::where('server','4')->delete();
        AppDataControl::where('server','4')->delete();
 
@@ -131,6 +135,104 @@ class GenerateOGDAMS extends Command
                 'server' => 4,
                 'status' => 0,
             ]);
+        }
+
+
+    }
+
+    private function sDataPlans($types)
+    {
+        $this->info("Deleting Reseller & App Data plans records");
+
+        ResellerDataPlans::where([['server','4'], ['type', $types]])->delete();
+        AppDataControl::where([['server','4'], ['network', $types]])->delete();
+
+        $this->info("Fetching data plans");
+
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => env('OGDAMS_BASEURL') . "get/data/plans",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'GET',
+            CURLOPT_HTTPHEADER => array(
+                'Authorization: Bearer ' . env('OGDAMS_TOKEN'),
+                'Content-Type: application/json'
+            ),
+        ));
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+
+        $response = curl_exec($curl);
+
+        echo $response;
+
+        curl_close($curl);
+
+        $rep = json_decode($response, true);
+
+
+        foreach ($rep as $plans) {
+
+            $network = "9MOBILE";
+            if ($plans['networkId'] == 1) {
+                $network = "MTN";
+            } elseif ($plans['networkId'] == 2) {
+                $network = "AIRTEL";
+            } elseif ($plans['networkId'] == 3) {
+                $network = "GLO";
+            }
+
+            if ($network == $types) {
+                if (str_contains($plans['name'], "MB")) {
+                    $allowance = (explode("MB", $plans['name'])[0] / 1000);
+                } elseif (str_contains($plans['name'], "TB")) {
+                    $allowance = (explode("TB", $plans['name'])[0] * 1000);
+                } else {
+                    $allowance = explode("GB", $plans['name'])[0];
+                }
+
+                $type = "DG";
+
+                if (str_contains($plans['name'], "SME")) {
+                    $type = "SME";
+                } elseif (str_contains($plans['name'], "CG")) {
+                    $type = "CG";
+                }
+
+
+                ResellerDataPlans::create([
+                    'name' => $type == "DG" ? str_replace("GIFTING", "DG", $plans['name']) : $plans['name'],
+                    'product_code' => $allowance,
+                    'code' => "4_" . $plans['planId'],
+                    'level1' => $plans['price'],
+                    'level2' => $plans['price'],
+                    'level3' => $plans['price'],
+                    'level4' => $plans['price'],
+                    'level5' => $plans['price'],
+                    'price' => $plans['price'],
+                    'type' => $network,
+                    'plan_id' => $plans['planId'],
+                    'server' => 4,
+                    'status' => 0,
+                ]);
+
+                AppDataControl::create([
+                    'name' => $type == "DG" ? str_replace("GIFTING", "DG", $plans['name']) : $plans['name'],
+                    'dataplan' => $allowance,
+                    'network' => $network,
+                    'coded' => "4_" . $plans['planId'],
+                    'plan_id' => $plans['planId'],
+                    'pricing' => $plans['price'],
+                    'price' => $plans['price'],
+                    'server' => 4,
+                    'status' => 0,
+                ]);
+            }
         }
 
 

@@ -57,14 +57,29 @@
                         <div class="row">
                             <a href="{{route('plansRefresh', "data")}}" class="btn btn-danger mr-3">Refresh Data Plans</a>
                             <a href="{{route('plansRefresh', "tv")}}" class="btn btn-danger mr-3">Refresh TV Plans</a>
-                            <a href="{{route('plansRefresh', "electricity")}}" class="btn btn-danger mr-3">Refresh Electricity Plans</a>
+                            <a href="{{route('plansRefresh', "data_hw")}}" class="btn btn-danger mr-3">Refresh HW Data Plans</a>
+{{--                            <a href="{{route('plansRefresh', "electricity")}}" class="btn btn-danger mr-3">Refresh Electricity Plans</a>--}}
                         </div>
 
                         <div class="row mt-3">
-                            <a href="{{route('plansRefresh', "data_hw")}}" class="btn btn-danger mr-3">Refresh HW Data Plans</a>
-                            <a href="{{route('plansRefresh', "data_iyii")}}" class="btn btn-danger mr-3">Refresh IYII Data Plans</a>
-                            <a href="{{route('plansRefresh', "data_ogdams")}}" class="btn btn-danger mr-3">Refresh OGDAMS Data Plans</a>
-                            <a href="{{route('plansRefresh', "data_uzobest")}}" class="btn btn-danger mr-3">Refresh UZOBEST Data Plans</a>
+                            <a href="{{route('plansRefresh', "data_iyii_mtn")}}" class="btn btn-gradient-primary mr-3">Refresh IYII Data Plans (MTN)</a>
+                            <a href="{{route('plansRefresh', "data_iyii_glo")}}" class="btn btn-gradient-primary mr-3">Refresh IYII Data Plans (GLO)</a>
+                            <a href="{{route('plansRefresh', "data_iyii_airtel")}}" class="btn btn-gradient-primary mr-3">Refresh IYII Data Plans (AIRTEL)</a>
+                            <a href="{{route('plansRefresh', "data_iyii_9mobile")}}" class="btn btn-gradient-primary mr-3">Refresh IYII Data Plans (9MOBILE)</a>
+                        </div>
+
+                        <div class="row mt-3">
+                            <a href="{{route('plansRefresh', "data_ogdams_mtn")}}" class="btn btn-gradient-secondary mr-3">Refresh OGDAMS Data Plans (MTN)</a>
+                            <a href="{{route('plansRefresh', "data_ogdams_glo")}}" class="btn btn-gradient-secondary mr-3">Refresh OGDAMS Data Plans (GLO)</a>
+                            <a href="{{route('plansRefresh', "data_ogdams_airtel")}}" class="btn btn-gradient-secondary mr-3">Refresh OGDAMS Data Plans (AIRTEL)</a>
+                            <a href="{{route('plansRefresh', "data_ogdams_9mobile")}}" class="btn btn-gradient-secondary mr-3">Refresh OGDAMS Data Plans (9MOBILE)</a>
+                        </div>
+
+                        <div class="row mt-3">
+                            <a href="{{route('plansRefresh', "data_uzobest_mtn")}}" class="btn btn-gradient-purple mr-3">Refresh UZOBEST Data Plans (MTN)</a>
+                            <a href="{{route('plansRefresh', "data_uzobest_glo")}}" class="btn btn-gradient-purple mr-3">Refresh UZOBEST Data Plans (GLO)</a>
+                            <a href="{{route('plansRefresh', "data_uzobest_airtel")}}" class="btn btn-gradient-purple mr-3">Refresh UZOBEST Data Plans (AIRTEL)</a>
+                            <a href="{{route('plansRefresh', "data_uzobest_9mobile")}}" class="btn btn-gradient-purple mr-3">Refresh UZOBEST Data Plans (9MOBILE)</a>
                         </div>
 
 

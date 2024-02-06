@@ -8,6 +8,7 @@ use App\Models\AirtimeCountry;
 use App\Models\AppOtherServices;
 use App\Models\FAQs;
 use App\Models\GeneralMarket;
+use App\Models\PromoCode;
 use App\Models\ReferralPlans;
 use App\Models\Settings;
 use App\Models\Transaction;
@@ -390,6 +391,13 @@ class OtherController extends Controller
         $faqs=FAQs::where('status', 1)->get();
 
         return response()->json(['success' => 1, 'message' => 'FAQ fetched successfully', 'data' => $faqs]);
+    }
+
+    public function getPromoCode(Request $request)
+    {
+        $faqs=PromoCode::where('used', 0)->select('code','amount','used','reuseable','usedby','generated_for','created_at')->get();
+
+        return response()->json(['success' => 1, 'message' => 'Fetched successfully', 'data' => $faqs]);
     }
 
     public function getOtherService(Request $request)

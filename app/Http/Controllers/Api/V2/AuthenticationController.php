@@ -165,7 +165,7 @@ class AuthenticationController extends Controller
         $token = $user->createToken($input['device'])->plainTextToken;
 
 
-        return response()->json(['success' => 1, 'message' => 'Login successfully', 'token' => $token, 'balance' => $user->wallet]);
+        return response()->json(['success' => 1, 'message' => 'Login successfully', 'token' => $token, 'balance' => $user->wallet, 'bvn' => $user->bvn != ""]);
     }
 
     public function newdeviceLogin(Request $request)

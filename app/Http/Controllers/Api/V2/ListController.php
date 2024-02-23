@@ -55,7 +55,7 @@ class ListController extends Controller
             }
         }
 
-        $datasets = AppCableTVControl::where([['type', '=', strtolower($network)], ['status', 1], ['server', $server]])->select('name', 'coded', 'price', 'type', 'status')->get();
+        $datasets = AppCableTVControl::where([['type', '=', strtolower($network)], ['status', 1], ['server', $server]])->select('name', 'coded', 'price', 'type', 'status','discount')->get();
 
         return response()->json(['success' => 1, 'message' => 'Fetch successfully', 'data' => $datasets]);
     }

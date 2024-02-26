@@ -102,4 +102,16 @@ class ListController extends Controller
 
         return response()->json(['success' => 1, 'message' => 'Fetch successfully', 'data' => $airsets]);
     }
+
+    public function availableCommissions()
+    {
+        $air = AppAirtimeControl::select('network', 'discount')->get();
+        $elec = ResellerElecticity::select('name', 'discount')->get();
+        $a2c = Airtime2CashSettings::select('network', 'discount')->get();
+        $gotv = AppCableTVControl::select('type', 'discount')->where('type','gotv')->first();
+        $dstv = AppCableTVControl::select('type', 'discount')->where('type','dstv')->first();
+        $start = AppCableTVControl::select('type', 'discount')->where('type','startimes')->first();
+
+        return response()->json(['success' => 1, 'message' => 'Fetch successfully', 'data' => ['airtime' => $air, 'electricity' =>$elec, 'airtime2cash' =>$a2c, 'cabletv' =>[$gotv,$dstv,$start]]]);
+    }
 }

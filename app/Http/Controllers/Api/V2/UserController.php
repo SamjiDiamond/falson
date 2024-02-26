@@ -87,7 +87,26 @@ class UserController extends Controller
         $others['monnify_funding_message'] = $sett['monnify_funding_message'];
         $others['budpay_funding_message'] = $sett['budpay_funding_message'];
 
-        return response()->json(['success' => 1, 'message' => 'Fetched successfully', 'data' => ['user' => $me, 'balances' => $balances, 'services' => $services, 'news' => $user->gnews, 'others' => $others]]);
+        $pay['fund_rave'] = $sett['fund_rave'];
+        $pay['fund_paystack'] = $sett['fund_paystack'];
+        $pay['fund_monnify'] = $sett['fund_monnify'];
+        $pay['fund_budpay'] = $sett['fund_budpay'];
+        $pay['fund_paystack_details'] = $sett['fund_paystack_details'];
+        $pay['fund_paystack_secret'] = $sett['secret_paystack_details'];
+        $pay['fund_rave_details'] = $sett['fund_rave_details'];
+        $pay['fund_rave_key'] = $sett['fund_rave_key'];
+        $pay['fund_monnify_apikey'] = $sett['fund_monnify_apikey'];
+        $pay['fund_monnify_contractcode'] = $sett['fund_monnify_contractcode'];
+        $pay['fund_budpay_secret'] = $sett['fund_budpay_secret'];
+        $pay['fund_budpay_public'] = $sett['fund_budpay_public'];
+        $pay['min_funding'] = $sett['min_funding'];
+        $pay['max_funding'] = $sett['max_funding'];
+        $pay['funding_charges'] = $sett['funding_charges'];
+        $pay['funding_message'] = $sett['funding_message'];
+        $pay['monnify_funding_message'] = $sett['monnify_funding_message'];
+        $pay['budpay_funding_message'] = $sett['budpay_funding_message'];
+
+        return response()->json(['success' => 1, 'message' => 'Fetched successfully', 'data' => ['user' => $me, 'balances' => $balances, 'services' => $services, 'news' => $user->gnews, 'others' => $others, 'payment' => $pay]]);
     }
     public function support()
     {

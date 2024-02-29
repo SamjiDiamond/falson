@@ -4,8 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class AppEducationControl extends Model
+class AppEducationControl extends Model implements Auditable
 {
     use HasFactory;
 

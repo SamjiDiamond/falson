@@ -38,7 +38,7 @@ class ListController extends Controller
 
     public function education()
     {
-        $airsets = AppEducationControl::where('status',1)->get();
+        $airsets = AppEducationControl::where('status',1)->select('id', 'name', 'price', 'code', 'status')->get();
 
         return response()->json(['success' => 1, 'message' => 'Fetch successfully', 'data' => $airsets]);
     }

@@ -43,6 +43,7 @@ Route::prefix('v2')->group(function () {
     Route::get('data/{network}', [ListController::class, 'data']);
     Route::get('tv/{network}', [ListController::class, 'cabletv']);
     Route::get('jamb', [ListController::class, 'jamb']);
+    Route::get('education', [ListController::class, 'education']);
     Route::get('availableCommissions', [ListController::class, 'availableCommissions']);
 
     Route::middleware(['auth:sanctum'])->group(function () {

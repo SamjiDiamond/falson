@@ -8,6 +8,7 @@ use App\Models\AirtimeCountry;
 use App\Models\AppAirtimeControl;
 use App\Models\AppCableTVControl;
 use App\Models\AppDataControl;
+use App\Models\AppEducationControl;
 use App\Models\ResellerElecticity;
 use App\Models\Settings;
 
@@ -31,6 +32,13 @@ class ListController extends Controller
     public function electricity()
     {
         $airsets = ResellerElecticity::get();
+
+        return response()->json(['success' => 1, 'message' => 'Fetch successfully', 'data' => $airsets]);
+    }
+
+    public function education()
+    {
+        $airsets = AppEducationControl::where('status',1)->get();
 
         return response()->json(['success' => 1, 'message' => 'Fetch successfully', 'data' => $airsets]);
     }

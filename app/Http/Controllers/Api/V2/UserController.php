@@ -50,6 +50,7 @@ class UserController extends Controller
         $me['status'] = $user->status;
         $me['api_key'] = $user->api_key ?? " ";
         $me['bvn'] = $user->bvn != "";
+        $me['email_valid'] = $user->email_valid;
 
         $balances['wallet'] = "$user->wallet";
         $balances['bonus'] = "$user->bonus";

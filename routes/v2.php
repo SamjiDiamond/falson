@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\OthersController;
 use App\Http\Controllers\Api\V2\AuthenticationController;
 use App\Http\Controllers\Api\V2\ListController;
+use App\Http\Controllers\Api\V2\NotificationController;
 use App\Http\Controllers\Api\V2\OtherController;
 use App\Http\Controllers\Api\V2\PayController;
 use App\Http\Controllers\Api\V2\ReportController;
@@ -60,6 +61,15 @@ Route::prefix('v2')->group(function () {
 
         Route::post('changepassword', [UserController::class, 'change_password']);
         Route::get('paymentcheckout', [OtherController::class, 'paymentcheckout']);
+
+        Route::post('email-verification', [AuthenticationController::class, 'email_verify']);
+        Route::post('email-verification-continue', [AuthenticationController::class, 'email_verify_continue']);
+
+        Route::get('all-notifications', [NotificationController::class, 'notifications']);
+        Route::get('unread-notifications', [NotificationController::class, 'unreadnotifications']);
+        Route::put('read-all-notifications', [NotificationController::class, 'markAsRead']);
+        Route::post('generate-notifications', [NotificationController::class, 'generate']);
+        Route::post('account-statement', [NotificationController::class, 'generateAccountStatement']);
 
 
         Route::middleware(['general_middleware'])->group(function () {

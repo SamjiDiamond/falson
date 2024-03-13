@@ -8,7 +8,9 @@ use App\Jobs\BudpayVirtualAccountJob;
 use App\Jobs\CreateCGWalletsJob;
 use App\Jobs\CreateProvidusAccountJob;
 use App\Jobs\LoginAttemptApiFinderJob;
+use App\Mail\EmailVerificationMail;
 use App\Mail\PasswordResetMail;
+use App\Models\CodeRequest;
 use App\Models\LoginAttempt;
 use App\Models\NewDevice;
 use App\Models\SocialLogin;
@@ -443,6 +445,123 @@ class AuthenticationController extends Controller
         }
 
         return response()->json(['success' => 1, 'message' => 'Code sent to your mail successfully']);
+    }
+
+    public function email_verify(Request $request)
+    {
+        $input = $request->all();
+        $rules = array(
+            'email' => 'required|email'
+        );
+
+        $validator = Validator::make($input, $rules);
+
+        $input = $request->all();
+
+        if (!$validator->passes()) {
+            return response()->json(['success' => 0, 'message' => implode(",", $validator->errors()->all())]);
+        }
+
+        if(Auth::user()->email_valid == 1){
+            return response()->json(['success' => 0, 'message' => 'Email is already verified']);
+        }
+
+//        $fuser = User::where([['email', $input['email']], ['user_name', '!=', Auth::user()->user_name]])->first();
+//
+//
+//        if ($fuser) {
+//            return response()->json(['success' => 0, 'message' => 'This email exist with another account. Kindly use your valid email']);
+//        }
+
+        $cr=CodeRequest::where("mobile", $input['email'])->latest()->first();
+
+        if($cr){
+            if(Carbon::parse($cr->created_at)->diffInMinutes() < 10){
+                return response()->json(['success' => 0, 'message' => 'Code has been sent to your mail. Kindly check your inbox, promotions or spam']);
+            }
+        }
+
+        $type="email_verify";
+
+        $code = substr(rand(), 0, 8);
+
+        CodeRequest::create([
+            'mobile' => trim($input['email']),
+            'code' => $code,
+            'status' => 0,
+            'type' => $type
+        ]);
+
+        $edata['code']=$code;
+        $edata['email']=$input['email'];
+        $edata['ip']=$request->ip();
+
+
+        Mail::to($input['email'])->send(new EmailVerificationMail($edata));
+
+
+        return response()->json(['success' => 1, 'message' => 'Code sent to your mail successfully']);
+
+    }
+
+    public function email_verify_continue(Request $request)
+    {
+        $input = $request->all();
+        $rules = array(
+            'email' => 'required',
+            'code' => 'required',
+        );
+
+        $validator = Validator::make($input, $rules);
+
+        $input = $request->all();
+
+        if (!$validator->passes()) {
+            return response()->json(['success' => 0, 'message' => implode(",", $validator->errors()->all())]);
+        }
+
+
+        if(Auth::user()->email_valid == 1){
+            return response()->json(['success' => 0, 'message' => 'Email is already verified']);
+        }
+
+//        $fuser = User::where([['email', $input['email']], ['user_name', '!=', Auth::user()->user_name]])->first();
+//
+//        if ($fuser) {
+//            return response()->json(['success' => 0, 'message' => 'This email exist with another account. Kindly use your valid email']);
+//        }
+
+
+        $cr=CodeRequest::where([["mobile", $input['email']], ['status', 0], ['type', 'email_verify']])->latest()->first();
+
+        if(!$cr){
+            return response()->json(['success' => 0, 'message' => 'Kindly restart verification process']);
+        }
+
+        $max_attempt=3;
+
+        $cur_attempt=$max_attempt - $cr->attempt;
+
+        if ($cur_attempt <= 0){
+            return response()->json(['success' => 0, 'message' => "Maximum attempt exceeded. Kindly request a new code"]);
+        }else{
+            $cr->attempt += 1;
+            $cr->save();
+        }
+
+        if($cr->code != $input['code']){
+            return response()->json(['success' => 0, 'message' => "Code does not match. You have $cur_attempt attempt left."]);
+        }else{
+            $cr->status=1;
+            $cr->save();
+        }
+
+        $user=User::find(Auth::id());
+        $user->email_valid=1;
+        $user->save();
+
+        return response()->json(['success' => 1, 'message' => 'Email verified successfully']);
+
     }
 
 

@@ -67,7 +67,7 @@ class SwitchController extends Controller
 
                 return $s->electricity_server2($input['phone'], $input['coded'], $input['type']);
             case "tv":
-                return $s->tv_server1($input['phone'], $input['coded']);
+                return $s->tv_server2($input['phone'], $input['coded']);
             case "betting":
                 return $s->betting_server7($input['phone'], strtoupper($input['coded']));
             case "smile":

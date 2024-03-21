@@ -142,8 +142,8 @@ class PayController extends Controller
             return response()->json(['success' => 0, 'message' => $rac->name . ' currently unavailable']);
         }
 
-        $dis = explode("%", $rac->discount);
-        $discount = $rac->amount * ($dis[0] / 100);
+        $dis = 0;
+        $discount = $rac->amount * ($dis / 100);
         $debitAmount = $rac->amount;
 
 

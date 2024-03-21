@@ -50,7 +50,8 @@ class ValidationController extends Controller
         $input = $request->all();
         $rules = array(
             'email' => 'required',
-            'bvn' => 'required'
+            'bvn' => 'required',
+            'nin' => 'required'
         );
 
         $validator = Validator::make($input, $rules);
@@ -113,7 +114,8 @@ class ValidationController extends Controller
                 CURLOPT_CUSTOMREQUEST => "PUT",
                 CURLOPT_SSL_VERIFYPEER => false,
                 CURLOPT_POSTFIELDS => '{
-      "bvn":"'.$input['bvn'].'"
+      "bvn":"'.$input['bvn'].'",
+      "nin":"'.$input['nin'].'"
 }',
                 CURLOPT_HTTPHEADER => array(
                     "Content-Type: application/json",

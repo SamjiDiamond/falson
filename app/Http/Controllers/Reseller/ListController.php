@@ -36,16 +36,16 @@ class ListController extends Controller
 
         switch (strtolower($input['coded'])) {
             case "m":
-                $plans = ResellerDataPlans::where("type", "mtn-data")->get();
+                $plans = ResellerDataPlans::where("type", "LIKE", "mtn%")->get();
                 break;
             case "a":
-                $plans = ResellerDataPlans::where("type", "airtel-data")->get();
+                $plans = ResellerDataPlans::where("type", "LIKE", "airtel%")->get();
                 break;
             case "9":
-                $plans = ResellerDataPlans::where("type", "etisalat-data")->get();
+                $plans = ResellerDataPlans::where("type", "LIKE", "9mobile%")->get();
                 break;
             case "g":
-                $plans = ResellerDataPlans::where("type", "glo-data")->get();
+                $plans = ResellerDataPlans::where("type", "LIKE", "glo%")->get();
                 break;
             default:
                 $plans = "";
@@ -55,7 +55,7 @@ class ListController extends Controller
             return response()->json(['success' => 0, 'message' => 'Invalid coded supplied']);
         }
 
-        return response()->json(['success' => 1, 'message' => 'Fetched successfully', 'data' => $plans->makeHidden(['price'])]);
+        return response()->json(['success' => 1, 'message' => 'Fetched successfully', 'data' => $plans->makeHidden(['price','product_code','plan_id','network','level2','level3','level4','level5'])]);
     }
 
     public function electricity()

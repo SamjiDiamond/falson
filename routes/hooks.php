@@ -25,6 +25,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::prefix('hook')->group(function () {
+    Route::post('paylony', [\App\Http\Controllers\Payment\PaylonyHookController::class, 'index']);
     Route::post('budpay', [BudpayController::class, 'index']);
     Route::post('monnify', [MonnifyHookController::class, 'index']);
     Route::post('paystack', [PaystackHookController::class, 'index']);

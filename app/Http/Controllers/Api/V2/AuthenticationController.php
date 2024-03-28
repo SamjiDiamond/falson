@@ -6,6 +6,7 @@ use App\Events\NewDeviceEvent;
 use App\Http\Controllers\Controller;
 use App\Jobs\BudpayVirtualAccountJob;
 use App\Jobs\CreateCGWalletsJob;
+use App\Jobs\CreatePaylonyVirtualAccountJob;
 use App\Jobs\CreateProvidusAccountJob;
 use App\Jobs\LoginAttemptApiFinderJob;
 use App\Mail\EmailVerificationMail;
@@ -158,6 +159,7 @@ class AuthenticationController extends Controller
 
         CreateProvidusAccountJob::dispatch($user->id);
         BudpayVirtualAccountJob::dispatch($user->id);
+        CreatePaylonyVirtualAccountJob::dispatch($user->id);
 
         $user->last_login=Carbon::now();
         $user->save();
@@ -294,6 +296,7 @@ class AuthenticationController extends Controller
 
         CreateProvidusAccountJob::dispatch($user->id);
         BudpayVirtualAccountJob::dispatch($user->id);
+        CreatePaylonyVirtualAccountJob::dispatch($user->id);
 
         // Revoke all tokens...
         $user->tokens()->delete();

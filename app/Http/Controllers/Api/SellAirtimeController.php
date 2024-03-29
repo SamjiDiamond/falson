@@ -27,7 +27,7 @@ class SellAirtimeController extends Controller
             $curl = curl_init();
 
             curl_setopt_array($curl, array(
-                CURLOPT_URL => env('HW_BASEURL').'purchase/airtime',
+                CURLOPT_URL => env('HW_BASEURL').'airtime/buy',
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => '',
                 CURLOPT_MAXREDIRS => 10,
@@ -39,7 +39,8 @@ class SellAirtimeController extends Controller
                 CURLOPT_HTTPHEADER => array(
                     'Authorization: Bearer ' . env('HW_AUTH'),
                     'Accept: application/json',
-                    'Content-Type: application/json'
+                    'Content-Type: application/json',
+                    'User-Agent: samji'
                 ),
             ));
 
@@ -52,7 +53,7 @@ class SellAirtimeController extends Controller
             Log::info("HW Payload. - " . $payload);
 
         } else {
-            $response = '{ "code": 200, "message": "SUCCESSFUL", "reference": "HONOUR|WORLD|31|20220611013326|323222" }';
+            $response = '{ "msg": "MTN Airtime purchase of NGN 100.00 for 08166939205 was successful", "data": { "code": 200, "reference": "TN|A|125|20240325115852AM921_JARAC", "msg": "SUCCESSFUL", "description": "MTN Airtime Purchase", "message": "SUCCESSFUL", "type": "airtime" } }';
         }
 
         $rep = json_decode($response, true);
@@ -65,8 +66,8 @@ class SellAirtimeController extends Controller
 
         $dada['server_response'] = $response;
 
-        if ($rep['code'] == 200) {
-            $dada['server_ref'] = $rep['reference'];
+        if ($rep['data']['code'] == 200) {
+            $dada['server_ref'] = $rep['data']['reference'];
             if ($requester == "reseller") {
                 return $rs->outputResponse($request, $transid, 1, $dada);
             } else {

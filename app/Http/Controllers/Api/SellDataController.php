@@ -55,7 +55,8 @@ class SellDataController extends Controller
                 CURLOPT_HTTPHEADER => array(
                     'Authorization: Bearer ' . env('HW_AUTH'),
                     'Accept: application/json',
-                    'Content-Type: application/json'
+                    'Content-Type: application/json',
+                    'User-Agent: samji'
                 ),
             ));
 

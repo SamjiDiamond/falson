@@ -25,7 +25,7 @@ class SellEducationalController extends Controller
             $curl = curl_init();
 
             curl_setopt_array($curl, array(
-                CURLOPT_URL => env('HW_BASEURL') . "education/pin",
+                CURLOPT_URL => env('HW_BASEURL') . "education/buy",
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => '',
                 CURLOPT_MAXREDIRS => 10,
@@ -39,7 +39,8 @@ class SellEducationalController extends Controller
 }',
                 CURLOPT_HTTPHEADER => array(
                     'Authorization: Bearer ' . env('HW_AUTH'),
-                    'Content-Type: application/json'
+                    'Content-Type: application/json',
+                    'User-Agent: samji'
                 ),
             ));
             curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);

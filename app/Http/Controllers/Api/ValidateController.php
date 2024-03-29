@@ -19,7 +19,7 @@ class ValidateController extends Controller
             $curl = curl_init();
 
             curl_setopt_array($curl, array(
-                CURLOPT_URL => env('HW_BASEURL') . "disco/validation",
+                CURLOPT_URL => env('HW_BASEURL') . "electricity/validate",
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => '',
                 CURLOPT_MAXREDIRS => 10,
@@ -30,7 +30,8 @@ class ValidateController extends Controller
                 CURLOPT_POSTFIELDS => $payload,
                 CURLOPT_HTTPHEADER => array(
                     'Authorization: Bearer ' . env('HW_AUTH'),
-                    'Content-Type: application/json'
+                    'Content-Type: application/json',
+                    'User-Agent: samji'
                 ),
             ));
             curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
@@ -131,7 +132,7 @@ class ValidateController extends Controller
             $curl = curl_init();
 
             curl_setopt_array($curl, array(
-                CURLOPT_URL => env('HW_BASEURL') . 'tv/validation',
+                CURLOPT_URL => env('HW_BASEURL') . 'cables/validate',
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => '',
                 CURLOPT_MAXREDIRS => 10,
@@ -143,7 +144,8 @@ class ValidateController extends Controller
                 CURLOPT_HTTPHEADER => array(
                     'Authorization: Bearer ' . env('HW_AUTH'),
                     'Accept: application/json',
-                    'Content-Type: application/json'
+                    'Content-Type: application/json',
+                    'User-Agent: samji'
                 ),
             ));
 

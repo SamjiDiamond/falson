@@ -36,16 +36,16 @@ class ListController extends Controller
 
         switch (strtolower($input['coded'])) {
             case "m":
-                $plans = ResellerDataPlans::where("type", "LIKE", "mtn%")->get();
+                $plans = ResellerDataPlans::where([["type", "LIKE", "mtn%"], ["status",1]])->get();
                 break;
             case "a":
-                $plans = ResellerDataPlans::where("type", "LIKE", "airtel%")->get();
+                $plans = ResellerDataPlans::where([["type", "LIKE", "airtel%"], ["status",1]])->get();
                 break;
             case "9":
-                $plans = ResellerDataPlans::where("type", "LIKE", "9mobile%")->get();
+                $plans = ResellerDataPlans::where([["type", "LIKE", "9mobile%"], ["status",1]])->get();
                 break;
             case "g":
-                $plans = ResellerDataPlans::where("type", "LIKE", "glo%")->get();
+                $plans = ResellerDataPlans::where([["type", "LIKE", "glo%"], ["status",1]])->get();
                 break;
             default:
                 $plans = "";

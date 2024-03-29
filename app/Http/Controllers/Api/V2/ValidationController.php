@@ -50,8 +50,8 @@ class ValidationController extends Controller
         $input = $request->all();
         $rules = array(
             'email' => 'required',
-            'bvn' => 'required',
-            'nin' => 'required'
+            'bvn' => 'nullable',
+            'nin' => 'nullable'
         );
 
         $validator = Validator::make($input, $rules);
@@ -64,6 +64,10 @@ class ValidationController extends Controller
 
         if (!$username) {
             return response()->json(['success' => 0, 'message' => 'Email does not exist']);
+        }
+
+        if(!isset($input['bvn']) && !isset($input['nin'])){
+            return response()->json(['success' => 0, 'message' => 'Kindly provide your BVN or NIN or both']);
         }
 
         try {
@@ -102,6 +106,13 @@ class ValidationController extends Controller
             $response = json_decode($response, true);
             $token = $response['responseBody']['accessToken'];
 
+            $payload='{
+      "bvn":"'.$input['bvn'].'",
+      "nin":"'.$input['nin'].'"
+}';
+
+            Log::info("Monnify Account Update Payload - " . $payload);
+
             $curl = curl_init();
             curl_setopt_array($curl, array(
                 CURLOPT_URL => env("MONNIFY_URL") . "/v1/bank-transfer/reserved-accounts/$username->user_name/kyc-info",
@@ -113,10 +124,7 @@ class ValidationController extends Controller
                 CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                 CURLOPT_CUSTOMREQUEST => "PUT",
                 CURLOPT_SSL_VERIFYPEER => false,
-                CURLOPT_POSTFIELDS => '{
-      "bvn":"'.$input['bvn'].'",
-      "nin":"'.$input['nin'].'"
-}',
+                CURLOPT_POSTFIELDS => $payload,
                 CURLOPT_HTTPHEADER => array(
                     "Content-Type: application/json",
                     "Authorization: Bearer " . $token

@@ -7,7 +7,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-                
+
                     @if (session('success'))
                         <div class="alert alert-success" role="alert">
                             <strong>{{ session('success') }}</strong>
@@ -22,8 +22,8 @@
                             toastr.success('{{ session('success') }}', 'Success');
                         </script>
                     @endif
-                    
-                    
+
+
                     @if (session('error'))
                         <div class="alert alert-danger alert-dismissable">
                             <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
@@ -33,23 +33,32 @@
 
                     <p class="text-muted mb-4 font-13">Data Plans</p>
 
-                        <div class="row ml-3 mb-3">
-                            @can('data-plans-disable_all')
-                                <a href="{{route('dataserveMultipleedit', [$data[0]->network, 'ALL', $all == 1 ? 0 : 1, $server ])}}" class="btn btn-secondary mr-3">@if($all == 1)Disable @else Enable @endif All Data</a>
-                            @endcan
-                            @can('data-plans-disable_cg')
-                                <a href="{{route('dataserveMultipleedit', [$data[0]->network, 'CG', $cg == 1 ? 0 : 1, $server ])}}" class="btn btn-secondary mr-3">@if($cg == 1)Disable @else Enable @endif CG Data</a>
-                            @endcan
-                            @can('data-plans-disable_sme')
-                                <a href="{{route('dataserveMultipleedit', [$data[0]->network, 'SME', $sme == 1 ? 0 : 1, $server])}}" class="btn btn-secondary mr-3">@if($sme == 1)Disable @else Enable @endif SME Data</a>
-                            @endcan
-                            @can('data-plans-disable_dg')
-                                <a href="{{route('dataserveMultipleedit', [$data[0]->network, 'DG', $dg == 1 ? 0 : 1, $server ])}}" class="btn btn-secondary mr-3">@if($dg == 1)Disable @else Enable @endif DG Data</a>
-                            @endcan
-                            @can('data-plans-create')
-                                <a href="{{route('datanew')}}" class="btn btn-gradient-success mr-3">Create New Data Plan</a>
-                            @endcan
-                        </div>
+                    <div class="row ml-3 mb-3">
+                        @can('data-plans-disable_all')
+                            <a href="{{route('dataserveMultipleedit', [$data[0]->network, 'ALL', $all == 1 ? 0 : 1, $server ])}}"
+                               class="btn btn-secondary mr-3">@if($all == 1)Disable @else Enable @endif All Data</a>
+                        @endcan
+                        @can('data-plans-disable_cg')
+                            <a href="{{route('dataserveMultipleedit', [$data[0]->network, 'CG', $cg == 1 ? 0 : 1, $server ])}}"
+                               class="btn btn-secondary mr-3">@if($cg == 1)Disable @else Enable @endif CG Data</a>
+                        @endcan
+                        @can('data-plans-disable_sme')
+                            <a href="{{route('dataserveMultipleedit', [$data[0]->network, 'SME', $sme == 1 ? 0 : 1, $server])}}"
+                               class="btn btn-secondary mr-3">@if($sme == 1)Disable @else Enable @endif SME Data</a>
+                        @endcan
+                        @can('data-plans-disable_sme')
+                            <a href="{{route('dataserveMultipleedit', [$data[0]->network, 'SME2', $sme2 == 1 ? 0 : 1, $server])}}"
+                               class="btn btn-secondary mr-3">@if($sme2 == 1)Disable @else Enable @endif SME2 Data</a>
+                        @endcan
+                        @can('data-plans-disable_dg')
+                            <a href="{{route('dataserveMultipleedit', [$data[0]->network, 'DG', $dg == 1 ? 0 : 1, $server ])}}"
+                               class="btn btn-secondary mr-3">@if($dg == 1)Disable @else Enable @endif DG Data</a>
+                        @endcan
+                        @can('data-plans-create')
+                            <a href="{{route('datanew')}}" class="btn btn-gradient-success mr-3">Create New Data
+                                Plan</a>
+                        @endcan
+                    </div>
 
                     <table class="table table-striped table-bordered table-hover dataTables-example table-responsive">
                         <thead>

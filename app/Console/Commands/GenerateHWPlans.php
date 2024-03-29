@@ -106,9 +106,9 @@ class GenerateHWPlans extends Command
             }
 
             ResellerDataPlans::create([
-                'name' => $plans['allowance'] . " - ".$plans['validity'],
+                'name' => $plans['name'] . " " . $plans['allowance'] . " - " . $plans['validity'],
                 'product_code' => $allowance,
-                'code' => "1_".$plans['planId'],
+                'code' => "1_" . $plans['planId'],
                 'level1' => $plans['price'],
                 'level2' => $plans['price'],
                 'level3' => $plans['price'],
@@ -123,7 +123,7 @@ class GenerateHWPlans extends Command
             ]);
 
             AppDataControl::create([
-                'name' => $plans['allowance'] . " - ".$plans['validity'],
+                'name' => $plans['name'] . " " . $plans['allowance'] . " - " . $plans['validity'],
                 'dataplan' => $allowance,
                 'network' => $plans['network'],
                 'coded' => $plans['planId'],

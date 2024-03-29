@@ -98,10 +98,13 @@ class PayController extends Controller
             return response()->json(['success' => 0, 'message' => $rac->name.' currently unavailable']);
         }
 
-        $dis=explode("%", $rac->discount);
-        $discount = $rac->amount * ($dis[0] / 100);
-        $debitAmount = $rac->amount;
+        $dis=0;
+        $discount = 0;
+        $debitAmount = $rac->level1;
 
+        if ($debitAmount < 1) {
+            return response()->json(['success' => 0, 'message' => 'You cannot purchase this plan. Kindly contact support']);
+        }
 
         return $this->debitReseller($request, $rac->type, $debitAmount, $discount, $rac->server, "data");
     }

@@ -192,9 +192,10 @@ class GenerateIYIINSTANTPlans extends Command
                 'level5' => $plans['plan_amount'],
                 'price' => $plans['plan_amount'],
                 'type' => $plans['plan_network'],
+                'network' => $plans['plan_network'],
                 'plan_id' => $plans['dataplan_id'],
                 'server' => 3,
-                'status' => 0,
+                'status' => 1,
             ]);
 
             AppDataControl::create([

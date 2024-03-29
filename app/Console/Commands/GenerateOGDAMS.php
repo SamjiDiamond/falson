@@ -119,9 +119,10 @@ class GenerateOGDAMS extends Command
                 'level5' => $plans['price'],
                 'price' => $plans['price'],
                 'type' => $network,
+                'network' => $network,
                 'plan_id' => $plans['planId'],
                 'server' => 4,
-                'status' => 0,
+                'status' => 1,
             ]);
 
             AppDataControl::create([
@@ -216,9 +217,10 @@ class GenerateOGDAMS extends Command
                     'level5' => $plans['price'],
                     'price' => $plans['price'],
                     'type' => $network,
+                    'network' => $network,
                     'plan_id' => $plans['planId'],
                     'server' => 4,
-                    'status' => 0,
+                    'status' => 1,
                 ]);
 
                 AppDataControl::create([

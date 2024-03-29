@@ -113,9 +113,10 @@ class GenerateUzobest extends Command
                 'level5' => $plans['price'],
                 'price' => $plans['price'],
                 'type' => $plans['network'],
+                'network' => $plans['network'],
                 'plan_id' => $plans['planId'],
                 'server' => 5,
-                'status' => 0,
+                'status' => 1,
             ]);
 
             AppDataControl::create([
@@ -204,6 +205,7 @@ class GenerateUzobest extends Command
                     'level5' => $plans['price'],
                     'price' => $plans['price'],
                     'type' => $plans['network'],
+                    'network' => $plans['network'],
                     'plan_id' => $plans['planId'],
                     'server' => 5,
                     'status' => 0,

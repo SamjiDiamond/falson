@@ -43,7 +43,7 @@ class SellDataController extends Controller
             $curl = curl_init();
 
             curl_setopt_array($curl, array(
-                CURLOPT_URL => env('HW_BASEURL').'purchase/data',
+                CURLOPT_URL => env('HW_BASEURL').'data/buy',
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => '',
                 CURLOPT_MAXREDIRS => 10,
@@ -81,8 +81,8 @@ class SellDataController extends Controller
 
         $dada['server_response'] = $response;
 
-        if ($rep['code'] == 200) {
-            $dada['server_ref'] = $rep['reference'];
+        if ($rep['data']['code'] == 200) {
+            $dada['server_ref'] = $rep['data']['reference'];
             if ($requester == "reseller") {
                 return $rs->outputResponse($request, $transid, 1, $dada);
             } else {
@@ -91,6 +91,7 @@ class SellDataController extends Controller
         } else {
             $dada['message'] = $rep['message'];
 
+            //Incase the SIM is not linked to NIN and MTN is holding grudge against the user
             if(env('ENABLE_DELIVERY_NIN_ISSUE',0) == 1) {
                 if (str_contains($dada['message'], "was not successful. Please try again")) {
                     if ($requester == "reseller") {
@@ -244,6 +245,7 @@ class SellDataController extends Controller
     "plan": ' . $rac->plan_id . ',
     "Ported_number": true
 }';
+        Log::info("IYII Payload. - " . $payload);
 
         if (env('FAKE_TRANSACTION', 1) == 0) {
 
@@ -273,7 +275,7 @@ class SellDataController extends Controller
             curl_close($curl);
 
         } else {
-            $response = '{ "id": 286287, "ident": "5183418becb1cb", "network": 1, "balance_before": "3015.0", "balance_after": "2760.0", "mobile_number": "08064002132", "plan": 106, "Status": "successful", "plan_network": "MTN", "plan_name": "1.0GB", "plan_amount": "255.0", "create_date": "2022-04-08T13:33:52.355660", "Ported_number": false }';
+            $response = '{"id":3765810,"ident":"32af1e248b-a06e-421b-9320-6d486f7f549d","customer_ref":"","network":2,"payment_medium":"MAIN WALLET","balance_before":"38562.0","balance_after":"38456.0","mobile_number":"07050930828","plan":252,"Status":"successful","api_response":"You have successfully gifted 500MB Oneoff to 2347050930828","plan_network":"GLO","plan_name":"500.0MB","plan_amount":"106.0","create_date":"2024-03-28T07:51:15.417087","Ported_number":true}';
         }
 
         try {
@@ -282,7 +284,6 @@ class SellDataController extends Controller
             $response = '{"error":["SME Data not available on this network currently"]}';
         }
 
-        Log::info("IYII Payload. - " . $payload);
         Log::info("IYII Transaction. - " . $transid);
         Log::info($response);
 
@@ -366,6 +367,8 @@ class SellDataController extends Controller
     "phoneNumber" : "' . $phone . '"
 }';
 
+        Log::info("OGDAMS Payload. - " . $payload);
+
         if (env('FAKE_TRANSACTION', 1) == 0) {
 
 
@@ -393,43 +396,44 @@ class SellDataController extends Controller
 
             curl_close($curl);
 
-            Log::info("OGDAMS Payload. - " . $payload);
             Log::info("OGDAMS Transaction. - " . $transid);
             Log::info($response);
 
+        }else{
+            $response='{"status":true,"code":200,"data":{"msg":"Dear Customer, You have successfully shared 2GB Data to 2348143346729. Your SME data balance is 368.14GB expires 01\/05\/2024. Thankyou","ref":"OG|DAMS|91|20240328080957|442329"}}';
+        }
 
-            $tran = new ServeRequestController();
-            $rs = new PayController();
-            $ms = new V2\PayController();
+        $tran = new ServeRequestController();
+        $rs = new PayController();
+        $ms = new V2\PayController();
 
-            $rep = json_decode($response, true);
+        $rep = json_decode($response, true);
 
-            $dada['server_response'] = $response;
-            $dada['message'] = $rep['data']['msg'];
+        $dada['server_response'] = $response;
+        $dada['message'] = $rep['data']['msg'];
 
-            if ($rep['status']) {
-                $dada['server_ref'] = $rep['data']['ref'];
-                if ($requester == "reseller") {
-                    return $rs->outputResponse($request, $transid, 1, $dada);
-                } else {
-                    return $ms->outputResp($request, $transid, 1, $dada);
-                }
+        if ($rep['status']) {
+            $dada['server_ref'] = $rep['data']['ref'];
+            if ($requester == "reseller") {
+                return $rs->outputResponse($request, $transid, 1, $dada);
             } else {
-                if(env('ENABLE_DELIVERY_NIN_ISSUE',0) == 1) {
-                    if (str_contains($dada['message'], "was not successful. Please try again")) {
-                        if ($requester == "reseller") {
-                            return $rs->outputResponse($request, $transid, 1, $dada);
-                        } else {
-                            return $ms->outputResp($request, $transid, 1, $dada);
-                        }
+                return $ms->outputResp($request, $transid, 1, $dada);
+            }
+        } else {
+            if(env('ENABLE_DELIVERY_NIN_ISSUE',0) == 1) {
+                if (str_contains($dada['message'], "was not successful. Please try again")) {
+                    if ($requester == "reseller") {
+                        return $rs->outputResponse($request, $transid, 1, $dada);
+                    } else {
+                        return $ms->outputResp($request, $transid, 1, $dada);
                     }
                 }
+            }
 
-                if ($requester == "reseller") {
-                    return $rs->outputResponse($request, $transid, 0, $dada);
-                } else {
-                    return $ms->outputResp($request, $transid, 0, $dada);
-                }
+            if ($requester == "reseller") {
+                return $rs->outputResponse($request, $transid, 0, $dada);
+            } else {
+                return $ms->outputResp($request, $transid, 0, $dada);
             }
         }
     }
@@ -471,6 +475,8 @@ class SellDataController extends Controller
     "ported":true
 }';
 
+        Log::info("UZOBEST Payload. - " . $payload);
+
         if (env('FAKE_TRANSACTION', 1) == 0) {
 
 
@@ -498,42 +504,45 @@ class SellDataController extends Controller
 
             curl_close($curl);
 
-            Log::info("UZOBEST Payload. - " . $payload);
             Log::info("UZOBEST Transaction. - " . $transid);
             Log::info($response);
 
-            $tran = new ServeRequestController();
-            $rs = new PayController();
-            $ms = new V2\PayController();
+        }else{
+            $response='{"status":"successful","message":"Data topup of 500MB - SME topped up to to 07037773815 was successful ","transaction_id":"Data6605238e5739d","response":"Dear Customer, You have successfully shared 500MB Data to 2347037773815. Your SME data balance is 19563.68GB expires 03\/05\/2024. Thankyou"}';
+        }
 
-            $rep = json_decode($response, true);
 
-            $dada['server_response'] = $response;
-            $dada['message'] = $rep['message'];
+        $tran = new ServeRequestController();
+        $rs = new PayController();
+        $ms = new V2\PayController();
 
-            if ($rep['status'] == "successful" || $rep['status'] == "processing" ) {
-                $dada['server_ref'] = $rep['transaction_id'];
-                if ($requester == "reseller") {
-                    return $rs->outputResponse($request, $transid, 1, $dada);
-                } else {
-                    return $ms->outputResp($request, $transid, 1, $dada);
-                }
+        $rep = json_decode($response, true);
+
+        $dada['server_response'] = $response;
+        $dada['message'] = $rep['message'];
+
+        if ($rep['status'] == "successful" || $rep['status'] == "processing" ) {
+            $dada['server_ref'] = $rep['transaction_id'];
+            if ($requester == "reseller") {
+                return $rs->outputResponse($request, $transid, 1, $dada);
             } else {
-                if(env('ENABLE_DELIVERY_NIN_ISSUE',0) == 1) {
-                    if (str_contains($dada['message'], "was not successful. Please try again")) {
-                        if ($requester == "reseller") {
-                            return $rs->outputResponse($request, $transid, 1, $dada);
-                        } else {
-                            return $ms->outputResp($request, $transid, 1, $dada);
-                        }
+                return $ms->outputResp($request, $transid, 1, $dada);
+            }
+        } else {
+            if(env('ENABLE_DELIVERY_NIN_ISSUE',0) == 1) {
+                if (str_contains($dada['message'], "was not successful. Please try again")) {
+                    if ($requester == "reseller") {
+                        return $rs->outputResponse($request, $transid, 1, $dada);
+                    } else {
+                        return $ms->outputResp($request, $transid, 1, $dada);
                     }
                 }
+            }
 
-                if ($requester == "reseller") {
-                    return $rs->outputResponse($request, $transid, 0, $dada);
-                } else {
-                    return $ms->outputResp($request, $transid, 0, $dada);
-                }
+            if ($requester == "reseller") {
+                return $rs->outputResponse($request, $transid, 0, $dada);
+            } else {
+                return $ms->outputResp($request, $transid, 0, $dada);
             }
         }
     }

@@ -82,33 +82,42 @@ class SellDataController extends Controller
 
         $dada['server_response'] = $response;
 
-        if ($rep['data']['code'] == 200) {
-            $dada['server_ref'] = $rep['data']['reference'];
-            if ($requester == "reseller") {
-                return $rs->outputResponse($request, $transid, 1, $dada);
+        try {
+            if ($rep['data']['code'] == 200) {
+                $dada['server_ref'] = $rep['data']['reference'];
+                if ($requester == "reseller") {
+                    return $rs->outputResponse($request, $transid, 1, $dada);
+                } else {
+                    return $ms->outputResp($request, $transid, 1, $dada);
+                }
             } else {
-                return $ms->outputResp($request, $transid, 1, $dada);
-            }
-        } else {
-            $dada['message'] = $rep['message'];
+                $dada['message'] = $rep['message'];
 
-            //Incase the SIM is not linked to NIN and MTN is holding grudge against the user
-            if(env('ENABLE_DELIVERY_NIN_ISSUE',0) == 1) {
-                if (str_contains($dada['message'], "was not successful. Please try again")) {
-                    if ($requester == "reseller") {
-                        return $rs->outputResponse($request, $transid, 1, $dada);
-                    } else {
-                        return $ms->outputResp($request, $transid, 1, $dada);
+                //Incase the SIM is not linked to NIN and MTN is holding grudge against the user
+                if (env('ENABLE_DELIVERY_NIN_ISSUE', 0) == 1) {
+                    if (str_contains($dada['message'], "was not successful. Please try again")) {
+                        if ($requester == "reseller") {
+                            return $rs->outputResponse($request, $transid, 1, $dada);
+                        } else {
+                            return $ms->outputResp($request, $transid, 1, $dada);
+                        }
                     }
                 }
-            }
 
+                if ($requester == "reseller") {
+                    return $rs->outputResponse($request, $transid, 0, $dada);
+                } else {
+                    return $ms->outputResp($request, $transid, 0, $dada);
+                }
+            }
+        } catch (\Exception $e) {
             if ($requester == "reseller") {
                 return $rs->outputResponse($request, $transid, 0, $dada);
             } else {
                 return $ms->outputResp($request, $transid, 0, $dada);
             }
         }
+
     }
 
     public function server2($request, $code, $phone, $transid, $net, $input, $dada, $requester)

@@ -25,14 +25,6 @@ class SellDataController extends Controller
 
             $network=$rac->network;
 
-            if(str_contains($rac->name, 'CG')){
-                $network.="_CG";
-            }
-
-            if(str_contains($rac->name, 'DG')){
-                $network.="_DG";
-            }
-
             $payload='{
   "network" : "' . $network . '",
    "planId" : "' . $rac->plan_id . '",

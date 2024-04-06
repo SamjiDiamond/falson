@@ -2,15 +2,16 @@
 
 use App\Http\Controllers\Api\OthersController;
 use App\Http\Controllers\Api\V2\AuthenticationController;
+use App\Http\Controllers\Api\V2\CGWalletController;
 use App\Http\Controllers\Api\V2\ListController;
 use App\Http\Controllers\Api\V2\NotificationController;
 use App\Http\Controllers\Api\V2\OtherController;
 use App\Http\Controllers\Api\V2\PayController;
 use App\Http\Controllers\Api\V2\ReportController;
+use App\Http\Controllers\Api\V2\TransactionsController;
 use App\Http\Controllers\Api\V2\UserController;
 use App\Http\Controllers\Api\V2\ValidationController;
 use App\Http\Controllers\Api\V2\WalletTransferController;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -55,8 +56,15 @@ Route::prefix('v2')->group(function () {
         Route::get('referrals', [UserController::class, 'referrals']);
         Route::post('addreferral', [UserController::class, 'add_referral']);
 
-        Route::get('transactions', [UserController::class, 'transactions']);
-        Route::get('commissions', [UserController::class, 'commissions']);
+        Route::get('transactions', [TransactionsController::class, 'transactions']);
+        Route::get('transactions-pending', [TransactionsController::class, 'transactionsPending']);
+        Route::get('transactions-success', [TransactionsController::class, 'transactionsSuccess']);
+        Route::get('transactions-data', [TransactionsController::class, 'transactionsData']);
+        Route::get('transactions-airtime', [TransactionsController::class, 'transactionsAirtime']);
+        Route::get('transactions-tv', [TransactionsController::class, 'transactionsTv']);
+        Route::get('transactions-electricity', [TransactionsController::class, 'transactionsElectricity']);
+        Route::get('transactions-education', [TransactionsController::class, 'transactionsEducation']);
+        Route::get('commissions', [TransactionsController::class, 'commissions']);
         Route::get('gmtransactions', [OtherController::class, 'getGmTrans']);
 
         Route::post('changepassword', [UserController::class, 'change_password']);
@@ -126,10 +134,13 @@ Route::prefix('v2')->group(function () {
         Route::get('apikey/regenerate', [UserController::class, 'requestAPIkey']);
         Route::get('getfaqs', [OtherController::class, 'getFAQs']);
 
-        Route::get('cg-wallets', [UserController::class, 'cgWallets']);
-        Route::get('cg-bundles', [UserController::class, 'cgBundles']);
-        Route::post('cg-bundles-buy', [UserController::class, 'cgBundleBuy']);
-        Route::post('cg-bundles-transfer', [UserController::class, 'cgBundleTransfer']);
+        Route::get('cg-wallets', [CGWalletController::class, 'cgWallets']);
+        Route::get('cg-bundles', [CGWalletController::class, 'cgBundles']);
+        Route::get('cg-purchase-history', [CGWalletController::class, 'cgPurchaseHistory']);
+        Route::get('cg-usage-history', [CGWalletController::class, 'cgUsageHistory']);
+        Route::get('cg-transfer-history', [CGWalletController::class, 'cgTransferHistory']);
+        Route::post('cg-bundles-buy', [CGWalletController::class, 'cgBundleBuy']);
+        Route::post('cg-bundles-transfer', [CGWalletController::class, 'cgBundleTransfer']);
 
         Route::post('report_yearly', [ReportController::class, 'yearly']);
         Route::post('report_monthly', [ReportController::class, 'monthly']);

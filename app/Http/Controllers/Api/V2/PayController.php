@@ -12,16 +12,13 @@ use App\Http\Controllers\Controller;
 use App\Jobs\ATMtransactionserveJob;
 use App\Jobs\PushNotificationJob;
 use App\Jobs\ReverseTransactionJob;
-use App\Jobs\ServeRequestJob;
 use App\Models\Airtime2Cash;
 use App\Models\Airtime2CashSettings;
 use App\Models\AppAirtimeControl;
 use App\Models\AppCableTVControl;
 use App\Models\AppDataControl;
 use App\Models\CGWallets;
-use App\Models\GeneralMarket;
 use App\Models\PndL;
-use App\Models\PromoCode;
 use App\Models\ResellerBetting;
 use App\Models\ResellerElecticity;
 use App\Models\Serverlog;
@@ -32,7 +29,6 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
@@ -599,6 +595,8 @@ class PayController extends Controller
                 return $air->server2($request, $input['amount'], $input['number'], $ref, $net, $request, $dada, "mcd");
             case "1":
                 return $air->server1($request, $input['amount'], $input['number'], $ref, $net, $request, $dada, "mcd");
+            case "0":
+                return response()->json(['success' => 1, 'message' => 'Transaction inprogress']);
             default:
                 return response()->json(['success' => 0, 'message' => 'Kindly contact system admin']);
         }
@@ -621,6 +619,8 @@ class PayController extends Controller
                 return $air->server2($request, $input['coded'], $input['number'], $ref, $net, $request, $dada, "mcd");
             case "1":
                 return $air->server1($request, $input['coded'], $input['number'], $ref, $net, $request, $dada, "mcd");
+            case "0":
+                return response()->json(['success' => 1, 'message' => 'Transaction inprogress']);
             default:
                 return response()->json(['success' => 0, 'message' => 'Kindly contact system admin']);
         }
@@ -637,6 +637,8 @@ class PayController extends Controller
                 return $air->server1($request, $input['coded'], $input['number'], $ref, $net, $request, $dada, "mcd");
             case "2":
                 return $air->server2($request, $input['coded'], $input['number'], $ref, $net, $request, $dada, "mcd");
+            case "0":
+                return response()->json(['success' => 1, 'message' => 'Transaction inprogress']);
             default:
                 return response()->json(['success' => 0, 'message' => 'Kindly contact system admin']);
         }
@@ -653,6 +655,8 @@ class PayController extends Controller
                 return $air->server1($request, $input['provider'], $input['number'], $ref, $net, $request, $dada, "mcd");
             case "2":
                 return $air->server2($request, $input['provider'], $input['number'], $ref, $net, $request, $dada, "mcd");
+            case "0":
+                return response()->json(['success' => 1, 'message' => 'Transaction inprogress']);
             default:
                 return response()->json(['success' => 0, 'message' => 'Kindly contact system admin']);
         }

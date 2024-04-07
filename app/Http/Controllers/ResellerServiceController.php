@@ -2,11 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\airtimeserver;
-use App\Models\AppAirtimeControl;
 use App\Models\AppCableTVControl;
-use App\Models\AppDataControl;
-use App\Models\dataserver;
 use App\Models\ResellerAirtimeControl;
 use App\Models\ResellerCableTV;
 use App\Models\ResellerDataPlans;
@@ -96,26 +92,28 @@ class ResellerServiceController extends Controller
     public function dataPlans($network)
     {
 
-        $data = ResellerDataPlans::where('type','LIKE',strtoupper($network).'%')->paginate(10);
-        $sme= ResellerDataPlans::where([['name','LIKE','%SME%'], ['type','LIKE',strtoupper($network).'%'], ['status',1]])->count() > 0 ? 1 : 0;
-        $cg= ResellerDataPlans::where([['name','LIKE','%CG%'], ['type','LIKE',strtoupper($network).'%'], ['status',1]])->count() > 0 ? 1 : 0;
-        $dg= ResellerDataPlans::where([['name','LIKE','%DG%'], ['type','LIKE',strtoupper($network).'%'], ['status',1]])->count() > 0 ? 1 : 0;
-        $all= ResellerDataPlans::where([['type','LIKE',strtoupper($network).'%'], ['status',1]])->count() > 0 ? 1 : 0;
+        $data = ResellerDataPlans::where('type', 'LIKE', strtoupper($network) . '%')->paginate(10);
+        $sme = ResellerDataPlans::where([['name', 'LIKE', '%SME%'], ['name', 'NOT LIKE', '%SME2%'], ['type', 'LIKE', strtoupper($network) . '%'], ['status', 1]])->count() > 0 ? 1 : 0;
+        $sme2 = ResellerDataPlans::where([['name', 'LIKE', '%SME2%'], ['type', 'LIKE', strtoupper($network) . '%'], ['status', 1]])->count() > 0 ? 1 : 0;
+        $cg = ResellerDataPlans::where([['name', 'LIKE', '%CG%'], ['type', 'LIKE', strtoupper($network) . '%'], ['status', 1]])->count() > 0 ? 1 : 0;
+        $dg = ResellerDataPlans::where([['name', 'LIKE', '%DG%'], ['type', 'LIKE', strtoupper($network) . '%'], ['status', 1]])->count() > 0 ? 1 : 0;
+        $all = ResellerDataPlans::where([['type', 'LIKE', strtoupper($network) . '%'], ['status', 1]])->count() > 0 ? 1 : 0;
 
-        $server=0;
-        return view('reseller_control.datacontrol', compact('data', 'sme', 'cg', 'dg', 'all', 'server'));
+        $server = 0;
+        return view('reseller_control.datacontrol', compact('data', 'sme', 'sme2', 'cg', 'dg', 'all', 'server'));
     }
 
     public function dataPlans2($network, $server)
     {
 
-        $data = ResellerDataPlans::where([['type','LIKE',strtoupper($network).'%'], ['server',$server]])->paginate(10);
-        $sme= ResellerDataPlans::where([['name','LIKE','%SME%'], ['type','LIKE',strtoupper($network).'%'], ['server',$server], ['status',1]])->count() > 0 ? 1 : 0;
-        $cg= ResellerDataPlans::where([['name','LIKE','%CG%'], ['type','LIKE',strtoupper($network).'%'], ['server',$server], ['status',1]])->count() > 0 ? 1 : 0;
-        $dg= ResellerDataPlans::where([['name','LIKE','%DG%'], ['type','LIKE',strtoupper($network).'%'], ['server',$server], ['status',1]])->count() > 0 ? 1 : 0;
-        $all= ResellerDataPlans::where([['type','LIKE',strtoupper($network).'%'], ['status',1]])->count() > 0 ? 1 : 0;
+        $data = ResellerDataPlans::where([['type', 'LIKE', strtoupper($network) . '%'], ['server', $server]])->paginate(10);
+        $sme = ResellerDataPlans::where([['name', 'LIKE', '%SME%'], ['name', 'NOT LIKE', '%SME2%'], ['type', 'LIKE', strtoupper($network) . '%'], ['server', $server], ['status', 1]])->count() > 0 ? 1 : 0;
+        $sme2 = ResellerDataPlans::where([['name', 'LIKE', '%SME2%'], ['type', 'LIKE', strtoupper($network) . '%'], ['server', $server], ['status', 1]])->count() > 0 ? 1 : 0;
+        $cg = ResellerDataPlans::where([['name', 'LIKE', '%CG%'], ['type', 'LIKE', strtoupper($network) . '%'], ['server', $server], ['status', 1]])->count() > 0 ? 1 : 0;
+        $dg = ResellerDataPlans::where([['name', 'LIKE', '%DG%'], ['type', 'LIKE', strtoupper($network) . '%'], ['server', $server], ['status', 1]])->count() > 0 ? 1 : 0;
+        $all = ResellerDataPlans::where([['type', 'LIKE', strtoupper($network) . '%'], ['status', 1]])->count() > 0 ? 1 : 0;
 
-        return view('reseller_control.datacontrol', compact('data', 'sme', 'cg', 'dg', 'all', 'server'));
+        return view('reseller_control.datacontrol', compact('data', 'sme', 'sme2', 'cg', 'dg', 'all', 'server'));
     }
 
     public function dataserveMultipleedit($network, $type, $status,$server)

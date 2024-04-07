@@ -271,28 +271,50 @@
 
                                 @can('data-plans-view')
                                     <li><a href="{{route('dataplans', 'MTN')}}">All MTN Data Plans</a></li>
+                                    <li><a href="{{route('server_dataplans', ['MTN', "0"])}}">No Server MTN Data
+                                            Plans</a></li>
                                     <li><a href="{{route('server_dataplans', ['MTN', "1"])}}">HW MTN Data Plans</a></li>
-                                    <li><a href="{{route('server_dataplans', ['MTN', "3"])}}">IYII MTN Data Plans</a></li>
-                                    <li><a href="{{route('server_dataplans', ['MTN', "4"])}}">OGDAMS MTN Data Plans</a></li>
-                                    <li><a href="{{route('server_dataplans', ['MTN', "5"])}}">UZOBEST MTN Data Plans</a></li>
+                                    <li><a href="{{route('server_dataplans', ['MTN', "3"])}}">IYII MTN Data Plans</a>
+                                    </li>
+                                    <li><a href="{{route('server_dataplans', ['MTN', "4"])}}">OGDAMS MTN Data Plans</a>
+                                    </li>
+                                    <li><a href="{{route('server_dataplans', ['MTN', "5"])}}">UZOBEST MTN Data Plans</a>
+                                    </li>
 
                                     <li><a href="{{route('dataplans', 'AIRTEL')}}">All AIRTEL Data Plans</a></li>
-                                    <li><a href="{{route('server_dataplans', ['AIRTEL', "1"])}}">HW AIRTEL Data Plans</a></li>
-                                    <li><a href="{{route('server_dataplans', ['AIRTEL', "3"])}}">IYII AIRTEL Data Plans</a></li>
-                                    <li><a href="{{route('server_dataplans', ['AIRTEL', "4"])}}">OGDAMS AIRTEL Data Plans</a></li>
-                                    <li><a href="{{route('server_dataplans', ['AIRTEL', "5"])}}">UZOBEST AIRTEL Data Plans</a></li>
+                                    <li><a href="{{route('server_dataplans', ['AIRTEL', "0"])}}">No Server AIRTEL Data
+                                            Plans</a></li>
+                                    <li><a href="{{route('server_dataplans', ['AIRTEL', "1"])}}">HW AIRTEL Data
+                                            Plans</a></li>
+                                    <li><a href="{{route('server_dataplans', ['AIRTEL', "3"])}}">IYII AIRTEL Data
+                                            Plans</a></li>
+                                    <li><a href="{{route('server_dataplans', ['AIRTEL', "4"])}}">OGDAMS AIRTEL Data
+                                            Plans</a></li>
+                                    <li><a href="{{route('server_dataplans', ['AIRTEL', "5"])}}">UZOBEST AIRTEL Data
+                                            Plans</a></li>
 
                                     <li><a href="{{route('dataplans', 'GLO')}}">All GLO Data Plans</a></li>
+                                    <li><a href="{{route('server_dataplans', ['GLO', "0"])}}">No Server GLO Data
+                                            Plans</a></li>
                                     <li><a href="{{route('server_dataplans', ['GLO', "1"])}}">HW GLO Data Plans</a></li>
-                                    <li><a href="{{route('server_dataplans', ['GLO', "3"])}}">IYII GLO Data Plans</a></li>
-                                    <li><a href="{{route('server_dataplans', ['GLO', "4"])}}">OGDAMS GLO Data Plans</a></li>
-                                    <li><a href="{{route('server_dataplans', ['GLO', "5"])}}">UZOBEST GLO Data Plans</a></li>
+                                    <li><a href="{{route('server_dataplans', ['GLO', "3"])}}">IYII GLO Data Plans</a>
+                                    </li>
+                                    <li><a href="{{route('server_dataplans', ['GLO', "4"])}}">OGDAMS GLO Data Plans</a>
+                                    </li>
+                                    <li><a href="{{route('server_dataplans', ['GLO', "5"])}}">UZOBEST GLO Data Plans</a>
+                                    </li>
 
                                     <li><a href="{{route('dataplans', '9MOBILE')}}">All 9MOBILE Data Plans</a></li>
-                                    <li><a href="{{route('server_dataplans', ['9MOBILE', "1"])}}">HW 9MOBILE Data Plans</a></li>
-                                    <li><a href="{{route('server_dataplans', ['9MOBILE', "3"])}}">IYII 9MOBILE Data Plans</a></li>
-                                    <li><a href="{{route('server_dataplans', ['9MOBILE', "4"])}}">OGDAMS 9MOBILE Data Plans</a></li>
-                                    <li><a href="{{route('server_dataplans', ['9MOBILE', "5"])}}">UZOBEST 9MOBILE Data Plans</a></li>
+                                    <li><a href="{{route('server_dataplans', ['9MOBILE', "0"])}}">No Server 9MOBILE Data
+                                            Plans</a></li>
+                                    <li><a href="{{route('server_dataplans', ['9MOBILE', "1"])}}">HW 9MOBILE Data
+                                            Plans</a></li>
+                                    <li><a href="{{route('server_dataplans', ['9MOBILE', "3"])}}">IYII 9MOBILE Data
+                                            Plans</a></li>
+                                    <li><a href="{{route('server_dataplans', ['9MOBILE', "4"])}}">OGDAMS 9MOBILE Data
+                                            Plans</a></li>
+                                    <li><a href="{{route('server_dataplans', ['9MOBILE', "5"])}}">UZOBEST 9MOBILE Data
+                                            Plans</a></li>
                                 @endcan
 
                                 @can('tv-plan-view')
@@ -317,33 +339,59 @@
                                     class="float-right"><i class="mdi mdi-chevron-right"></i></span></a>
                             <ul class="list-unstyled">
                                 @can('reseller_airtime-view')
-                                <li><a href="{{route('reseller.airtimecontrol')}}">Airtime Control</a></li>
+                                    <li><a href="{{route('reseller.airtimecontrol')}}">Airtime Control</a></li>
                                 @endcan
 
                                 @can('reseller_data-view')
-                                        <li><a href="{{route('reseller.dataList', 'MTN')}}">All MTN Data Plans</a></li>
-                                        <li><a href="{{route('reseller.server_dataList', ['MTN', "1"])}}">HW MTN Data Plans</a></li>
-                                        <li><a href="{{route('reseller.server_dataList', ['MTN', "3"])}}">IYII MTN Data Plans</a></li>
-                                        <li><a href="{{route('reseller.server_dataList', ['MTN', "4"])}}">OGDAMS MTN Data Plans</a></li>
-                                        <li><a href="{{route('reseller.server_dataList', ['MTN', "5"])}}">UZOBEST MTN Data Plans</a></li>
+                                    <li><a href="{{route('reseller.dataList', 'MTN')}}">All MTN Data Plans</a></li>
+                                    <li><a href="{{route('reseller.server_dataList', ['MTN', "0"])}}">No Server MTN Data
+                                            Plans</a></li>
+                                    <li><a href="{{route('reseller.server_dataList', ['MTN', "1"])}}">HW MTN Data
+                                            Plans</a></li>
+                                    <li><a href="{{route('reseller.server_dataList', ['MTN', "3"])}}">IYII MTN Data
+                                            Plans</a></li>
+                                    <li><a href="{{route('reseller.server_dataList', ['MTN', "4"])}}">OGDAMS MTN Data
+                                            Plans</a></li>
+                                    <li><a href="{{route('reseller.server_dataList', ['MTN', "5"])}}">UZOBEST MTN Data
+                                            Plans</a></li>
 
-                                        <li><a href="{{route('reseller.dataList', 'AIRTEL')}}">All AIRTEL Data Plans</a></li>
-                                        <li><a href="{{route('reseller.server_dataList', ['AIRTEL', "1"])}}">HW AIRTEL Data Plans</a></li>
-                                        <li><a href="{{route('reseller.server_dataList', ['AIRTEL', "3"])}}">IYII AIRTEL Data Plans</a></li>
-                                        <li><a href="{{route('reseller.server_dataList', ['AIRTEL', "4"])}}">OGDAMS AIRTEL Data Plans</a></li>
-                                        <li><a href="{{route('reseller.server_dataList', ['AIRTEL', "5"])}}">UZOBEST AIRTEL Data Plans</a></li>
+                                    <li><a href="{{route('reseller.dataList', 'AIRTEL')}}">All AIRTEL Data Plans</a>
+                                    </li>
+                                    <li><a href="{{route('reseller.server_dataList', ['AIRTEL', "0"])}}">No Server
+                                            AIRTEL Data Plans</a></li>
+                                    <li><a href="{{route('reseller.server_dataList', ['AIRTEL', "1"])}}">HW AIRTEL Data
+                                            Plans</a></li>
+                                    <li><a href="{{route('reseller.server_dataList', ['AIRTEL', "3"])}}">IYII AIRTEL
+                                            Data Plans</a></li>
+                                    <li><a href="{{route('reseller.server_dataList', ['AIRTEL', "4"])}}">OGDAMS AIRTEL
+                                            Data Plans</a></li>
+                                    <li><a href="{{route('reseller.server_dataList', ['AIRTEL', "5"])}}">UZOBEST AIRTEL
+                                            Data Plans</a></li>
 
-                                        <li><a href="{{route('reseller.dataList', 'GLO')}}">All GLO Data Plans</a></li>
-                                        <li><a href="{{route('reseller.server_dataList', ['GLO', "1"])}}">HW GLO Data Plans</a></li>
-                                        <li><a href="{{route('reseller.server_dataList', ['GLO', "3"])}}">IYII GLO Data Plans</a></li>
-                                        <li><a href="{{route('reseller.server_dataList', ['GLO', "4"])}}">OGDAMS GLO Data Plans</a></li>
-                                        <li><a href="{{route('reseller.server_dataList', ['GLO', "5"])}}">UZOBEST GLO Data Plans</a></li>
+                                    <li><a href="{{route('reseller.dataList', 'GLO')}}">All GLO Data Plans</a></li>
+                                    <li><a href="{{route('reseller.server_dataList', ['GLO', "0"])}}">No Server GLO Data
+                                            Plans</a></li>
+                                    <li><a href="{{route('reseller.server_dataList', ['GLO', "1"])}}">HW GLO Data
+                                            Plans</a></li>
+                                    <li><a href="{{route('reseller.server_dataList', ['GLO', "3"])}}">IYII GLO Data
+                                            Plans</a></li>
+                                    <li><a href="{{route('reseller.server_dataList', ['GLO', "4"])}}">OGDAMS GLO Data
+                                            Plans</a></li>
+                                    <li><a href="{{route('reseller.server_dataList', ['GLO', "5"])}}">UZOBEST GLO Data
+                                            Plans</a></li>
 
-                                        <li><a href="{{route('reseller.dataList', '9MOBILE')}}">All 9MOBILE Data Plans</a></li>
-                                        <li><a href="{{route('reseller.server_dataList', ['9MOBILE', "1"])}}">HW 9MOBILE Data Plans</a></li>
-                                        <li><a href="{{route('reseller.server_dataList', ['9MOBILE', "3"])}}">IYII 9MOBILE Data Plans</a></li>
-                                        <li><a href="{{route('reseller.server_dataList', ['9MOBILE', "4"])}}">OGDAMS 9MOBILE Data Plans</a></li>
-                                        <li><a href="{{route('reseller.server_dataList', ['9MOBILE', "5"])}}">UZOBEST 9MOBILE Data Plans</a></li>
+                                    <li><a href="{{route('reseller.dataList', '9MOBILE')}}">All 9MOBILE Data Plans</a>
+                                    </li>
+                                    <li><a href="{{route('reseller.server_dataList', ['9MOBILE', "0"])}}">No Server
+                                            9MOBILE Data Plans</a></li>
+                                    <li><a href="{{route('reseller.server_dataList', ['9MOBILE', "1"])}}">HW 9MOBILE
+                                            Data Plans</a></li>
+                                    <li><a href="{{route('reseller.server_dataList', ['9MOBILE', "3"])}}">IYII 9MOBILE
+                                            Data Plans</a></li>
+                                    <li><a href="{{route('reseller.server_dataList', ['9MOBILE', "4"])}}">OGDAMS 9MOBILE
+                                            Data Plans</a></li>
+                                    <li><a href="{{route('reseller.server_dataList', ['9MOBILE', "5"])}}">UZOBEST
+                                            9MOBILE Data Plans</a></li>
 
                                 @endcan
 

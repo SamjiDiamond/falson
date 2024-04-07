@@ -50,16 +50,20 @@
 
                                 <div class="input-group mt-2">
                                     <div class="input-group-prepend"><span class="input-group-text">Level4 Amount </span></div>
-                                    <input type="text" name="level4" class="form-control" placeholder="Enter Amount" value="{{$data->level4}}">
+                                    <input type="text" name="level4" class="form-control" placeholder="Enter Amount"
+                                           value="{{$data->level4}}">
                                 </div>
 
                                 <div class="input-group mt-2">
-                                    <div class="input-group-prepend"><span class="input-group-text">Level5 Amount </span></div>
-                                    <input type="text" name="level5" class="form-control" placeholder="Enter Amount" value="{{$data->level5}}">
+                                    <div class="input-group-prepend"><span
+                                            class="input-group-text">Level5 Amount </span></div>
+                                    <input type="text" name="level5" class="form-control" placeholder="Enter Amount"
+                                           value="{{$data->level5}}">
                                 </div>
 
                                 <div class="input-group mt-2">
                                     <select class="custom-select form-control" name="server">
+                                        <option value="0" {{$data->server == 0 ? "selected" : ''}}>0</option>
                                         <option value="1" {{$data->server == 1 ? "selected" : ''}}>1</option>
                                         <option value="2" {{$data->server == 2 ? "selected" : ''}}>2</option>
                                         <option value="3" {{$data->server == 3 ? "selected" : ''}}>3</option>

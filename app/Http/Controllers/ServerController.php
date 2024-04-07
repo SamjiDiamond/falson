@@ -113,14 +113,15 @@ class ServerController
 
     public function dataserve2($network)
     {
-        $data = dataserver::where('network','LIKE',strtoupper($network).'%')->paginate(10);
-        $sme= dataserver::where([['name','LIKE','%SME%'], ['network','LIKE',strtoupper($network).'%'], ['status',1]])->count() > 0 ? 1 : 0;
-        $cg= dataserver::where([['name','LIKE','%CG%'], ['network','LIKE',strtoupper($network).'%'], ['status',1]])->count() > 0 ? 1 : 0;
-        $dg= dataserver::where([['name','LIKE','%DG%'], ['network','LIKE',strtoupper($network).'%'], ['status',1]])->count() > 0 ? 1 : 0;
-        $all= dataserver::where([['network','LIKE',strtoupper($network).'%'], ['status',1]])->count() > 0 ? 1 : 0;
+        $data = dataserver::where('network', 'LIKE', strtoupper($network) . '%')->paginate(10);
+        $sme = dataserver::where([['name', 'LIKE', '%SME%'], ['name', 'NOT LIKE', '%SME2%'], ['network', 'LIKE', strtoupper($network) . '%'], ['status', 1]])->count() > 0 ? 1 : 0;
+        $sme2 = dataserver::where([['name', 'LIKE', '%SME2%'], ['network', 'LIKE', strtoupper($network) . '%'], ['status', 1]])->count() > 0 ? 1 : 0;
+        $cg = dataserver::where([['name', 'LIKE', '%CG%'], ['network', 'LIKE', strtoupper($network) . '%'], ['status', 1]])->count() > 0 ? 1 : 0;
+        $dg = dataserver::where([['name', 'LIKE', '%DG%'], ['network', 'LIKE', strtoupper($network) . '%'], ['status', 1]])->count() > 0 ? 1 : 0;
+        $all = dataserver::where([['network', 'LIKE', strtoupper($network) . '%'], ['status', 1]])->count() > 0 ? 1 : 0;
 
-        $server=0;
-        return view('datacontrol', compact('data', 'sme', 'cg', 'dg', 'all', 'server'));
+        $server = 0;
+        return view('datacontrol', compact('data', 'sme', 'sme2', 'cg', 'dg', 'all', 'server'));
     }
 
     public function dataserve3($network, $server)

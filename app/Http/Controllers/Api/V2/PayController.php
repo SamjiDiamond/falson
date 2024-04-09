@@ -596,7 +596,7 @@ class PayController extends Controller
             case "1":
                 return $air->server1($request, $input['amount'], $input['number'], $ref, $net, $request, $dada, "mcd");
             case "0":
-                return response()->json(['success' => 1, 'message' => 'Transaction inprogress']);
+                return response()->json(['success' => 1, 'message' => 'Transaction inprogress', 'ref' => $ref, 'debitAmount' => $dada['amount'], 'discountAmount' => $dada['discount']]);
             default:
                 return response()->json(['success' => 0, 'message' => 'Kindly contact system admin']);
         }
@@ -620,7 +620,7 @@ class PayController extends Controller
             case "1":
                 return $air->server1($request, $input['coded'], $input['number'], $ref, $net, $request, $dada, "mcd");
             case "0":
-                return response()->json(['success' => 1, 'message' => 'Transaction inprogress']);
+                return response()->json(['success' => 1, 'message' => 'Transaction inprogress', 'ref' => $ref, 'debitAmount' => $dada['amount'], 'discountAmount' => $dada['discount']]);
             default:
                 return response()->json(['success' => 0, 'message' => 'Kindly contact system admin']);
         }
@@ -638,7 +638,7 @@ class PayController extends Controller
             case "2":
                 return $air->server2($request, $input['coded'], $input['number'], $ref, $net, $request, $dada, "mcd");
             case "0":
-                return response()->json(['success' => 1, 'message' => 'Transaction inprogress']);
+                return response()->json(['success' => 1, 'message' => 'Transaction inprogress', 'ref' => $ref, 'debitAmount' => $dada['amount'], 'discountAmount' => $dada['discount']]);
             default:
                 return response()->json(['success' => 0, 'message' => 'Kindly contact system admin']);
         }
@@ -656,7 +656,7 @@ class PayController extends Controller
             case "2":
                 return $air->server2($request, $input['provider'], $input['number'], $ref, $net, $request, $dada, "mcd");
             case "0":
-                return response()->json(['success' => 1, 'message' => 'Transaction inprogress']);
+                return response()->json(['success' => 1, 'message' => 'Transaction inprogress', 'ref' => $ref, 'debitAmount' => $dada['amount'], 'discountAmount' => $dada['discount']]);
             default:
                 return response()->json(['success' => 0, 'message' => 'Kindly contact system admin']);
         }

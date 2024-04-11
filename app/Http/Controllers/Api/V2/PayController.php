@@ -234,9 +234,9 @@ class PayController extends Controller
             return response()->json(['success' => 0, 'message' => $rac->name . ' currently unavailable']);
         }
 
-//        if ($input['amount'] < 1000) {
-//            return response()->json(['success' => 0, 'message' => 'Minimum amount is #1,000']);
-//        }
+        if ($input['amount'] < 600) {
+            return response()->json(['success' => 0, 'message' => 'Minimum amount is #600']);
+        }
 //
 //        if ($input['amount'] > 20000) {
 //            return response()->json(['success' => 0, 'message' => 'Maximum amount is #20,000']);

@@ -5,14 +5,13 @@ namespace App\Http\Controllers\Payment;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\PushNotificationController;
 use App\Jobs\ATMtransactionserveJob;
-use App\Jobs\NewAccountGiveaway;
 use App\Jobs\PushNotificationJob;
 use App\Mail\TransactionNotificationMail;
 use App\Models\PndL;
 use App\Models\Settings;
 use App\Models\Transaction;
-use App\Models\Wallet;
 use App\Models\User;
+use App\Models\Wallet;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
 
@@ -26,11 +25,7 @@ class ATMmanagerController extends Controller
         $u = User::where('user_name', '=', $reference)->first();
         $w = Wallet::where('ref', $transactionreference)->first();
 
-        if($payment_method == "Monnify"){
-            $crAmount=$amount - $charges - $cfee;
-        }else{
-            $crAmount=$amount - $charges;
-        }
+        $crAmount = $amount - $charges - $cfee;
 
         $wallet=$u->wallet + $crAmount;
 

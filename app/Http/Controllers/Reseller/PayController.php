@@ -95,16 +95,18 @@ class PayController extends Controller
         }
 
         if ($rac->status == 0) {
-            return response()->json(['success' => 0, 'message' => $rac->name.' currently unavailable']);
+            return response()->json(['success' => 0, 'message' => $rac->name . ' currently unavailable']);
         }
 
-        $dis=0;
+        $dis = 0;
         $discount = 0;
         $debitAmount = $rac->level1;
 
         if ($debitAmount < 1) {
             return response()->json(['success' => 0, 'message' => 'You cannot purchase this plan. Kindly contact support']);
         }
+
+        $request->merge(["rac" => $rac]);
 
         return $this->debitReseller($request, $rac->type, $debitAmount, $discount, $rac->server, "data");
     }
@@ -286,6 +288,10 @@ class PayController extends Controller
         if ($requester == "airtime") {
             $tr['name'] = strtoupper($provider) . $input['service'];
             $tr['description'] = "Resell " . strtoupper($provider) . $input['service'] . " of " . $input['amount'] . " on " . $input['phone'];
+        } elseif ($requester == "data") {
+            $rac = $request->get('rac');
+            $tr['name'] = strtoupper($provider);
+            $tr['description'] = "Resell " . strtoupper($provider) . " of " . $rac->name . " on " . $input['phone'];
         } else {
             $tr['name'] = strtoupper($provider);
             $tr['description'] = "Resell " . strtoupper($provider) . " of " . $input['coded'] . " on " . $input['phone'];

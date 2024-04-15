@@ -19,15 +19,19 @@ class ATMmanagerController extends Controller
 {
     public function RAfundwallet($name, $amount, $reference, $transactionreference, $cfee, $input, $account_number, $payment_method)
     {
-        $data=Settings::where('name','funding_charges')->first();
-        $charges=$data->value;
+        $data = Settings::where('name', 'funding_charges')->first();
+        $charges = $data->value;
 
         $u = User::where('user_name', '=', $reference)->first();
         $w = Wallet::where('ref', $transactionreference)->first();
 
-        $crAmount = $amount - $charges - $cfee;
+        if ($payment_method == "Monnify" || $payment_method == "Paylony") {
+            $crAmount = $amount - $charges - $cfee;
+        } else {
+            $crAmount = $amount - $charges;
+        }
 
-        $wallet=$u->wallet + $crAmount;
+        $wallet = $u->wallet + $crAmount;
 
         if (!$w) {
             if ($u) {

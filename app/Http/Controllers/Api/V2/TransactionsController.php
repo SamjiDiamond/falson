@@ -4,71 +4,145 @@ namespace App\Http\Controllers\Api\V2;
 
 use App\Http\Controllers\Controller;
 use App\Models\Transaction;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class TransactionsController extends Controller
 {
 
-    public function transactions()
+    public function transactions(Request $request)
     {
+        $input = $request->all();
+        $date_from = $input['date_from'] ?? '';
+        $date_to = $input['date_to'] ?? '';
+
         $user = Auth::user();
-        $trans = Transaction::where('user_name', $user->user_name)->OrderBy('id', 'desc')->limit(100)->get();
+        $trans = Transaction::where('user_name', $user->user_name)->OrderBy('id', 'desc')
+            ->when(isset($date_from) && $date_from != '' && isset($date_to) && $date_to != '', function ($query) use ($date_from, $date_to) {
+                $query->whereBetween('created_at', [Carbon::parse($date_from)->toDateTimeString(), Carbon::parse($date_to)->addDay()->toDateTimeString()]);
+            })
+            ->limit(100)->get();
 
         return response()->json(['success' => 1, 'message' => 'Fetched successfully', 'data' => $trans]);
     }
 
-    public function transactionsPending()
+    public function transactionsPending(Request $request)
     {
-        $trans = Transaction::where([['user_name', Auth::user()->user_name], ['status', 'pending']])->OrderBy('id', 'desc')->limit(100)->get();
+        $input = $request->all();
+        $date_from = $input['date_from'] ?? '';
+        $date_to = $input['date_to'] ?? '';
+
+        $trans = Transaction::where([['user_name', Auth::user()->user_name], ['status', 'pending']])->OrderBy('id', 'desc')
+            ->when(isset($date_from) && $date_from != '' && isset($date_to) && $date_to != '', function ($query) use ($date_from, $date_to) {
+                $query->whereBetween('created_at', [Carbon::parse($date_from)->toDateTimeString(), Carbon::parse($date_to)->addDay()->toDateTimeString()]);
+            })
+            ->limit(100)->get();
 
         return response()->json(['success' => 1, 'message' => 'Fetched successfully', 'data' => $trans]);
     }
 
-    public function transactionsReversed()
+    public function transactionsReversed(Request $request)
     {
-        $trans = Transaction::where([['user_name', Auth::user()->user_name], ['status', 'reversed']])->OrderBy('id', 'desc')->limit(100)->get();
+        $input = $request->all();
+        $date_from = $input['date_from'] ?? '';
+        $date_to = $input['date_to'] ?? '';
+
+        $trans = Transaction::where([['user_name', Auth::user()->user_name], ['status', 'reversed']])->OrderBy('id', 'desc')
+            ->when(isset($date_from) && $date_from != '' && isset($date_to) && $date_to != '', function ($query) use ($date_from, $date_to) {
+                $query->whereBetween('created_at', [Carbon::parse($date_from)->toDateTimeString(), Carbon::parse($date_to)->addDay()->toDateTimeString()]);
+            })
+            ->limit(100)->get();
 
         return response()->json(['success' => 1, 'message' => 'Fetched successfully', 'data' => $trans]);
     }
 
-    public function transactionsSuccess()
+    public function transactionsSuccess(Request $request)
     {
-        $trans = Transaction::where([['user_name', Auth::user()->user_name], ['status', 'delivered']])->OrderBy('id', 'desc')->limit(100)->get();
+        $input = $request->all();
+        $date_from = $input['date_from'] ?? '';
+        $date_to = $input['date_to'] ?? '';
+
+        $trans = Transaction::where([['user_name', Auth::user()->user_name], ['status', 'delivered']])->OrderBy('id', 'desc')
+            ->when(isset($date_from) && $date_from != '' && isset($date_to) && $date_to != '', function ($query) use ($date_from, $date_to) {
+                $query->whereBetween('created_at', [Carbon::parse($date_from)->toDateTimeString(), Carbon::parse($date_to)->addDay()->toDateTimeString()]);
+            })
+            ->limit(100)->get();
 
         return response()->json(['success' => 1, 'message' => 'Fetched successfully', 'data' => $trans]);
     }
 
-    public function transactionsData()
+    public function transactionsData(Request $request)
     {
-        $trans = Transaction::where([['user_name', Auth::user()->user_name], ['code', 'LIKE', 'data_%']])->latest()->limit(100)->get();
+        $input = $request->all();
+        $date_from = $input['date_from'] ?? '';
+        $date_to = $input['date_to'] ?? '';
+
+        $trans = Transaction::where([['user_name', Auth::user()->user_name], ['code', 'LIKE', 'data_%']])
+            ->when(isset($date_from) && $date_from != '' && isset($date_to) && $date_to != '', function ($query) use ($date_from, $date_to) {
+                $query->whereBetween('created_at', [Carbon::parse($date_from)->toDateTimeString(), Carbon::parse($date_to)->addDay()->toDateTimeString()]);
+            })
+            ->latest()->limit(100)->get();
 
         return response()->json(['success' => 1, 'message' => 'Fetched successfully', 'data' => $trans]);
     }
 
-    public function transactionsAirtime()
+    public function transactionsAirtime(Request $request)
     {
-        $trans = Transaction::where([['user_name', Auth::user()->user_name], ['code', 'LIKE', 'airtime_%']])->latest()->limit(100)->get();
+        $input = $request->all();
+        $date_from = $input['date_from'] ?? '';
+        $date_to = $input['date_to'] ?? '';
+
+        $trans = Transaction::where([['user_name', Auth::user()->user_name], ['code', 'LIKE', 'airtime_%']])
+            ->when(isset($date_from) && $date_from != '' && isset($date_to) && $date_to != '', function ($query) use ($date_from, $date_to) {
+                $query->whereBetween('created_at', [Carbon::parse($date_from)->toDateTimeString(), Carbon::parse($date_to)->addDay()->toDateTimeString()]);
+            })
+            ->latest()->limit(100)->get();
 
         return response()->json(['success' => 1, 'message' => 'Fetched successfully', 'data' => $trans]);
     }
 
-    public function transactionsTv()
+    public function transactionsTv(Request $request)
     {
-        $trans = Transaction::where([['user_name', Auth::user()->user_name], ['code', 'LIKE', 'tv_%']])->latest()->limit(100)->get();
+        $input = $request->all();
+        $date_from = $input['date_from'] ?? '';
+        $date_to = $input['date_to'] ?? '';
+
+        $trans = Transaction::where([['user_name', Auth::user()->user_name], ['code', 'LIKE', 'tv_%']])
+            ->when(isset($date_from) && $date_from != '' && isset($date_to) && $date_to != '', function ($query) use ($date_from, $date_to) {
+                $query->whereBetween('created_at', [Carbon::parse($date_from)->toDateTimeString(), Carbon::parse($date_to)->addDay()->toDateTimeString()]);
+            })
+            ->latest()->limit(100)->get();
 
         return response()->json(['success' => 1, 'message' => 'Fetched successfully', 'data' => $trans]);
     }
 
-    public function transactionsElectricity()
+    public function transactionsElectricity(Request $request)
     {
-        $trans = Transaction::where([['user_name', Auth::user()->user_name], ['code', 'LIKE', 'electricity_%']])->latest()->limit(100)->get();
+        $input = $request->all();
+        $date_from = $input['date_from'] ?? '';
+        $date_to = $input['date_to'] ?? '';
+
+        $trans = Transaction::where([['user_name', Auth::user()->user_name], ['code', 'LIKE', 'electricity_%']])
+            ->when(isset($date_from) && $date_from != '' && isset($date_to) && $date_to != '', function ($query) use ($date_from, $date_to) {
+                $query->whereBetween('created_at', [Carbon::parse($date_from)->toDateTimeString(), Carbon::parse($date_to)->addDay()->toDateTimeString()]);
+            })
+            ->latest()->limit(100)->get();
 
         return response()->json(['success' => 1, 'message' => 'Fetched successfully', 'data' => $trans]);
     }
 
-    public function transactionsEducation()
+    public function transactionsEducation(Request $request)
     {
-        $trans = Transaction::where([['user_name', Auth::user()->user_name], ['code', 'rch']])->latest()->limit(100)->get();
+        $input = $request->all();
+        $date_from = $input['date_from'] ?? '';
+        $date_to = $input['date_to'] ?? '';
+
+        $trans = Transaction::where([['user_name', Auth::user()->user_name], ['code', 'rch']])
+            ->when(isset($date_from) && $date_from != '' && isset($date_to) && $date_to != '', function ($query) use ($date_from, $date_to) {
+                $query->whereBetween('created_at', [Carbon::parse($date_from)->toDateTimeString(), Carbon::parse($date_to)->addDay()->toDateTimeString()]);
+            })
+            ->latest()->limit(100)->get();
 
         return response()->json(['success' => 1, 'message' => 'Fetched successfully', 'data' => $trans]);
     }

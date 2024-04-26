@@ -12,6 +12,7 @@
         "laravel/tinker": "^2.7",
         "laravel/ui": "^4.1",
         "owen-it/laravel-auditing": "^13.0",
+        "rap2hpoutre/fast-excel": "^5.4",
         "spatie/laravel-permission": "^5.7"
     },
     "require-dev": {

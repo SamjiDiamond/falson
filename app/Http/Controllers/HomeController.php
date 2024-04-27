@@ -2,11 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\GiveAway;
 use App\Models\Settings;
 use App\Models\Transaction;
-use App\Models\VirtualAccountClient;
-use App\Models\Withdraw;
 use Carbon\Carbon;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
@@ -118,7 +115,7 @@ class HomeController extends Controller
     }
 
     public function allsettings(){
-        $data=Settings::where('name','min_funding')->orWhere('name','max_funding')->orWhere('name','funding_charges')->orWhere('name','bithday_message')->orWhere('name','disable_resellers')->orWhere('name','live_chat')->orWhere('name','email_note')->orWhere('name','support_email')->orWhere('name','transaction_email_copy')->orWhere('name','reseller_fee')->orWhere('name','reseller_terms')->orWhere('name','biz_verification_price_reseller')->orWhere('name','biz_verification_price_customer')->orWhere('name','data')->orWhere('name','airtime')->orWhere('name','paytv')->orWhere('name','resultchecker')->orWhere('name','rechargecard')->orWhere('name','electricity')->orWhere('name','airtimeconverter')->orWhere('name','support_whatsapp')->orWhere('name','support_call')->orWhere('name','privacy_policy')->orWhere('name','cg_wallet_bank_details')->orWhere('name','funding_message')->orWhere('name','tv_server')->orWhere('name','monnify_funding_message')->orWhere('name','budpay_funding_message')->get();
+        $data = Settings::where('name', 'min_funding')->orWhere('name', 'max_funding')->orWhere('name', 'funding_charges')->orWhere('name', 'bithday_message')->orWhere('name', 'disable_resellers')->orWhere('name', 'live_chat')->orWhere('name', 'email_note')->orWhere('name', 'transaction_email_copy')->orWhere('name', 'reseller_fee')->orWhere('name', 'reseller_terms')->orWhere('name', 'biz_verification_price_reseller')->orWhere('name', 'biz_verification_price_customer')->orWhere('name', 'data')->orWhere('name', 'airtime')->orWhere('name', 'paytv')->orWhere('name', 'resultchecker')->orWhere('name', 'rechargecard')->orWhere('name', 'electricity')->orWhere('name', 'airtimeconverter')->orWhere('name', 'LIKE', 'support_%')->orWhere('name', 'privacy_policy')->orWhere('name', 'cg_wallet_bank_details')->orWhere('name', 'funding_message')->orWhere('name', 'tv_server')->orWhere('name', 'monnify_funding_message')->orWhere('name', 'budpay_funding_message')->get();
 
         return view('allsettings', ['data' => $data]);
     }

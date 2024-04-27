@@ -104,13 +104,21 @@ class UserController extends Controller
 
         return response()->json(['success' => 1, 'message' => 'Fetched successfully', 'data' => ['user' => $me, 'balances' => $balances, 'services' => $services, 'news' => $user->gnews, 'others' => $others, 'payment' => $pay]]);
     }
+
     public function support()
     {
-        $settE=Settings::where('name', 'support_email')->first();
-        $settW=Settings::where('name', 'support_whatsapp')->first();
-        $settC=Settings::where('name', 'support_call')->first();
+        $settE = Settings::where('name', 'support_email')->first();
+        $settW = Settings::where('name', 'support_whatsapp')->first();
+        $settC = Settings::where('name', 'support_call')->first();
 
-        return response()->json(['success' => 1, 'message' => 'Fetched successfully', 'data' => ['email' => $settE->value, 'whatsapp' => $settW->value, 'call' =>  $settC->value]]);
+        return response()->json(['success' => 1, 'message' => 'Fetched successfully', 'data' => ['email' => $settE->value, 'whatsapp' => $settW->value, 'call' => $settC->value]]);
+    }
+
+    public function supportv3()
+    {
+        $sett = Settings::where([['name', 'LIKE', 'support_%'], ['value', '!=', 'null']])->get();
+
+        return response()->json(['success' => 1, 'message' => 'Fetched successfully', 'data' => $sett]);
     }
 
     public function change_password(Request $request)
@@ -271,7 +279,8 @@ class UserController extends Controller
             'full_name' => 'required',
             'company_name' => 'required',
             'dob' => 'required',
-            'bvn' => 'required'
+            'bvn' => 'required',
+            'website' => 'nullable'
         );
 
         $validator = Validator::make($input, $rules);
@@ -309,6 +318,7 @@ class UserController extends Controller
         $user->api_key=$key;
         $user->target = "Reseller in Progress";
         $user->wallet -= $set->value;
+        $user->note = $user->note . " Reseller Website: " . $input['website'];
         $user->save();
 
         $inputa["type"]="income";

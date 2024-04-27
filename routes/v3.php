@@ -1,7 +1,6 @@
 <?php
 
-use App\Http\Controllers\Api\V2\ValidationController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\Api\V2\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,13 +14,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::prefix('v3')->group(function () {
+
+    Route::get('support', [UserController::class, 'supportv3']);
+
 });
-
-Route::post('kycUpdate', [ValidationController::class, 'kycUpdate']);
-
-require __DIR__ . '/reseller.php';
-require __DIR__ . '/v2.php';
-require __DIR__ . '/v3.php';
-require __DIR__ . '/hooks.php';

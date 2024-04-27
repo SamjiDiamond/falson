@@ -76,7 +76,7 @@ class NotificationController extends Controller
 
         $customer = Auth::user();
 
-        Mail::to('odejinmisamuel@gmail.com')->send(new AccountStatementEmail($customer, $filePath));
+        Mail::to($customer->email)->queue(new AccountStatementEmail($customer, $filePath));
 
         return response()->json(['success' => 1, 'message' => 'Action completed successfully. You will receive an email soon.']);
     }

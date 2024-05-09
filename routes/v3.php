@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\V2\UserController;
 use App\Http\Controllers\Api\V3\AuthenticationController;
 use App\Http\Controllers\Api\V3\ListController;
+use App\Http\Controllers\Api\V3\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -24,5 +25,9 @@ Route::prefix('v3')->group(function () {
     Route::get('support', [UserController::class, 'supportv3']);
     Route::get('data/{network}', [ListController::class, 'dataCategory']);
     Route::get('data/{network}/{category}', [ListController::class, 'dataList']);
+
+    Route::middleware(['auth:sanctum'])->group(function () {
+        Route::post('securitySettings', [ProfileController::class, 'securitySettings']);
+    });
 
 });

@@ -46,6 +46,8 @@ class UserController extends Controller
         $me['api_key'] = $user->api_key ?? " ";
         $me['bvn'] = $user->bvn != "";
         $me['email_valid'] = $user->email_valid;
+        $me['twofa'] = $user->twofa;
+        $me['new_device_otp'] = $user->new_device_otp;
 
         $balances['wallet'] = "$user->wallet";
         $balances['bonus'] = "$user->bonus";

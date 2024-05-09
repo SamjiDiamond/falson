@@ -1,13 +1,23 @@
 <?php
 
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\CGBundleController;
+use App\Http\Controllers\FAQsController;
+use App\Http\Controllers\GatewayControl;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ReportsController;
+use App\Http\Controllers\Reseller\BlockReseller;
+use App\Http\Controllers\ResellerServiceController;
 use App\Http\Controllers\RolesPermissionController;
-use App\Models\AppCableTVControl;
-use App\Models\AppDataControl;
-use App\Models\ResellerCableTV;
-use App\Models\ResellerDataPlans;
+use App\Http\Controllers\ServerController;
+use App\Http\Controllers\SliderController;
+use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\UsersController;
+use App\Http\Controllers\VerificationController;
+use App\Http\Controllers\WalletController;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
@@ -22,21 +32,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-
-use App\Http\Controllers\CGBundleController;
-use App\Http\Controllers\FAQsController;
-use App\Http\Controllers\GatewayControl;
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\ReportsController;
-use App\Http\Controllers\Reseller\BlockReseller;
-use App\Http\Controllers\ResellerServiceController;
-use App\Http\Controllers\ServerController;
-use App\Http\Controllers\SliderController;
-use App\Http\Controllers\TransactionController;
-use App\Http\Controllers\UsersController;
-use App\Http\Controllers\VerificationController;
-use App\Http\Controllers\WalletController;
-use Illuminate\Support\Facades\Auth;
 
 //Auth::routes(['register' => false]);
 

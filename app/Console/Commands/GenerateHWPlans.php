@@ -99,15 +99,17 @@ class GenerateHWPlans extends Command
         $rep = json_decode($response, true);
 
         foreach ($rep['data'] as $plans) {
-            if(str_contains($plans['allowance'], "MB")){
-                $allowance=(explode("MB", $plans['allowance'])[0]/1000);
-            }else{
-                $allowance=explode("GB", $plans['allowance'])[0];
+            if (str_contains($plans['allowance'], "MB")) {
+                $allowance = (explode("MB", $plans['allowance'])[0] / 1000);
+            } else {
+                $allowance = explode("GB", $plans['allowance'])[0];
             }
+
+            $type = explode("_", $plans['name']);
 
             ResellerDataPlans::create([
                 'name' => $plans['name'] . " " . $plans['allowance'] . " - " . $plans['validity'],
-                'product_code' => $allowance,
+                'product_code' => $type[1] ?? 'DG',
                 'code' => "1_" . $plans['planId'],
                 'level1' => $plans['price'],
                 'level2' => $plans['price'],
@@ -115,7 +117,7 @@ class GenerateHWPlans extends Command
                 'level4' => $plans['price'],
                 'level5' => $plans['price'],
                 'price' => $plans['price'],
-                'type' => $plans['network'],
+                'type' => $allowance,
                 'network' => $plans['network'],
                 'plan_id' => $plans['planId'],
                 'server' => 1,
@@ -124,6 +126,7 @@ class GenerateHWPlans extends Command
 
             AppDataControl::create([
                 'name' => $plans['name'] . " " . $plans['allowance'] . " - " . $plans['validity'],
+                'product_code' => $type[1] ?? 'DG',
                 'dataplan' => $allowance,
                 'network' => $plans['network'],
                 'coded' => $plans['planId'],

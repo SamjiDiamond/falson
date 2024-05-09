@@ -173,25 +173,25 @@ class GenerateIYIINSTANTPlans extends Command
                 $allowance=explode("GB", $plans['plan'])[0];
             }
 
-            $type="DG";
+            $type = $plans['plan_type'];
 
-            if($plans['plan_type'] == "CORPORATE GIFTING"){
+            if ($plans['plan_type'] == "CORPORATE GIFTING") {
                 $type = "CG";
-            }elseif ($plans['plan_type'] == "SME"){
-                $type ="SME";
+            } elseif ($plans['plan_type'] == "GIFTING") {
+                $type = "DG";
             }
 
             ResellerDataPlans::create([
-                'name' => $type ." ". $plans['plan'] . " - ".$plans['month_validate'],
-                'product_code' => $plans['dataplan_id'],
-                'code' => "3_".$plans['dataplan_id'],
+                'name' => $type . " " . $plans['plan'] . " - " . $plans['month_validate'],
+                'product_code' => $type,
+                'code' => "3_" . $plans['dataplan_id'],
                 'level1' => $plans['plan_amount'],
                 'level2' => $plans['plan_amount'],
                 'level3' => $plans['plan_amount'],
                 'level4' => $plans['plan_amount'],
                 'level5' => $plans['plan_amount'],
                 'price' => $plans['plan_amount'],
-                'type' => $plans['plan_network'],
+                'type' => $allowance,
                 'network' => $plans['plan_network'],
                 'plan_id' => $plans['dataplan_id'],
                 'server' => 3,
@@ -199,10 +199,11 @@ class GenerateIYIINSTANTPlans extends Command
             ]);
 
             AppDataControl::create([
-                'name' => $type ." ". $plans['plan'] . " - ".$plans['month_validate'],
+                'name' => $type . " " . $plans['plan'] . " - " . $plans['month_validate'],
                 'dataplan' => $allowance,
+                'product_code' => $type,
                 'network' => $plans['plan_network'],
-                'coded' => "3_".$plans['dataplan_id'],
+                'coded' => "3_" . $plans['dataplan_id'],
                 'plan_id' => $plans['dataplan_id'],
                 'pricing' => $plans['plan_amount'],
                 'price' => $plans['plan_amount'],

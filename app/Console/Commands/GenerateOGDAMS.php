@@ -83,59 +83,7 @@ class GenerateOGDAMS extends Command
 
 
         foreach ($rep as $plans) {
-            if(str_contains($plans['name'], "MB")){
-                $allowance=(explode("MB", $plans['name'])[0]/1000);
-            }elseif(str_contains($plans['name'], "TB")){
-                $allowance=(explode("TB", $plans['name'])[0]*1000);
-            }else{
-                $allowance=explode("GB", $plans['name'])[0];
-            }
-
-            $type="DG";
-            $network="9MOBILE";
-
-            if(str_contains($plans['name'], "SME")){
-                $type = "SME";
-            }elseif (str_contains($plans['name'], "CG")){
-                $type ="CG";
-            }
-
-            if($plans['networkId'] == 1){
-                $network="MTN";
-            }elseif($plans['networkId'] == 2){
-                $network="AIRTEL";
-            }elseif($plans['networkId'] == 3){
-                $network="GLO";
-            }
-
-            ResellerDataPlans::create([
-                'name' => $type == "DG" ? str_replace("GIFTING","DG",$plans['name']) : $plans['name'],
-                'product_code' => $allowance,
-                'code' => "4_".$plans['planId'],
-                'level1' => $plans['price'],
-                'level2' => $plans['price'],
-                'level3' => $plans['price'],
-                'level4' => $plans['price'],
-                'level5' => $plans['price'],
-                'price' => $plans['price'],
-                'type' => $network,
-                'network' => $network,
-                'plan_id' => $plans['planId'],
-                'server' => 4,
-                'status' => 1,
-            ]);
-
-            AppDataControl::create([
-                'name' => $type == "DG" ? str_replace("GIFTING","DG",$plans['name']) : $plans['name'],
-                'dataplan' => $allowance,
-                'network' => $network,
-                'coded' => "4_".$plans['planId'],
-                'plan_id' => $plans['planId'],
-                'pricing' => $plans['price'],
-                'price' => $plans['price'],
-                'server' => 4,
-                'status' => 0,
-            ]);
+            $this->item($plans);
         }
 
 
@@ -189,55 +137,68 @@ class GenerateOGDAMS extends Command
             }
 
             if ($network == $types) {
-                if (str_contains($plans['name'], "MB")) {
-                    $allowance = (explode("MB", $plans['name'])[0] / 1000);
-                } elseif (str_contains($plans['name'], "TB")) {
-                    $allowance = (explode("TB", $plans['name'])[0] * 1000);
-                } else {
-                    $allowance = explode("GB", $plans['name'])[0];
-                }
-
-                $type = "DG";
-
-                if (str_contains($plans['name'], "SME")) {
-                    $type = "SME";
-                } elseif (str_contains($plans['name'], "CG")) {
-                    $type = "CG";
-                }
-
-
-                ResellerDataPlans::create([
-                    'name' => $type == "DG" ? str_replace("GIFTING", "DG", $plans['name']) : $plans['name'],
-                    'product_code' => $allowance,
-                    'code' => "4_" . $plans['planId'],
-                    'level1' => $plans['price'],
-                    'level2' => $plans['price'],
-                    'level3' => $plans['price'],
-                    'level4' => $plans['price'],
-                    'level5' => $plans['price'],
-                    'price' => $plans['price'],
-                    'type' => $network,
-                    'network' => $network,
-                    'plan_id' => $plans['planId'],
-                    'server' => 4,
-                    'status' => 1,
-                ]);
-
-                AppDataControl::create([
-                    'name' => $type == "DG" ? str_replace("GIFTING", "DG", $plans['name']) : $plans['name'],
-                    'dataplan' => $allowance,
-                    'network' => $network,
-                    'coded' => "4_" . $plans['planId'],
-                    'plan_id' => $plans['planId'],
-                    'pricing' => $plans['price'],
-                    'price' => $plans['price'],
-                    'server' => 4,
-                    'status' => 0,
-                ]);
+                $this->item($plans);
             }
         }
 
 
+    }
+
+
+    private function item($plans)
+    {
+        if (str_contains($plans['name'], "MB")) {
+            $allowance = (explode("MB", $plans['name'])[0] / 1000);
+        } elseif (str_contains($plans['name'], "TB")) {
+            $allowance = (explode("TB", $plans['name'])[0] * 1000);
+        } else {
+            $allowance = explode("GB", $plans['name'])[0];
+        }
+
+        $type = str_replace("]", "", explode(" [", $plans['name'])[0]);
+
+        if ($type == "GIFTING") {
+            $type = "DG";
+        }
+
+        $network = "9MOBILE";
+        if ($plans['networkId'] == 1) {
+            $network = "MTN";
+        } elseif ($plans['networkId'] == 2) {
+            $network = "AIRTEL";
+        } elseif ($plans['networkId'] == 3) {
+            $network = "GLO";
+        }
+
+        ResellerDataPlans::create([
+            'name' => $type == "DG" ? str_replace("GIFTING", "DG", $plans['name']) : $plans['name'],
+            'product_code' => $type,
+            'code' => "4_" . $plans['planId'],
+            'level1' => $plans['price'],
+            'level2' => $plans['price'],
+            'level3' => $plans['price'],
+            'level4' => $plans['price'],
+            'level5' => $plans['price'],
+            'price' => $plans['price'],
+            'type' => $allowance,
+            'network' => $network,
+            'plan_id' => $plans['planId'],
+            'server' => 4,
+            'status' => 1,
+        ]);
+
+        AppDataControl::create([
+            'name' => $type == "DG" ? str_replace("GIFTING", "DG", $plans['name']) : $plans['name'],
+            'dataplan' => $allowance,
+            'product_code' => $type,
+            'network' => $network,
+            'coded' => "4_" . $plans['planId'],
+            'plan_id' => $plans['planId'],
+            'pricing' => $plans['price'],
+            'price' => $plans['price'],
+            'server' => 4,
+            'status' => 0,
+        ]);
     }
 
 }

@@ -3,29 +3,26 @@
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
-use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class AccountStatementEmail extends Mailable implements ShouldQueue
+class TwofaNotificationMail extends Mailable
 {
     use Queueable, SerializesModels;
-
-    private $customer;
-    private $filePath;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($customer, $filePath)
+
+    public $data;
+
+    public function __construct($data)
     {
-        $this->customer = $customer;
-        $this->filePath = $filePath;
+        $this->data = $data;
     }
 
     /**
@@ -36,7 +33,7 @@ class AccountStatementEmail extends Mailable implements ShouldQueue
     public function envelope()
     {
         return new Envelope(
-            subject: 'Account Statement',
+            subject: '2FA Notification',
         );
     }
 
@@ -48,10 +45,7 @@ class AccountStatementEmail extends Mailable implements ShouldQueue
     public function content()
     {
         return new Content(
-            view: 'mail.statement',
-                with: [
-        'customer' => $this->customer,
-    ],
+            view: 'mail.twofa_mail'
         );
     }
 
@@ -62,8 +56,6 @@ class AccountStatementEmail extends Mailable implements ShouldQueue
      */
     public function attachments()
     {
-        return [
-            Attachment::fromPath($this->filePath),
-        ];
+        return [];
     }
 }

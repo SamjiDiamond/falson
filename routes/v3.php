@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Api\V2\UserController;
+use App\Http\Controllers\Api\V3\AuthenticationController;
+use App\Http\Controllers\Api\V3\ListController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,6 +18,11 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('v3')->group(function () {
 
+    Route::post('login', [AuthenticationController::class, 'login']);
+    Route::post('login-2fa', [AuthenticationController::class, 'login2fa'])->name('api_2falogin');
+
     Route::get('support', [UserController::class, 'supportv3']);
+    Route::get('data/{network}', [ListController::class, 'dataCategory']);
+    Route::get('data/{network}/{category}', [ListController::class, 'dataList']);
 
 });

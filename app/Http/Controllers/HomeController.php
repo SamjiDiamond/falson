@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Settings;
 use App\Models\Transaction;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
@@ -31,6 +32,7 @@ class HomeController extends Controller
     public function index()
     {
         $today = Carbon::now()->format('Y-m-d');
+        $data['today_user'] = User::where('reg_date', 'LIKE', '%' . $today . '%')->count();
 
         $data['today_deposits'] = Transaction::where([['name', '=', 'wallet funding'], ['date', 'LIKE', '%' . $today . '%']])->sum('amount');
 

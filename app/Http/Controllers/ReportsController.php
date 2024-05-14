@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\PndL;
 use App\Models\Transaction;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -52,6 +53,8 @@ class ReportsController extends Controller
         $data['expense_sum'] = PndL::where([['date', 'LIKE', '%' . $date . '%'], ['type', 'expenses']])->sum('amount');
         $data['te'] = 0;
 
+        $data['user_count'] = User::where('reg_date', 'LIKE', '%' . $date . '%')->count();
+
         $data['date'] = $date;
 
         return view('report_yearly', $data);
@@ -79,6 +82,8 @@ class ReportsController extends Controller
         $data['expensed'] = PndL::where([['date', 'LIKE', '%' . $date . '%'], ['type', 'expenses']])->distinct('gl')->select('gl')->get();
         $data['expense_sum'] = PndL::where([['date', 'LIKE', '%' . $date . '%'], ['type', 'expenses']])->sum('amount');
         $data['te'] = 0;
+
+        $data['user_count'] = User::where('reg_date', 'LIKE', '%' . $date . '%')->count();
 
         $data['date'] = $date;
 

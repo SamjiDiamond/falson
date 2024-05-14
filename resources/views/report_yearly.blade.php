@@ -68,7 +68,7 @@
                                 <thead>
                                 <tr>
                                     <th>Name</th>
-                                    <th>Amount</th>
+                                    <th>Amount/Count</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -88,6 +88,10 @@
                                     <td>Electricity</td>
                                     <td>&#8358;{{number_format($electricity_amount)}}</td>
                                 </tr>
+                                <tr>
+                                    <td>Registered Users</td>
+                                    <td>{{number_format($user_count)}}</td>
+                                </tr>
                                 </tbody>
                             </table>
 
@@ -95,8 +99,8 @@
                     </div>
                 </div>
             </div>
-            <!-- end col -->
-{{--    @endif--}}
+        <!-- end col -->
+        {{--    @endif--}}
     </div>
     <!-- end row -->
 @endsection

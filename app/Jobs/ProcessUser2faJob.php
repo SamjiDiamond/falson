@@ -24,11 +24,13 @@ class ProcessUser2faJob implements ShouldQueue
      */
 
     public $user;
+    public $type;
     public $datas;
 
-    public function __construct(User $user, $datas)
+    public function __construct(User $user, $type, $datas)
     {
         $this->user = $user;
+        $this->type = $type;
         $this->datas = $datas;
     }
 
@@ -40,15 +42,13 @@ class ProcessUser2faJob implements ShouldQueue
     public function handle()
     {
 
-        $type = "2fa";
-
         $code = substr(rand(), 0, 6);
 
         CodeRequest::create([
             'mobile' => trim($this->user->email),
             'code' => $code,
             'status' => 0,
-            'type' => $type
+            'type' => $this->type
         ]);
 
 

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\ProcessUser2faJob;
+use App\Models\CodeRequest;
 use Carbon\Carbon;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
@@ -41,10 +43,50 @@ class LoginController extends Controller
                 $request->session()->invalidate();
 
                 return redirect('/login')->with('error', 'User not authorized, kindly contact support');
-            }else{
+            }else {
                 DB::table('audits')->insert(
-                    ['user_id' => auth()->user()->id, 'user_type' => 'App\Models\User', 'event' => 'login', 'auditable_id' => auth()->user()->id, 'auditable_type' => 'App\Models\User', 'tags' => 'Login Successfully',  'old_values'=> '[]', 'new_values'=> '[]',  'ip_address' => $_SERVER['REMOTE_ADDR'], 'user_agent' => $_SERVER['HTTP_USER_AGENT'], 'created_at'=>Carbon::now(), 'updated_at'=>Carbon::now()]
+                    ['user_id' => auth()->user()->id, 'user_type' => 'App\Models\User', 'event' => 'login', 'auditable_id' => auth()->user()->id, 'auditable_type' => 'App\Models\User', 'tags' => 'Login Successfully', 'old_values' => '[]', 'new_values' => '[]', 'ip_address' => $_SERVER['REMOTE_ADDR'], 'user_agent' => $_SERVER['HTTP_USER_AGENT'], 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()]
                 );
+
+                $type = "2fa_admin";
+
+                if (!isset($input['otp'])) {
+                    $datas['device'] = $_SERVER['HTTP_USER_AGENT'];
+                    $datas['ip'] = $_SERVER['REMOTE_ADDR'];
+                    ProcessUser2faJob::dispatch(auth()->user(), $type, $datas);
+
+                    $this->guard()->logout();
+                    $request->session()->invalidate();
+
+                    return redirect('/login')->with(['success' => '2FA sent successfully to your mail. Kindly input it to proceed.', 'otp' => true]);
+                }
+
+
+                $nl = CodeRequest::where([['mobile', $input['email']], ['type', $type], ['status', 0]])->latest()->first();
+
+
+                if (!$nl) {
+                    $this->guard()->logout();
+                    $request->session()->invalidate();
+                    return redirect('/login')->with(['error' => 'Login error. Kindly start again']);
+                }
+
+                if ($nl->code != $input['otp']) {
+                    $this->guard()->logout();
+                    $request->session()->invalidate();
+                    return redirect('/login')->with(['error' => 'Invalid code. Check your mail and try again', 'otp' => true]);
+                }
+
+
+                if (Carbon::parse($nl->created_at)->diffInMinutes(Carbon::now()) > 10) {
+                    $this->guard()->logout();
+                    $request->session()->invalidate();
+                    return redirect('/login')->with(['error' => '2FA expired. Kindly login again',]);
+                }
+
+                $nl->status = 0;
+                $nl->save();
+
 
                 return redirect()->intended('dashboard');
             }

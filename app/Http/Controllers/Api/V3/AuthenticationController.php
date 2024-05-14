@@ -80,7 +80,7 @@ class AuthenticationController extends Controller
         if ($user->twofa == 1) {
             $datas['device'] = $input['device'];
             $datas['ip'] = $_SERVER['REMOTE_ADDR'];
-            ProcessUser2faJob::dispatch($user, $datas);
+            ProcessUser2faJob::dispatch($user, "2fa", $datas);
 
             $la->status = "authorized_2fa";
             $la->save();

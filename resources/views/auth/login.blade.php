@@ -34,12 +34,12 @@
                         showMethod: 'slideDown',
                         timeOut: 4000
                     };
-                    toastr.error('{{ $message }}', 'Login Error' );</script>
+                    toastr.error('{{ $message }}', 'Login Error');</script>
                 @enderror
 
                 @if (session('error'))
                     <div class="alert alert-danger" role="alert">
-                        <strong>{{ session('error') }}</strong> Change a few things up and try submitting again.
+                        <strong>{{ session('error') }}</strong>
                     </div>
                     <script type="text/javascript">
                         toastr.options = {
@@ -48,7 +48,7 @@
                             showMethod: 'slideDown',
                             timeOut: 4000
                         };
-                        toastr.error('{{ session("error") }}', 'Login Error' );
+                        toastr.error('{{ session("error") }}', 'Login Error');
                     </script>
                 @endif
 
@@ -63,24 +63,43 @@
                             showMethod: 'slideDown',
                             timeOut: 4000
                         };
-                        toastr.success('{{ session('success') }}', 'Success' );
+                        toastr.success('{{ session('success') }}', 'Success');
                     </script>
                 @endif
                 <form class="form-horizontal m-t-20" method="POST" action="{{ route('login') }}">
                     @csrf
                     <div class="form-group row">
-                        <div class="col-12"><input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autofocus></div>
+                        <div class="col-12"><input id="email" type="email"
+                                                   class="form-control @error('email') is-invalid @enderror"
+                                                   name="email" value="{{ old('email') }}" required autofocus></div>
                     </div>
                     <div class="form-group row">
-                        <div class="col-12"><input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required></div>
+                        <div class="col-12"><input id="password" type="password"
+                                                   class="form-control @error('password') is-invalid @enderror"
+                                                   name="password" required></div>
                     </div>
+                    @if (session('otp'))
+                        <div class="form-group row">
+                            <div class="col-12"><input id="otp" type="number"
+                                                       class="form-control @error('otp') is-invalid @enderror"
+                                                       name="otp" placeholder="Enter OTP sent to your mail" required>
+                            </div>
+                        </div>
+                    @endif
                     <div class="form-group row">
                         <div class="col-12">
-                            <div class="custom-control custom-checkbox"><input type="checkbox" class="custom-control-input" name="remember" id="remember"  {{ old('remember') ? 'checked' : '' }}> <label class="custom-control-label" for="remember">{{ __('Remember Me') }}</label></div>
+                            <div class="custom-control custom-checkbox"><input type="checkbox"
+                                                                               class="custom-control-input"
+                                                                               name="remember"
+                                                                               id="remember" {{ old('remember') ? 'checked' : '' }}>
+                                <label class="custom-control-label" for="remember">{{ __('Remember Me') }}</label></div>
                         </div>
                     </div>
                     <div class="form-group text-center row m-t-20">
-                        <div class="col-12"><button class="btn btn-success btn-block waves-effect waves-light" type="submit">{{ __('Login') }}</button></div>
+                        <div class="col-12">
+                            <button class="btn btn-success btn-block waves-effect waves-light"
+                                    type="submit">{{ __('Login') }}</button>
+                        </div>
                     </div>
                     <div class="form-group m-t-10 mb-0 row">
                         <div class="col-sm-7 m-t-20"><p class="m-t"> <small>&copy; {{\Carbon\Carbon::now()->format('Y')}}</small> </p></div>

@@ -917,10 +917,10 @@ class PayController extends Controller
         $t->server_response = $dada['server_response'];
         $t->save();
 
-        $message='Your transaction failed';
-
-        if(isset($dada['message'])){
-            $message=$dada['message'];
+        if (isset($dada['message'])) {
+            $message = $dada['message'];
+        } else {
+            $message = 'Your transaction failed';
         }
 
         ReverseTransactionJob::dispatch($t, "api");

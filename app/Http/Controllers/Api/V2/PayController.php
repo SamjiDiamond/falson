@@ -772,31 +772,39 @@ class PayController extends Controller
             $user->save();
 
         }  else {
-            $cg->balance-=$proceed[7];
-            $cg->save();
+            if ($requester == "data") {
+                $cg->balance -= $proceed[7];
+                $cg->save();
 
-            $tr['i_wallet'] = $user->wallet;
-            $tr['f_wallet'] = $tr['i_wallet'];
-            $tr['extra'] = "$proceed[7]|".$input['payment']."|".Auth::id();
+                $tr['i_wallet'] = $user->wallet;
+                $tr['f_wallet'] = $tr['i_wallet'];
+                $tr['extra'] = "$proceed[7]|" . $input['payment'] . "|" . Auth::id();
+            } else {
+                return response()->json(['success' => 0, 'message' => 'Payment method can not be applied']);
+            }
         }
 
         $t = Transaction::create($tr);
 
-//        if ($input['payment'] == "wallet") {
-//            if ($discount > 0) {
-//                $tr['name'] = "Commission";
-//                $tr['description'] = "Commission on " . $ref;
-//                $tr['code'] = "tcommission";
-//                $tr['amount'] = $discount;
-//                $tr['status'] = "successful";
-//                $tr['i_wallet'] = $user->agent_commision;
-//                $tr['f_wallet'] = $tr['i_wallet'] + $discount;
-//                Transaction::create($tr);
-//
-//                $user->agent_commision = $tr['f_wallet'];
-//                $user->save();
-//            }
-//        }
+        $settings = Settings::where('name', 'enable_commission')->first();
+
+        if ($settings->value == "1") {
+            if ($input['payment'] == "wallet") {
+                if ($discount > 0) {
+                    $tr['name'] = "Commission";
+                    $tr['description'] = "Commission on " . $ref;
+                    $tr['code'] = "tcommission";
+                    $tr['amount'] = $discount;
+                    $tr['status'] = "successful";
+                    $tr['i_wallet'] = $user->agent_commision;
+                    $tr['f_wallet'] = $tr['i_wallet'] + $discount;
+                    Transaction::create($tr);
+
+                    $user->agent_commision = $tr['f_wallet'];
+                    $user->save();
+                }
+            }
+        }
 
         $input["service"] = $requester;
 //        $job = (new ServeRequestJob($input, "1", $tr, $user->id))

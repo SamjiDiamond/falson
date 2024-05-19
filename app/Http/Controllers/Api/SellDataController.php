@@ -61,7 +61,7 @@ class SellDataController extends Controller
             Log::info("HW Payload. - " . $payload);
 
         } else {
-            $response = '{ "code": 200, "message": "Dear Customer, You have successfully shared 5000MB Data to 2348168867154. Your SME data balance is 3.203GB expires 02/08/2022. Thankyou", "reference": "1651625097421" }';
+            $response = '{"msg":"AIRTEL Data Purchase of NGN 95.00 for 09016816446 | 7 DAYS | 300MB was successful","data":{"code":200,"reference":"TN|D|305|20240519174737PM326_8RJVT","message":"You have successfully gifted 2349016816446 with 300MB of Data","msg":"You have successfully gifted 2349016816446 with 300MB of Data","description":"AIRTEL Data Purchase of NGN 95.00 for 09016816446 | 7 DAYS | 300MB","type":"data"},"code":200} ';
         }
 
         $rep = json_decode($response, true);
@@ -73,43 +73,44 @@ class SellDataController extends Controller
         $ms = new V2\PayController();
 
         $dada['server_response'] = $response;
-        $dada['server_ref'] = $rep['ref'];
 
-
-        if ($rep['code'] == 200) {
-            if ($requester == "reseller") {
-                return $rs->outputResponse($request, $transid, 1, $dada);
+        try {
+            if ($rep['data']['code'] == 200) {
+                $dada['server_ref'] = $rep['data']['reference'];
+                if ($requester == "reseller") {
+                    return $rs->outputResponse($request, $transid, 1, $dada);
+                } else {
+                    return $ms->outputResp($request, $transid, 1, $dada);
+                }
             } else {
-                return $ms->outputResp($request, $transid, 1, $dada);
-            }
-        } elseif ($rep['code'] == 300) {
-            $dada['message'] = $rep['error'][0]['msg'];
-            if ($requester == "reseller") {
-                return $rs->outputResponse($request, $transid, 0, $dada);
-            } else {
-                return $ms->outputResp($request, $transid, 0, $dada);
-            }
-        } else {
-            $dada['message'] = $rep['message'];
+                $dada['message'] = $rep['data']['message'];
 
-            //Incase the SIM is not linked to NIN and MTN is holding grudge against the user
-            if (env('ENABLE_DELIVERY_NIN_ISSUE', 0) == 1) {
-                if (str_contains($dada['message'], "was not successful. Please try again")) {
-                    if ($requester == "reseller") {
-                        return $rs->outputResponse($request, $transid, 1, $dada);
-                    } else {
-                        return $ms->outputResp($request, $transid, 1, $dada);
+                //Incase the SIM is not linked to NIN and MTN is holding grudge against the user
+                if (env('ENABLE_DELIVERY_NIN_ISSUE', 0) == 1) {
+                    if (str_contains($dada['message'], "was not successful. Please try again")) {
+                        if ($requester == "reseller") {
+                            return $rs->outputResponse($request, $transid, 1, $dada);
+                        } else {
+                            return $ms->outputResp($request, $transid, 1, $dada);
+                        }
                     }
                 }
-            }
 
+                if ($requester == "reseller") {
+                    return $rs->outputResponse($request, $transid, 0, $dada);
+                } else {
+                    return $ms->outputResp($request, $transid, 0, $dada);
+                }
+            }
+        } catch (\Exception $e) {
+            $dada['message'] = $rep['error'][0]['msg'];
+            $dada['server_ref'] = $rep['reference'];
             if ($requester == "reseller") {
                 return $rs->outputResponse($request, $transid, 0, $dada);
             } else {
                 return $ms->outputResp($request, $transid, 0, $dada);
             }
         }
-
 
     }
 

@@ -92,6 +92,22 @@ class ATMmanagerController extends Controller
 
                 $noti = new PushNotificationController();
                 $noti->PushNoti($input['user_name'], $notimssg, "Account Transfer Successful");
+
+//                $data = Settings::where('name', 'enable_referral_bonus')->first();
+//
+//                if($data->value == "1"){
+//                    $minFund = Settings::where('name', 'referral_bonus_min_funding')->first();
+//                    $rfamount=doubleval($minFund->value);
+//
+//
+//                    $t=Transaction::where([['user_name', $u->user_name], ['name', 'wallet funding'], ['amount', '>=', $rfamount]])->count();
+//
+//                    if($t == 1){
+//                        //fund the person that referred him
+//                    }
+//                }
+
+
             }
         }else{
             echo "Already credited ";

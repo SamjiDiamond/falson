@@ -12,13 +12,12 @@ use App\Models\PromoCode;
 use App\Models\ReferralPlans;
 use App\Models\Settings;
 use App\Models\Transaction;
+use App\Models\User;
 use App\Models\Wallet;
 use App\Models\Withdraw;
-use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class OtherController extends Controller
@@ -468,6 +467,82 @@ class OtherController extends Controller
             // echoing JSON response
             return response()->json(['success' => 0, 'message' => implode(",", $validator->errors()->all())]);
         }
+    }
+
+    public function moveFunds(Request $request)
+    {
+        $input = $request->all();
+        $rules = array(
+            'wallet' => 'required',
+            'amount' => 'required',
+        );
+
+        $validator = Validator::make($input, $rules);
+
+        if (!$validator->passes()) {
+            return response()->json(['success' => 0, 'message' => 'Required field(s) is missing']);
+        }
+
+        $input['user_name'] = Auth::user()->user_name;
+
+        $input['version'] = $request->header('version');
+
+        $input['device_details'] = $request->header('device') ?? $_SERVER['HTTP_USER_AGENT'];
+
+        $u = User::where("user_name", $input['user_name'])->first();
+
+        $amount = $input['amount'];
+        $ref = "PLF_MV_" . time();
+        $prevb = 0;
+        $method = "";
+
+
+        if ($input['wallet'] == "bonus") {
+            $prevb = $u->bonus;
+            $method = "bonus";
+            if ($u->bonus < $input['amount']) {
+                return response()->json(['success' => 0, 'message' => 'Insufficient balance on your bonus wallet']);
+            }
+            $u->bonus -= $input['amount'];
+        }
+
+        if ($input['wallet'] == "commission") {
+            $prevb = $u->agent_commision;
+            $method = "commission";
+            if ($u->agent_commision < $input['amount']) {
+                return response()->json(['success' => 0, 'message' => 'Insufficient balance on your commision wallet']);
+            }
+            $u->agent_commision -= $input['amount'];
+        }
+
+        if ($method == "") {
+            return response()->json(['success' => 0, 'message' => 'Kindly provide correct wallet type']);
+        }
+
+        $u->wallet += $amount;
+        $u->save();
+
+
+        $tr['name'] = ucfirst($method) . "2Wallet";
+        $tr['description'] = "Moved " . $amount . " " . $method . " to wallet";
+        $tr['amount'] = $amount;
+        $tr['date'] = Carbon::now();
+        $tr['device_details'] = $request->header('device') ?? $_SERVER['HTTP_USER_AGENT'];
+        $tr['ip_address'] = $_SERVER['REMOTE_ADDR'];
+        $tr['user_name'] = Auth::user()->user_name;
+        $tr['ref'] = $ref;
+        $tr['server'] = "";
+        $tr['server_response'] = "";
+        $tr['code'] = "mfunds";
+        $tr['status'] = "successful";
+        $tr['extra'] = $method;
+        $tr['i_wallet'] = $prevb;
+        $tr['f_wallet'] = $tr['i_wallet'] - $amount;
+
+        $t = Transaction::create($tr);
+
+        return response()->json(['success' => 1, 'message' => 'Funds moved to your wallet successfully']);
+
     }
 
 }

@@ -147,6 +147,8 @@ Route::prefix('v2')->group(function () {
         Route::post('report_daily', [ReportController::class, 'daily']);
 
         Route::get('getPromoCode', [OtherController::class, 'getPromoCode']);
+
+        Route::post('moveFunds', [OtherController::class, 'moveFunds']);
     });
 
 });

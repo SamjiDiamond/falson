@@ -73,42 +73,43 @@ class SellDataController extends Controller
         $ms = new V2\PayController();
 
         $dada['server_response'] = $response;
+        $dada['server_ref'] = $rep['reference'];
 
-        try {
-            if ($rep['data']['code'] == 200) {
-                $dada['server_ref'] = $rep['data']['reference'];
-                if ($requester == "reseller") {
-                    return $rs->outputResponse($request, $transid, 1, $dada);
-                } else {
-                    return $ms->outputResp($request, $transid, 1, $dada);
-                }
+
+        if ($rep['code'] == 200) {
+            if ($requester == "reseller") {
+                return $rs->outputResponse($request, $transid, 1, $dada);
             } else {
-                $dada['message'] = $rep['message'];
+                return $ms->outputResp($request, $transid, 1, $dada);
+            }
+        } elseif ($rep['code'] == 300) {
+            $dada['message'] = $rep['error'][0]['msg'];
+            if ($requester == "reseller") {
+                return $rs->outputResponse($request, $transid, 0, $dada);
+            } else {
+                return $ms->outputResp($request, $transid, 0, $dada);
+            }
+        } else {
+            $dada['message'] = $rep['message'];
 
-                //Incase the SIM is not linked to NIN and MTN is holding grudge against the user
-                if (env('ENABLE_DELIVERY_NIN_ISSUE', 0) == 1) {
-                    if (str_contains($dada['message'], "was not successful. Please try again")) {
-                        if ($requester == "reseller") {
-                            return $rs->outputResponse($request, $transid, 1, $dada);
-                        } else {
-                            return $ms->outputResp($request, $transid, 1, $dada);
-                        }
+            //Incase the SIM is not linked to NIN and MTN is holding grudge against the user
+            if (env('ENABLE_DELIVERY_NIN_ISSUE', 0) == 1) {
+                if (str_contains($dada['message'], "was not successful. Please try again")) {
+                    if ($requester == "reseller") {
+                        return $rs->outputResponse($request, $transid, 1, $dada);
+                    } else {
+                        return $ms->outputResp($request, $transid, 1, $dada);
                     }
                 }
-
-                if ($requester == "reseller") {
-                    return $rs->outputResponse($request, $transid, 0, $dada);
-                } else {
-                    return $ms->outputResp($request, $transid, 0, $dada);
-                }
             }
-        } catch (\Exception $e) {
+
             if ($requester == "reseller") {
                 return $rs->outputResponse($request, $transid, 0, $dada);
             } else {
                 return $ms->outputResp($request, $transid, 0, $dada);
             }
         }
+
 
     }
 
@@ -521,7 +522,7 @@ class SellDataController extends Controller
         $rep = json_decode($response, true);
 
         $dada['server_response'] = $response;
-        $dada['message'] = $rep['message'];
+        $dada['message'] = $rep['response'];
 
         if ($rep['status'] == "successful" || $rep['status'] == "processing" ) {
             $dada['server_ref'] = $rep['transaction_id'];

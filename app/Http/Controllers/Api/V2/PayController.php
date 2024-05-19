@@ -773,6 +773,11 @@ class PayController extends Controller
 
         }  else {
             if ($requester == "data") {
+                $settings = Settings::where('name', 'enable_cg_wallet')->first();
+                if ($settings->value == "0") {
+                    return response()->json(['success' => 0, 'message' => 'CG Wallet is currently disabled. Kindly contact support']);
+                }
+
                 $cg->balance -= $proceed[7];
                 $cg->save();
 

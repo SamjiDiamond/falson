@@ -73,7 +73,7 @@ class SellDataController extends Controller
         $ms = new V2\PayController();
 
         $dada['server_response'] = $response;
-        $dada['server_ref'] = $rep['reference'];
+        $dada['server_ref'] = $rep['ref'];
 
 
         if ($rep['code'] == 200) {

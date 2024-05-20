@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\PushNotificationController;
 use App\Jobs\ATMtransactionserveJob;
 use App\Jobs\PushNotificationJob;
+use App\Jobs\ReferralBonusAfterFundingJob;
 use App\Mail\TransactionNotificationMail;
 use App\Models\PndL;
 use App\Models\Settings;
@@ -93,20 +94,11 @@ class ATMmanagerController extends Controller
                 $noti = new PushNotificationController();
                 $noti->PushNoti($input['user_name'], $notimssg, "Account Transfer Successful");
 
-//                $data = Settings::where('name', 'enable_referral_bonus')->first();
-//
-//                if($data->value == "1"){
-//                    $minFund = Settings::where('name', 'referral_bonus_min_funding')->first();
-//                    $rfamount=doubleval($minFund->value);
-//
-//
-//                    $t=Transaction::where([['user_name', $u->user_name], ['name', 'wallet funding'], ['amount', '>=', $rfamount]])->count();
-//
-//                    if($t == 1){
-//                        //fund the person that referred him
-//                    }
-//                }
+                $data = Settings::where('name', 'enable_referral_bonus')->first();
 
+                if ($data->value == "1") {
+                    ReferralBonusAfterFundingJob::dispatch($u->user_name, $amount);
+                }
 
             }
         }else{

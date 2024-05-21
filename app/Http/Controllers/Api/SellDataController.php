@@ -533,7 +533,7 @@ class SellDataController extends Controller
                 return $ms->outputResp($request, $transid, 1, $dada);
             }
         } else {
-            if(env('ENABLE_DELIVERY_NIN_ISSUE',0) == 1) {
+            if (env('ENABLE_DELIVERY_NIN_ISSUE', 0) == 1) {
                 if (str_contains($dada['message'], "was not successful. Please try again")) {
                     if ($requester == "reseller") {
                         return $rs->outputResponse($request, $transid, 1, $dada);
@@ -542,6 +542,9 @@ class SellDataController extends Controller
                     }
                 }
             }
+
+
+            $dada['message'] = explode("Sponsor", $rep['response'])[0];
 
             if ($requester == "reseller") {
                 return $rs->outputResponse($request, $transid, 0, $dada);

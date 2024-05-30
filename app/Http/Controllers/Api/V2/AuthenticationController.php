@@ -465,21 +465,20 @@ class AuthenticationController extends Controller
             return response()->json(['success' => 0, 'message' => implode(",", $validator->errors()->all())]);
         }
 
-        if(Auth::user()->email_valid == 1){
+        $fuser = User::where('email', $input['email'])->first();
+
+        if (!$fuser) {
+            return response()->json(['success' => 0, 'message' => 'Kindly use your valid email']);
+        }
+
+        if ($fuser->email_valid == 1) {
             return response()->json(['success' => 0, 'message' => 'Email is already verified']);
         }
 
-//        $fuser = User::where([['email', $input['email']], ['user_name', '!=', Auth::user()->user_name]])->first();
-//
-//
-//        if ($fuser) {
-//            return response()->json(['success' => 0, 'message' => 'This email exist with another account. Kindly use your valid email']);
-//        }
+        $cr = CodeRequest::where([["mobile", $input['email']], ['status', 0]])->latest()->first();
 
-        $cr=CodeRequest::where("mobile", $input['email'])->latest()->first();
-
-        if($cr){
-            if(Carbon::parse($cr->created_at)->diffInMinutes() < 10){
+        if ($cr) {
+            if (Carbon::parse($cr->created_at)->diffInMinutes() < 10) {
                 return response()->json(['success' => 0, 'message' => 'Code has been sent to your mail. Kindly check your inbox, promotions or spam']);
             }
         }
@@ -523,25 +522,23 @@ class AuthenticationController extends Controller
             return response()->json(['success' => 0, 'message' => implode(",", $validator->errors()->all())]);
         }
 
+        $fuser = User::where('email', $input['email'])->first();
 
-        if(Auth::user()->email_valid == 1){
+        if (!$fuser) {
+            return response()->json(['success' => 0, 'message' => 'Kindly use your valid email']);
+        }
+
+        if ($fuser->email_valid == 1) {
             return response()->json(['success' => 0, 'message' => 'Email is already verified']);
         }
 
-//        $fuser = User::where([['email', $input['email']], ['user_name', '!=', Auth::user()->user_name]])->first();
-//
-//        if ($fuser) {
-//            return response()->json(['success' => 0, 'message' => 'This email exist with another account. Kindly use your valid email']);
-//        }
+        $cr = CodeRequest::where([["mobile", $input['email']], ['status', 0], ['type', 'email_verify']])->latest()->first();
 
-
-        $cr=CodeRequest::where([["mobile", $input['email']], ['status', 0], ['type', 'email_verify']])->latest()->first();
-
-        if(!$cr){
+        if (!$cr) {
             return response()->json(['success' => 0, 'message' => 'Kindly restart verification process']);
         }
 
-        $max_attempt=3;
+        $max_attempt = 3;
 
         $cur_attempt=$max_attempt - $cr->attempt;
 
@@ -552,16 +549,15 @@ class AuthenticationController extends Controller
             $cr->save();
         }
 
-        if($cr->code != $input['code']){
+        if ($cr->code != $input['code']) {
             return response()->json(['success' => 0, 'message' => "Code does not match. You have $cur_attempt attempt left."]);
-        }else{
-            $cr->status=1;
+        } else {
+            $cr->status = 1;
             $cr->save();
         }
 
-        $user=User::find(Auth::id());
-        $user->email_valid=1;
-        $user->save();
+        $fuser->email_valid = 1;
+        $fuser->save();
 
         return response()->json(['success' => 1, 'message' => 'Email verified successfully']);
 

@@ -48,6 +48,10 @@ Route::prefix('v2')->group(function () {
     Route::get('education', [ListController::class, 'education']);
     Route::get('availableCommissions', [ListController::class, 'availableCommissions']);
 
+    Route::post('email-verification', [AuthenticationController::class, 'email_verify']);
+    Route::post('email-verification-continue', [AuthenticationController::class, 'email_verify_continue']);
+
+
     Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('biometriclogin', [AuthenticationController::class, 'biometricLogin']);
         Route::get('dashboard', [UserController::class, 'dashboard']);
@@ -69,9 +73,6 @@ Route::prefix('v2')->group(function () {
 
         Route::post('changepassword', [UserController::class, 'change_password']);
         Route::get('paymentcheckout', [OtherController::class, 'paymentcheckout']);
-
-        Route::post('email-verification', [AuthenticationController::class, 'email_verify']);
-        Route::post('email-verification-continue', [AuthenticationController::class, 'email_verify_continue']);
 
         Route::get('all-notifications', [NotificationController::class, 'notifications']);
         Route::get('unread-notifications', [NotificationController::class, 'unreadnotifications']);

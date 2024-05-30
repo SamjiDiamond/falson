@@ -434,6 +434,8 @@ class SellDataController extends Controller
                 }
             }
 
+            $dada['message'] = explode("Sponsor",  $rep['data']['msg'])[0];
+
             if ($requester == "reseller") {
                 return $rs->outputResponse($request, $transid, 0, $dada);
             } else {

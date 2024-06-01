@@ -20,6 +20,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('kycUpdate', [ValidationController::class, 'kycUpdate']);
+Route::post('kycUpdateInfo', [\App\Http\Controllers\Api\V2\UserController::class, 'kycUpdateInfo']);
 
 require __DIR__ . '/reseller.php';
 require __DIR__ . '/v2.php';

@@ -231,6 +231,36 @@ class UserController extends Controller
         return response()->json(['success' => 1, 'message' => 'Agent status fetched successfully', 'data' => ['step1' => $step1, 'step2' => $step2, 'step3' => $step3]]);
     }
 
+    public function kycUpdateInfo(Request $request)
+    {
+        $input = $request->all();
+        $rules = array(
+            'email' => 'required',
+            'street' => 'required',
+            'state' => 'required',
+            'city' => 'required',
+        );
+
+        $validator = Validator::make($input, $rules);
+
+        $input = $request->all();
+
+        if (!$validator->passes()) {
+            return response()->json(['status' => 0, 'message' => 'Some forms are left out', 'error' => $validator->errors()]);
+        }
+
+        $user = User::where('email', $input['email'])->first();
+        if (!$user) {
+            return response()->json(['success' => 0, 'message' => 'User not found']);
+        }
+
+
+        $user->address = $input['street'] . "; " . $input['city'] . "; " . $input['state'];
+        $user->save();
+
+        return response()->json(['success' => 1, 'message' => 'Data submitted successfully']);
+    }
+
     public function requestAgent(Request $request)
     {
         $input = $request->all();

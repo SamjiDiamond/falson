@@ -4,17 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests;
 use App\Jobs\PushNotificationJob;
-use App\Mail\Notification;
 use App\Mail\PasswordResetMail;
 use App\Models\CGWallets;
 use App\Models\PndL;
 use App\Models\ResellerPaymentLink;
 use App\Models\Settings;
-use App\Models\Slider;
 use App\Models\Transaction;
+use App\Models\User;
 use App\Models\VirtualAccount;
 use App\Models\VirtualAccountClient;
-use App\Models\User;
 use Carbon\Carbon;
 use DB;
 use Illuminate\Http\Request;
@@ -604,6 +602,21 @@ class UsersController extends Controller
     }
 
     public function vaccounts()
+    {
+        $datas['accounts'] = VirtualAccount::with('user')->orderBy('id', 'desc')->paginate(20);
+        $datas['banks'] = VirtualAccount::distinct('bank_name')->select('bank_name', 'status')->get();
+
+        return view('virtual_accounts', $datas);
+    }
+
+    public function dvaccounts($bank, $status)
+    {
+        VirtualAccount::where('bank_name', $bank)->update(['status' => $status]);
+
+        return redirect()->route('virtual-accounts')->with("success", 'Actioned Successfully');
+    }
+
+    public function resvaccounts()
     {
         $datas['accounts'] = VirtualAccountClient::orderBy('id', 'desc')->paginate(10);
 

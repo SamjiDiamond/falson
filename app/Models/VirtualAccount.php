@@ -6,5 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class VirtualAccount extends Model
 {
-    protected $guarded=[];
+    protected $guarded = [];
+
+    function user()
+    {
+        return $this->belongsTo(User::class)->select(['full_name', 'phoneno', 'email', 'id']);
+    }
 }

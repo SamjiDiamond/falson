@@ -135,23 +135,26 @@
                             <span class="float-right"><i class="mdi mdi-chevron-right"></i></span>
                             {{--                            <span class="float-right"><i class="mdi mdi-chevron-right"></i></span>--}}
                         </a>
-                        <ul class="list-unstyled">
-                            @can('credit-or-debit-user-view')
-                                <li><a href="{{route('addfund')}}">Credit/Debit User</a></li>
-                            @endcan
-                            @can('wallet-view')
-                                <li><a href="/wallet">Wallet</a></li>
-                            @endcan
-                        </ul>
-                    </li>
+                            <ul class="list-unstyled">
+                                @can('credit-or-debit-user-view')
+                                    <li><a href="{{route('addfund')}}">Credit/Debit User</a></li>
+                                @endcan
+                                @can('wallet-view')
+                                    <li><a href="/wallet">Wallet</a></li>
+                                @endcan
+                                @can('wallet-view')
+                                    <li><a href="{{route('virtual-accounts')}}">Virtual Accounts</a></li>
+                                @endcan
+                            </ul>
+                        </li>
                     @endcanany
 
                     @canany(['roles-view','admins-view'])
-                    <li class="has_sub">
-                        <a href="javascript:void(0);" class="waves-effect"><i
-                                class="dripicons-anchor"></i><span> Roles & Admin</span>
-                            <span class="float-right"><i class="mdi mdi-chevron-right"></i></span>
-                            {{--                            <span class="float-right"><i class="mdi mdi-chevron-right"></i></span>--}}
+                        <li class="has_sub">
+                            <a href="javascript:void(0);" class="waves-effect"><i
+                                    class="dripicons-anchor"></i><span> Roles & Admin</span>
+                                <span class="float-right"><i class="mdi mdi-chevron-right"></i></span>
+                                {{--                            <span class="float-right"><i class="mdi mdi-chevron-right"></i></span>--}}
                         </a>
                         <ul class="list-unstyled">
                             @can('roles-view')

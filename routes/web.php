@@ -150,6 +150,7 @@ Route::middleware(['auth'])->group(function () {
     Route::any('/wallet', [WalletController::class, 'index'])->name('wallet');
 
     Route::get('/virtual-accounts', [UsersController::class, 'vaccounts'])->name('virtual-accounts');
+    Route::get('/dvirtual-accounts/{bank}/{status}', [UsersController::class, 'dvaccounts'])->name('dvirtual-accounts');
     Route::get('/block/{id}', [BlockReseller::class, 'updatereseller'])->name('block');
     Route::get('/apikey/{id}', [BlockReseller::class, 'apireseller'])->name('apikey');
     Route::get('/payment-links', [UsersController::class, 'paymentLinks'])->name('payment-links');

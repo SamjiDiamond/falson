@@ -63,11 +63,13 @@ Route::prefix('v2')->group(function () {
         Route::get('transactions', [TransactionsController::class, 'transactions']);
         Route::get('transactions-pending', [TransactionsController::class, 'transactionsPending']);
         Route::get('transactions-success', [TransactionsController::class, 'transactionsSuccess']);
+        Route::get('transactions-reversed', [TransactionsController::class, 'transactionsReversed']);
         Route::get('transactions-data', [TransactionsController::class, 'transactionsData']);
         Route::get('transactions-airtime', [TransactionsController::class, 'transactionsAirtime']);
         Route::get('transactions-tv', [TransactionsController::class, 'transactionsTv']);
         Route::get('transactions-electricity', [TransactionsController::class, 'transactionsElectricity']);
         Route::get('transactions-education', [TransactionsController::class, 'transactionsEducation']);
+        Route::get('transactions-funding', [TransactionsController::class, 'transactionsFunding']);
         Route::get('commissions', [TransactionsController::class, 'commissions']);
         Route::get('gmtransactions', [OtherController::class, 'getGmTrans']);
 

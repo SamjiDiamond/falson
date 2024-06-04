@@ -761,6 +761,7 @@ class PayController extends Controller
         $tr['transid'] = $ref;
         $tr['status'] = "pending";
         $tr['extra'] = $discount;
+        $tr['paid_with'] = $input['payment'];
 
         if ($input['payment'] == "wallet") {
 

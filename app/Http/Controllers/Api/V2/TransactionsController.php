@@ -18,7 +18,7 @@ class TransactionsController extends Controller
         $date_to = $input['date_to'] ?? '';
 
         $user = Auth::user();
-        $trans = Transaction::where('user_name', $user->user_name)->OrderBy('id', 'desc')
+        $trans = Transaction::with('serverlog')->where('user_name', $user->user_name)->OrderBy('id', 'desc')
             ->when(isset($date_from) && $date_from != '' && isset($date_to) && $date_to != '', function ($query) use ($date_from, $date_to) {
                 $query->whereBetween('created_at', [Carbon::parse($date_from)->toDateTimeString(), Carbon::parse($date_to)->addDay()->toDateTimeString()]);
             })
@@ -33,7 +33,7 @@ class TransactionsController extends Controller
         $date_from = $input['date_from'] ?? '';
         $date_to = $input['date_to'] ?? '';
 
-        $trans = Transaction::where([['user_name', Auth::user()->user_name], ['status', 'pending']])->OrderBy('id', 'desc')
+        $trans = Transaction::with('serverlog')->where([['user_name', Auth::user()->user_name], ['status', 'pending']])->OrderBy('id', 'desc')
             ->when(isset($date_from) && $date_from != '' && isset($date_to) && $date_to != '', function ($query) use ($date_from, $date_to) {
                 $query->whereBetween('created_at', [Carbon::parse($date_from)->toDateTimeString(), Carbon::parse($date_to)->addDay()->toDateTimeString()]);
             })
@@ -48,7 +48,7 @@ class TransactionsController extends Controller
         $date_from = $input['date_from'] ?? '';
         $date_to = $input['date_to'] ?? '';
 
-        $trans = Transaction::where([['user_name', Auth::user()->user_name], ['status', 'reversed']])->OrderBy('id', 'desc')
+        $trans = Transaction::with('serverlog')->where([['user_name', Auth::user()->user_name], ['status', 'reversed']])->OrderBy('id', 'desc')
             ->when(isset($date_from) && $date_from != '' && isset($date_to) && $date_to != '', function ($query) use ($date_from, $date_to) {
                 $query->whereBetween('created_at', [Carbon::parse($date_from)->toDateTimeString(), Carbon::parse($date_to)->addDay()->toDateTimeString()]);
             })
@@ -63,7 +63,7 @@ class TransactionsController extends Controller
         $date_from = $input['date_from'] ?? '';
         $date_to = $input['date_to'] ?? '';
 
-        $trans = Transaction::where([['user_name', Auth::user()->user_name], ['status', 'delivered']])->OrderBy('id', 'desc')
+        $trans = Transaction::with('serverlog')->where([['user_name', Auth::user()->user_name], ['status', 'delivered']])->OrderBy('id', 'desc')
             ->when(isset($date_from) && $date_from != '' && isset($date_to) && $date_to != '', function ($query) use ($date_from, $date_to) {
                 $query->whereBetween('created_at', [Carbon::parse($date_from)->toDateTimeString(), Carbon::parse($date_to)->addDay()->toDateTimeString()]);
             })
@@ -78,7 +78,7 @@ class TransactionsController extends Controller
         $date_from = $input['date_from'] ?? '';
         $date_to = $input['date_to'] ?? '';
 
-        $trans = Transaction::where([['user_name', Auth::user()->user_name], ['code', 'LIKE', 'data_%']])
+        $trans = Transaction::with('serverlog')->where([['user_name', Auth::user()->user_name], ['code', 'LIKE', 'data_%']])
             ->when(isset($date_from) && $date_from != '' && isset($date_to) && $date_to != '', function ($query) use ($date_from, $date_to) {
                 $query->whereBetween('created_at', [Carbon::parse($date_from)->toDateTimeString(), Carbon::parse($date_to)->addDay()->toDateTimeString()]);
             })
@@ -93,7 +93,7 @@ class TransactionsController extends Controller
         $date_from = $input['date_from'] ?? '';
         $date_to = $input['date_to'] ?? '';
 
-        $trans = Transaction::where([['user_name', Auth::user()->user_name], ['code', 'LIKE', 'airtime_%']])
+        $trans = Transaction::with('serverlog')->where([['user_name', Auth::user()->user_name], ['code', 'LIKE', 'airtime_%']])
             ->when(isset($date_from) && $date_from != '' && isset($date_to) && $date_to != '', function ($query) use ($date_from, $date_to) {
                 $query->whereBetween('created_at', [Carbon::parse($date_from)->toDateTimeString(), Carbon::parse($date_to)->addDay()->toDateTimeString()]);
             })
@@ -108,7 +108,7 @@ class TransactionsController extends Controller
         $date_from = $input['date_from'] ?? '';
         $date_to = $input['date_to'] ?? '';
 
-        $trans = Transaction::where([['user_name', Auth::user()->user_name], ['code', 'LIKE', 'tv_%']])
+        $trans = Transaction::with('serverlog')->where([['user_name', Auth::user()->user_name], ['code', 'LIKE', 'tv_%']])
             ->when(isset($date_from) && $date_from != '' && isset($date_to) && $date_to != '', function ($query) use ($date_from, $date_to) {
                 $query->whereBetween('created_at', [Carbon::parse($date_from)->toDateTimeString(), Carbon::parse($date_to)->addDay()->toDateTimeString()]);
             })
@@ -123,7 +123,7 @@ class TransactionsController extends Controller
         $date_from = $input['date_from'] ?? '';
         $date_to = $input['date_to'] ?? '';
 
-        $trans = Transaction::where([['user_name', Auth::user()->user_name], ['code', 'LIKE', 'electricity_%']])
+        $trans = Transaction::with('serverlog')->where([['user_name', Auth::user()->user_name], ['code', 'LIKE', 'electricity_%']])
             ->when(isset($date_from) && $date_from != '' && isset($date_to) && $date_to != '', function ($query) use ($date_from, $date_to) {
                 $query->whereBetween('created_at', [Carbon::parse($date_from)->toDateTimeString(), Carbon::parse($date_to)->addDay()->toDateTimeString()]);
             })
@@ -138,7 +138,22 @@ class TransactionsController extends Controller
         $date_from = $input['date_from'] ?? '';
         $date_to = $input['date_to'] ?? '';
 
-        $trans = Transaction::where([['user_name', Auth::user()->user_name], ['code', 'rch']])
+        $trans = Transaction::with('serverlog')->where([['user_name', Auth::user()->user_name], ['code', 'rch']])
+            ->when(isset($date_from) && $date_from != '' && isset($date_to) && $date_to != '', function ($query) use ($date_from, $date_to) {
+                $query->whereBetween('created_at', [Carbon::parse($date_from)->toDateTimeString(), Carbon::parse($date_to)->addDay()->toDateTimeString()]);
+            })
+            ->latest()->limit(100)->get();
+
+        return response()->json(['success' => 1, 'message' => 'Fetched successfully', 'data' => $trans]);
+    }
+
+    public function transactionsFunding(Request $request)
+    {
+        $input = $request->all();
+        $date_from = $input['date_from'] ?? '';
+        $date_to = $input['date_to'] ?? '';
+
+        $trans = Transaction::where([['user_name', Auth::user()->user_name], ['code', 'LIKE', 'fund_%']])
             ->when(isset($date_from) && $date_from != '' && isset($date_to) && $date_to != '', function ($query) use ($date_from, $date_to) {
                 $query->whereBetween('created_at', [Carbon::parse($date_from)->toDateTimeString(), Carbon::parse($date_to)->addDay()->toDateTimeString()]);
             })

@@ -6,7 +6,6 @@ use App\Http\Controllers\Api\ValidateController;
 use App\Http\Controllers\Controller;
 use App\Models\Settings;
 use App\Models\User;
-use App\Models\VirtualAccount;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
@@ -106,10 +105,25 @@ class ValidationController extends Controller
             $response = json_decode($response, true);
             $token = $response['responseBody']['accessToken'];
 
-            $payload='{
-      "bvn":"'.$input['bvn'].'",
-      "nin":"'.$input['nin'].'"
-}';
+            if (isset($input['bvn'])) {
+                $payload = '{
+                  "bvn":"' . $input['bvn'] . '"
+                }';
+            }
+
+            if (isset($input['nin'])) {
+                $payload = '{
+                  "nin":"' . $input['nin'] . '"
+                }';
+            }
+
+            if (isset($input['bvn']) && isset($input['nin'])) {
+                $payload = '{
+                  "bvn":"' . $input['bvn'] . '",
+                  "nin":"' . $input['nin'] . '"
+                }';
+            }
+
 
             Log::info("Monnify Account Update Payload - " . $payload);
 

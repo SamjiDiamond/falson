@@ -920,6 +920,7 @@ class PayController extends Controller
 
             if (isset($dada['token'])) {
                 $t->description .= " - " . $dada['token'];
+                $t->token = $dada['token'];
                 $t->save();
                 return response()->json(['success' => 1, 'message' => 'Your transaction was successful', 'ref' => $ref, 'debitAmount' => $dada['amount'], 'discountAmount' => $dada['discount'], 'token' => $dada['token']]);
             }

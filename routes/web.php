@@ -16,7 +16,6 @@ use App\Http\Controllers\UsersController;
 use App\Http\Controllers\VerificationController;
 use App\Http\Controllers\WalletController;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
@@ -103,10 +102,10 @@ return "hello";
 
 })->name('balrin');
 
-Route::get('/ogdamsdata', function () {
-    Artisan::queue('samji:ogdams --command=data');
-    echo "success";
-})->name('ogdams');
+Route::get('/accst', function () {
+    $data = ['user' => \App\Models\User::find(1), 'trans' => \App\Models\Transaction::limit(10)->get(), 'i' => 1];
+    return view('pdf_accountstatement', $data);
+})->name('accst');
 
 
 

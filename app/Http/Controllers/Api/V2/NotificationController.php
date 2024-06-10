@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Mail\AccountStatementEmail;
 use App\Models\Transaction;
 use App\Notifications\UserNotification;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -40,6 +41,7 @@ class NotificationController extends Controller
         $rules = array(
             'from' => 'required|date',
             'to' => 'required|date',
+            'format' => 'required|in:pdf,excel',
         );
 
         $validator = Validator::make($input, $rules);
@@ -58,23 +60,30 @@ class NotificationController extends Controller
             })
             ->limit(100)->get();
 
-        $filePath = storage_path('app/statement_' . time() . '.xlsx');
-
-        (new FastExcel($trans))->export($filePath, function ($data) {
-            return [
-                'Name' => $data->name,
-                'Amount' => $data->amount,
-                'Status' => strtoupper($data->status),
-                'Reference' => $data->ref,
-                'Description' => $data->description,
-                'Date' => $data->date,
-                'IP Address' => $data->ip_address,
-                'Prev Balance' => $data->i_wallet,
-                'New Balance' => $data->f_wallet,
-            ];
-        });
-
         $customer = Auth::user();
+
+        if ($input['format'] == "excel") {
+            $filePath = storage_path('app/statement_' . time() . '.xlsx');
+
+            (new FastExcel($trans))->export($filePath, function ($data) {
+                return [
+                    'Name' => $data->name,
+                    'Amount' => $data->amount,
+                    'Status' => strtoupper($data->status),
+                    'Reference' => $data->ref,
+                    'Description' => $data->description,
+                    'Date' => $data->date,
+                    'IP Address' => $data->ip_address,
+                    'Prev Balance' => $data->i_wallet,
+                    'New Balance' => $data->f_wallet,
+                ];
+            });
+        } else {
+            $filePath = storage_path('app/statement_' . time() . '.pdf');
+
+            $data = ['user' => $customer, 'trans' => $trans, 'i' => 1, 'startDate' => $input['from'], 'endDate' => $input['to']];
+            PDF::loadView('pdf_accountstatement', $data)->save($filePath);
+        }
 
         Mail::to($customer->email)->queue(new AccountStatementEmail($customer, $filePath));
 

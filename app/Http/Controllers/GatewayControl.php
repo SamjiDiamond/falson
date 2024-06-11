@@ -10,8 +10,8 @@ class GatewayControl
 {
     public function gateway(Request $request)
     {
-        $data = Settings::where('name','LIKE', 'fund_%' )->get();
-        $i=1;
+        $data = Settings::where('name', 'LIKE', 'fund_%')->orwhere('name', 'LIKE', '%funding_%')->get();
+        $i = 1;
 
         return view('payment_gateway', compact('data', 'i'));
     }

@@ -4,8 +4,11 @@ namespace App\Http\Controllers\Api\V2;
 
 use App\Http\Controllers\Api\ValidateController;
 use App\Http\Controllers\Controller;
+use App\Models\PndL;
 use App\Models\Settings;
+use App\Models\Transaction;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
@@ -59,20 +62,33 @@ class ValidationController extends Controller
             return response()->json(['success' => 0, 'message' => $validator->errors()->all()]);
         }
 
-        $username=User::where('email', $input['email'])->first();
+        $username = User::where('email', $input['email'])->first();
 
         if (!$username) {
             return response()->json(['success' => 0, 'message' => 'Email does not exist']);
         }
 
-        if(!isset($input['bvn']) && !isset($input['nin'])){
+        if (!isset($input['bvn']) && !isset($input['nin'])) {
             return response()->json(['success' => 0, 'message' => 'Kindly provide your BVN or NIN or both']);
         }
 
+        $settM = Settings::where('name', 'verification_charge')->first();
+
+        if ($settM->value > 0) {
+            if ($username->wallet <= 0) {
+                return response()->json(['success' => 0, 'message' => 'Error, wallet balance too low']);
+            }
+
+            if ($username->wallet < $settM->value) {
+                return response()->json(['success' => 0, 'message' => 'Error, insufficient balancer to complete request']);
+            }
+        }
+
+
         try {
-            $settA=Settings::where('name', 'fund_monnify_apikey')->first();
-            $settS=Settings::where('name', 'fund_monnify_secretkey')->first();
-            $settC=Settings::where('name', 'fund_monnify_contractcode')->first();
+            $settA = Settings::where('name', 'fund_monnify_apikey')->first();
+            $settS = Settings::where('name', 'fund_monnify_secretkey')->first();
+            $settC = Settings::where('name', 'fund_monnify_contractcode')->first();
 
             $curl = curl_init();
 
@@ -157,11 +173,50 @@ class ValidationController extends Controller
 
             $response = json_decode($response, true);
 
-            if($response['requestSuccessful']){
-                $username->bvn=$input['bvn'];
+            if($response['requestSuccessful']) {
+                $username->bvn = $input['bvn'];
                 $username->save();
 
-                return response()->json(['success' => 1, 'message' => 'Verified Successfully', 'data'=>$response['responseBody']['accountName']]);
+
+                if ($settM->value > 0) {
+                    if ($username->wallet <= 0) {
+                        return response()->json(['success' => 0, 'message' => 'Error, wallet balance too low']);
+                    }
+
+                    if ($username->wallet < $settM->value) {
+                        return response()->json(['success' => 0, 'message' => 'Error, insufficient balancer to complete request']);
+                    }
+
+                    $input['amount'] = $settM->value;
+                    $input['ref'] = time();
+                    $input['date'] = Carbon::now();
+                    $input['ip_address'] = $_SERVER['REMOTE_ADDR'];
+                    $input['description'] = "KYC verification";
+                    $input['extra'] = "";
+                    $input['name'] = "KYC Verification";
+                    $input['status'] = 'successful';
+                    $input['code'] = 'kycv';
+                    $input["user_name"] = $username->user_name;
+                    $input["i_wallet"] = $username->wallet;
+                    $input['f_wallet'] = $input["i_wallet"] - $input['amount'];
+
+                    // mysql inserting a new row
+                    Transaction::create($input);
+
+                    $username->wallet = $input['f_wallet'];
+                    $username->save();
+
+                    $input["type"] = "income";
+                    $input["gl"] = $input['name'];
+                    $input["amount"] = $input['amount'];
+                    $input['date'] = Carbon::now();
+                    $input["narration"] = "Being " . $input['name'] . " charges from " . $input['user_name'] . " on " . $input['ref'];
+
+                    PndL::create($input);
+
+                }
+
+                return response()->json(['success' => 1, 'message' => 'Verified Successfully', 'data' => $response['responseBody']['accountName']]);
             }else{
                 return response()->json(['success' => 0, 'message' => $response['responseMessage']]);
             }

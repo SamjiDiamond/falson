@@ -271,6 +271,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/tvcontrol/{id}', [ServerController::class, 'tvEdit'])->name('tvcontrolEdit');
         Route::get('/tvcontrolED/{id}', [ServerController::class, 'tvcontrolED'])->name('tvcontrolED');
         Route::post('/tvcontrol', [ServerController::class, 'tvUpdate'])->name('tvcontrolUpdate');
+        Route::post('/tvcontrol-discount', [ServerController::class, 'tvDiscount'])->name('tvDiscountUpdate');
 
         Route::get('/electricitycontrol', [ServerController::class, 'electricityserver'])->name('electricitycontrol');
         Route::get('/electricitycontrol/{id}', [ServerController::class, 'electricityEdit'])->name('electricitycontrolEdit');

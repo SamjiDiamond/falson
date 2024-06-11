@@ -249,7 +249,7 @@ class ServerController
 
     public function tvserver()
     {
-        $data = AppCableTVControl::paginate(10);
+        $data = AppCableTVControl::paginate(30);
 
         return view('tvcontrol', compact('data'));
     }
@@ -312,6 +312,26 @@ class ServerController
         $data->save();
 
         return redirect()->route('tvcontrol')->with('success', $data->name . ' has been updated successfully');
+    }
+
+    public function tvDiscount(Request $request)
+    {
+        $input = $request->all();
+        $rules = array(
+            'amount' => 'required',
+            'type' => 'required'
+        );
+
+        $validator = Validator::make($input, $rules);
+
+
+        if (!$validator->passes()) {
+            return back()->with('error', 'Incomplete request. Kindly check and try again');
+        }
+
+        AppCableTVControl::where('type', strtolower($request->type))->update(['discount' => $input['amount'] . '%']);
+
+        return redirect()->route('tvcontrol')->with('success', $request->type . ' discount has been updated successfully');
     }
 
 

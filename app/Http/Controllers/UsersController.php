@@ -489,7 +489,8 @@ class UsersController extends Controller
         $user->phoneno=$input['phoneno'] ?? "";
         $user->address=$input['address'] ?? "";
         $user->target=$input['target'] ?? "";
-        $user->status=$input['status'] ?? "";
+        $user->status = $input['status'] ?? "";
+        $user->level = $input['level'] ?? "";
         $user->save();
 
         return redirect()->route('profile', $user->user_name)->with("success", "Profile Updated successfully");

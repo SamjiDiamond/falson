@@ -84,6 +84,7 @@ class UserController extends Controller
         $others['banner'] = $sett['banner'];
         $others['monnify_funding_message'] = $sett['monnify_funding_message'];
         $others['budpay_funding_message'] = $sett['budpay_funding_message'];
+        $others['paylony_funding_message'] = $sett['paylony_funding_message'];
         $others['enable_cg_wallet'] = $sett['enable_cg_wallet'];
 
         $pay['fund_rave'] = $sett['fund_rave'];

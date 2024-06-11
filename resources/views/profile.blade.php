@@ -866,23 +866,45 @@
 
 
                                                 <div class="input-group mt-2">
-                                                    <div class="input-group-prepend"><span class="input-group-text">Email</span></div>
-                                                    <input type="email" name="email" class="form-control" placeholder="Enter Email" value="{{$user->email}}">
+                                                    <div class="input-group-prepend"><span class="input-group-text">Email</span>
+                                                    </div>
+                                                    <input type="email" name="email" class="form-control"
+                                                           placeholder="Enter Email" value="{{$user->email}}">
                                                 </div>
 
 
                                                 <div class="input-group mt-2">
-                                                    <div class="input-group-prepend"><span class="input-group-text">Phone Number</span></div>
-                                                    <input type="text" name="phoneno" class="form-control" placeholder="Enter phone number" value="{{$user->phoneno}}">
+                                                    <div class="input-group-prepend"><span class="input-group-text">Phone Number</span>
+                                                    </div>
+                                                    <input type="text" name="phoneno" class="form-control"
+                                                           placeholder="Enter phone number" value="{{$user->phoneno}}">
                                                 </div>
 
                                                 <div class="input-group mt-2">
-                                                    <div class="input-group-prepend"><span class="input-group-text">Status</span></div>
+                                                    <div class="input-group-prepend"><span class="input-group-text">Level</span>
+                                                    </div>
+                                                    <input type="number" name="level" class="form-control"
+                                                           placeholder="Enter phone number" value="{{$user->level}}">
+                                                </div>
+
+                                                <div class="input-group mt-2">
+                                                    <div class="input-group-prepend"><span class="input-group-text">Status</span>
+                                                    </div>
                                                     <select class="custom-select form-control" name="status">
-                                                        <option value="client" @if($user->status == "client") selected @endif >Client</option>
-                                                        <option value="reseller" @if($user->status == "reseller") selected @endif>Reseller</option>
-                                                        <option value="superadmin" @if($user->status == "superadmin") selected @endif>Superadmin</option>
-                                                        <option value="admin" @if($user->status == "admin") selected @endif>admin</option>
+                                                        <option value="client"
+                                                                @if($user->status == "client") selected @endif >Client
+                                                        </option>
+                                                        <option value="reseller"
+                                                                @if($user->status == "reseller") selected @endif>
+                                                            Reseller
+                                                        </option>
+                                                        <option value="superadmin"
+                                                                @if($user->status == "superadmin") selected @endif>
+                                                            Superadmin
+                                                        </option>
+                                                        <option value="admin"
+                                                                @if($user->status == "admin") selected @endif>admin
+                                                        </option>
                                                     </select>
                                                 </div>
 

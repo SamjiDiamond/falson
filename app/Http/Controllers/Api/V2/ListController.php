@@ -9,6 +9,8 @@ use App\Models\AppAirtimeControl;
 use App\Models\AppCableTVControl;
 use App\Models\AppDataControl;
 use App\Models\AppEducationControl;
+use App\Models\ResellerAirtimeControl;
+use App\Models\ResellerCableTV;
 use App\Models\ResellerElecticity;
 use App\Models\Settings;
 
@@ -116,10 +118,16 @@ class ListController extends Controller
         $air = AppAirtimeControl::select('network', 'discount')->get();
         $elec = ResellerElecticity::select('name', 'discount')->get();
         $a2c = Airtime2CashSettings::select('network', 'discount')->get();
-        $gotv = AppCableTVControl::select('type', 'discount')->where('type','gotv')->first();
-        $dstv = AppCableTVControl::select('type', 'discount')->where('type','dstv')->first();
-        $start = AppCableTVControl::select('type', 'discount')->where('type','startimes')->first();
+        $gotv = AppCableTVControl::select('type', 'discount')->where('type', 'gotv')->first();
+        $dstv = AppCableTVControl::select('type', 'discount')->where('type', 'dstv')->first();
+        $start = AppCableTVControl::select('type', 'discount')->where('type', 'startimes')->first();
 
-        return response()->json(['success' => 1, 'message' => 'Fetch successfully', 'data' => ['airtime' => $air, 'electricity' =>$elec, 'airtime2cash' =>$a2c, 'cabletv' =>[$gotv,$dstv,$start]]]);
+        $r_air = ResellerAirtimeControl::select('network', 'level1')->get();
+        $r_elec = ResellerElecticity::select('name', 'discount')->get();
+        $r_gotv = ResellerCableTV::select('type', 'level1')->where('type', 'gotv')->first();
+        $r_dstv = ResellerCableTV::select('type', 'level1')->where('type', 'dstv')->first();
+        $r_start = ResellerCableTV::select('type', 'level1')->where('type', 'startimes')->first();
+
+        return response()->json(['success' => 1, 'message' => 'Fetch successfully', 'data' => ['airtime' => $air, 'electricity' => $elec, 'airtime2cash' => $a2c, 'cabletv' => [$gotv, $dstv, $start]], 'reseller' => ['airtime' => $r_air, 'electricity' => $r_elec, 'cabletv' => [$r_gotv, $r_dstv, $r_start]]]);
     }
 }

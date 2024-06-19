@@ -152,6 +152,38 @@ class UserController extends Controller
 
     }
 
+    public function change_passwordv3(Request $request)
+    {
+        $input = $request->all();
+        $rules = array(
+            'email' => 'required',
+            'o_password' => 'required',
+            'n_password' => 'required',
+        );
+
+        $validator = Validator::make($input, $rules);
+
+        if (!$validator->passes()) {
+            return response()->json(['success' => 0, 'message' => 'Required field(s) is missing']);
+        }
+
+        $user = User::where('email', $input['email'])->first();
+
+        if (!$user) {
+            return response()->json(['success' => 0, 'message' => 'Invalid email']);
+        }
+
+        if (!Hash::check($input['o_password'], $user->mcdpassword)) {
+            return response()->json(['success' => 0, 'message' => 'Wrong Old Password']);
+        }
+
+        $user->mcdpassword = Hash::make($input['n_password']);
+        $user->save();
+
+        return response()->json(['success' => 1, 'message' => 'Password changed successfully']);
+
+    }
+
     public function change_pin(Request $request)
     {
         $input = $request->all();

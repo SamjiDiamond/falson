@@ -26,7 +26,7 @@ Route::prefix('v3')->group(function () {
     Route::get('data/{network}', [ListController::class, 'dataCategory']);
     Route::get('data/{network}/{category}', [ListController::class, 'dataList']);
 
-    Route::post('changepassword', [UserController::class, 'change_password']);
+    Route::post('changepassword', [UserController::class, 'change_passwordv3']);
 
     Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('securitySettings', [ProfileController::class, 'securitySettings']);

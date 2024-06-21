@@ -209,8 +209,10 @@ class PayController extends Controller
         $air = new SellElectricityController();
 
         switch (strtolower($server)) {
-            case "6":
-                return $air->server6($request, $input['coded'], $input['phone'], $ref, $net, $request, $dada, "reseller");
+            case "1":
+                return $air->server1($request, $input['coded'], $input['phone'], $ref, $net, $request, $dada, "reseller");
+            case "2":
+                return $air->server2($request, $input['coded'], $input['phone'], $ref, $net, $request, $dada, "reseller");
             default:
                 return response()->json(['success' => 0, 'message' => 'Kindly contact system admin']);
         }

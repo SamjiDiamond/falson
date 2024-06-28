@@ -89,19 +89,19 @@ class VerificationController extends Controller
             $trans->status="delivered";
             $trans->save();
 
-            $status=$resp['message'];
-            if(isset($resp["disco"])) {
-                if(isset($resp['token'])){
-                    $d = $resp["disco"] . " NGN" . $resp["amount"] . " on " . $resp["meterNo"]." Token:".$resp['token'];
-                }else{
+            $status = $resp['message'];
+            if (isset($resp["disco"])) {
+                if (isset($resp['token'])) {
+                    $d = $resp["disco"] . " NGN" . $resp["amount"] . " on " . $resp["meterNo"] . " Token:" . $resp['token'];
+                } else {
                     $d = $resp["disco"] . " NGN" . $resp["amount"] . " on " . $resp["meterNo"];
                 }
-            }else{
+            } else {
                 $d = $resp["type"] . " NGN" . $resp["amount"] . " on " . $resp["phone"];
             }
-        }else{
-            $status=$resp['message'];
-            $d=$resp['message'];
+        } elseif ($resp['status'] == "300") {
+            $status = $resp['message'];
+            $d = $resp['message'];
 
             ReverseTransactionJob::dispatch($trans, "Requery");
         }

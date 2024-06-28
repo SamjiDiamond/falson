@@ -59,10 +59,14 @@ class PayController extends Controller
 
 
         if (strtoupper($input['country']) == "NG" || strtoupper($input['country']) == "NIGERIA") {
-            $airtime=AppAirtimeControl::where("network", $input['provider'])->first();
+            $airtime = AppAirtimeControl::where("network", $input['provider'])->first();
 
-            if(!$airtime){
+            if (!$airtime) {
                 return response()->json(['success' => 0, 'message' => 'Invalid Network. Available are  MTN, 9MOBILE, GLO, AIRTEL.']);
+            }
+
+            if ($airtime->status == 0) {
+                return response()->json(['success' => 0, 'message' => 'Network currently not available']);
             }
 
 
@@ -924,7 +928,23 @@ class PayController extends Controller
                 $t->save();
                 return response()->json(['success' => 1, 'message' => 'Your transaction was successful', 'ref' => $ref, 'debitAmount' => $dada['amount'], 'discountAmount' => $dada['discount'], 'token' => $dada['token']]);
             }
-            return response()->json(['success' => 1, 'message' => 'Your transaction is in progress', 'ref' => $ref, 'debitAmount' => $dada['amount'], 'discountAmount' => $dada['discount']]);
+            return response()->json(['success' => 1, 'message' => 'Your transaction was successful', 'ref' => $ref, 'debitAmount' => $dada['amount'], 'discountAmount' => $dada['discount']]);
+        }
+
+        if ($status == 4) {
+            $t = Transaction::find($dada['tid']);
+            $t->status = "pending";
+            $t->server_response = $dada['server_response'];
+            $t->server_ref = $dada['server_ref'] ?? '';
+            $t->save();
+
+            if (isset($dada['token'])) {
+                $t->description .= " - " . $dada['token'];
+                $t->token = $dada['token'];
+                $t->save();
+                return response()->json(['success' => 1, 'message' => 'Your transaction was successful', 'ref' => $ref, 'debitAmount' => $dada['amount'], 'discountAmount' => $dada['discount'], 'token' => $dada['token']]);
+            }
+            return response()->json(['success' => 0, 'message' => 'Your transaction is in progress', 'ref' => $ref, 'debitAmount' => $dada['amount'], 'discountAmount' => $dada['discount']]);
         }
 
         $t = Transaction::find($dada['tid']);

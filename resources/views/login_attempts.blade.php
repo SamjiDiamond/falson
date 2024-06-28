@@ -21,6 +21,7 @@
                             <th>City</th>
                             <th>Region</th>
                             <th>Country</th>
+                            <th>Action</th>
                         </tr>
                         </thead>
                         <tbody>

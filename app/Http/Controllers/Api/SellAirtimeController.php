@@ -3,10 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\PushNotificationController;
 use App\Http\Controllers\Reseller\PayController;
-use App\Models\AppDataControl;
-use App\Models\ResellerDataPlans;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
@@ -163,6 +160,12 @@ class SellAirtimeController extends Controller
                 return $rs->outputResponse($request, $transid, 1, $dada);
             } else {
                 return $ms->outputResp($request, $transid, 1, $dada);
+            }
+        } elseif ($rep['status'] == '400') {
+            if ($requester == "reseller") {
+                return $rs->outputResponse($request, $transid, 4, $dada);
+            } else {
+                return $ms->outputResp($request, $transid, 4, $dada);
             }
         } else {
             if ($requester == "reseller") {

@@ -2,13 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Jobs\Airtime2CashNotificationJob;
 use App\Jobs\ATMtransactionserveJob;
 use App\Jobs\PushNotificationJob;
 use App\Models\Airtime2Cash;
 use App\Models\Airtime2CashSettings;
 use App\Models\CGWallets;
-use App\Models\PndL;
 use App\Models\Serverlog;
 use App\Models\Transaction;
 use App\Models\User;
@@ -76,11 +74,11 @@ class TransactionController extends Controller
     public function trans_airtime(Request $request)
     {
 
-        $data = Transaction::where("code", 'LIKE', 'airtime_%')->limit(500)->get();
-        $tt = Transaction::where("code", 'LIKE', 'airtime_%')->count();
-        $ft = Transaction::where([["code", 'LIKE', 'airtime_%'],['date', 'like', Carbon::now()->format('Y-m-d') . '%']])->count();
-        $st = Transaction::where([["code", 'LIKE', 'airtime_%'],['date', 'like', Carbon::now()->subDay()->format('Y-m-d') . '%']])->count();
-        $rt = Transaction::where([["code", 'LIKE', 'airtime_%'],['date', 'like', Carbon::now()->subDays(2)->format('Y-m-d') . '%']])->count();
+        $data = Transaction::where("code", 'LIKE', 'airtime')->limit(500)->latest()->get();
+        $tt = Transaction::where("code", 'LIKE', 'airtime')->count();
+        $ft = Transaction::where([["code", 'LIKE', 'airtime'], ['date', 'like', Carbon::now()->format('Y-m-d') . '%']])->count();
+        $st = Transaction::where([["code", 'LIKE', 'airtime'], ['date', 'like', Carbon::now()->subDay()->format('Y-m-d') . '%']])->count();
+        $rt = Transaction::where([["code", 'LIKE', 'airtime'], ['date', 'like', Carbon::now()->subDays(2)->format('Y-m-d') . '%']])->count();
 
         return view('transactions', ['data' => $data, 'tt' => $tt, 'ft' => $ft, 'st' => $st, 'rt' => $rt]);
     }

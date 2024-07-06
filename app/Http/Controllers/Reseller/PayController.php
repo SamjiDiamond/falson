@@ -206,6 +206,8 @@ class PayController extends Controller
     {
         $input = $request->all();
 
+        $request->merge(['phone' => $dada['ruser']->phoneno]);
+
         $air = new SellElectricityController();
 
         switch (strtolower($server)) {
@@ -336,6 +338,7 @@ class PayController extends Controller
         $dada['tid'] = $t->id;
         $dada['amount'] = $amount;
         $dada['discount'] = $discount;
+        $dada['ruser'] = $user;
 
         switch ($requester) {
             case "airtime":

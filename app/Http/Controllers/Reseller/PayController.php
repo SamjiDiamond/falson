@@ -59,7 +59,33 @@ class PayController extends Controller
             return response()->json(['success' => 0, 'message' => 'Maximum amount is #5000']);
         }
 
-        $dis=explode("%", $rac->discount);
+
+        $key = $request->header('Authorization');
+
+        $user = User::where("api_key", $key)->first();
+        if (!$user) {
+            return response()->json(['success' => 0, 'message' => 'Invalid API key. Kindly contact support']);
+        }
+
+        switch ($user->level) {
+            case 1:
+                $dis = $rac->level1;
+                break;
+            case 2:
+                $dis = $rac->level2;
+                break;
+            case 3:
+                $dis = $rac->level3;
+                break;
+            case 4:
+                $dis = $rac->level4;
+                break;
+            default:
+                $dis = $rac->level5;
+        }
+
+
+        $dis = explode("%", $dis);
         $discount = $input['amount'] * ($dis[0] / 100);
         $debitAmount = $input['amount'];
 

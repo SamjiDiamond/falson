@@ -313,7 +313,7 @@ class ResellerServiceController extends Controller
     {
         $data = ResellerElecticity::get();
 
-        return view('electricitycontrol', compact('data'));
+        return view('reseller_control.electricitycontrol', compact('data'));
     }
 
     public function electricityEdit($id)
@@ -324,7 +324,7 @@ class ResellerServiceController extends Controller
             return redirect()->route('electricitycontrol')->with('error', 'Electricity does not exist');
         }
 
-        return view('electricitycontrol_edit', compact('data'));
+        return view('reseller_control.electricitycontrol_edit', compact('data'));
     }
 
     public function electricityUpdate(Request $request)
@@ -355,7 +355,7 @@ class ResellerServiceController extends Controller
         $data->discount = $input['discount'];
         $data->save();
 
-        return redirect()->route('electricitycontrol')->with('success', $data->name . ' has been updated successfully');
+        return redirect()->route('reseller.electricitycontrol')->with('success', $data->name . ' has been updated successfully');
     }
 
 }

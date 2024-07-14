@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\AppCableTVControl;
 use App\Models\ResellerAirtimeControl;
 use App\Models\ResellerCableTV;
 use App\Models\ResellerDataPlans;
@@ -346,7 +345,7 @@ class ResellerServiceController extends Controller
         }
 
 
-        $data = AppCableTVControl::where('id', $request->id)->first();
+        $data = ResellerElecticity::where('id', $request->id)->first();
         if(!$data){
             return back()->with('error', 'Kindly choose correct plan. Kindly check and try again');
         }

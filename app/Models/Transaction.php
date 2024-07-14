@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use OwenIt\Auditing\Contracts\Auditable;
 
 class Transaction extends Model implements Auditable
@@ -23,6 +24,21 @@ class Transaction extends Model implements Auditable
     function serverlog()
     {
         return $this->hasOne(Serverlog::class, 'transid', 'ref')->select(['transid', 'payment_method']);
+    }
+
+    public function paylonyFunding($ref)
+    {
+        return DB::table('tbl_webhook_paylony')->where('payment_reference', $ref)->first();
+    }
+
+    public function monnifyFunding($ref)
+    {
+        return DB::table('tbl_webhook_monnify')->where('payment_reference', $ref)->first();
+    }
+
+    public function budpayFunding($ref)
+    {
+        return DB::table('tbl_webhook_budpay')->where('payment_reference', $ref)->first();
     }
 
 }

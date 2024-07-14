@@ -154,10 +154,28 @@ class TransactionsController extends Controller
         $date_to = $input['date_to'] ?? '';
 
         $trans = Transaction::where([['user_name', Auth::user()->user_name], ['code', 'LIKE', 'fund_%']])
+//            ->with('paylonyFunding')
             ->when(isset($date_from) && $date_from != '' && isset($date_to) && $date_to != '', function ($query) use ($date_from, $date_to) {
                 $query->whereBetween('created_at', [Carbon::parse($date_from)->toDateTimeString(), Carbon::parse($date_to)->addDay()->toDateTimeString()]);
             })
             ->latest()->limit(100)->get();
+
+        // Manually attach the paylonyFunding data to each transaction
+        $trans->each(function ($transaction) {
+            $ttt = new Transaction();
+            $transaction->paylonyFunding = $ttt->paylonyFunding($transaction->ref);
+        });
+
+        $trans->each(function ($transaction) {
+            $ttt = new Transaction();
+            $transaction->monnifyFunding = $ttt->monnifyFunding($transaction->ref);
+        });
+
+        $trans->each(function ($transaction) {
+            $ttt = new Transaction();
+            $transaction->budpayFunding = $ttt->budpayFunding($transaction->ref);
+        });
+
 
         return response()->json(['success' => 1, 'message' => 'Fetched successfully', 'data' => $trans]);
     }

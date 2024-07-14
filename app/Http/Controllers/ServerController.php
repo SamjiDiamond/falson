@@ -151,20 +151,22 @@ class ServerController
     {
         $input = $request->all();
         $rules = array(
-            'network'      => 'required',
-            'name'      => 'required',
+            'network' => 'required',
+            'name' => 'required',
             'price' => 'required',
             'pricing' => 'required',
-            'coded' => 'required',
+            'coded' => 'required|unique:tbl_serverconfig_data',
+            'plan_id' => 'sometimes',
+            'product_code' => 'sometimes',
             'server' => 'required',
-            'note' => 'required'
+            'note' => 'sometimes'
         );
 
         $validator = Validator::make($input, $rules);
 
 
         if (!$validator->passes()) {
-            return redirect()->route('datanew')->with('error', 'Incomplete request. Kindly check and try again');
+            return redirect()->route('datanew')->withInput($input)->with('error', implode(",", $validator->errors()->all()));
         }
 
         dataserver::create($input);

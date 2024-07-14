@@ -71,6 +71,7 @@
                             <th>Product Name</th>
                             <th>Provider Price</th>
                             <th>Your Price</th>
+                            <th>Category</th>
                             <th>Server</th>
                             <th>Status</th>
                             <th>Date Modified</th>
@@ -86,6 +87,7 @@
                                 <td>{{$da['name']}}</td>
                                 <td class="center">&#8358;{{number_format($da['price'])}}</td>
                                 <td class="center">&#8358;{{number_format($da['pricing'])}}</td>
+                                <td class="center">{{$da['product_code']}}</td>
                                 <td>
 
                                     {{$da['server']}}</option>

@@ -48,6 +48,7 @@ class ATMmanagerController extends Controller
                 $input["ip_address"] = "127.0.0.1:A";
                 $input["ref"] = $transactionreference;
                 $input["date"] = Carbon::now();
+                $input["server"] = $payment_method;
 
                 Transaction::create($input);
 

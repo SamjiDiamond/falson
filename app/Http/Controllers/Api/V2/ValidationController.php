@@ -72,7 +72,28 @@ class ValidationController extends Controller
             return response()->json(['success' => 0, 'message' => 'Kindly provide your BVN or NIN or both']);
         }
 
-        $settM = Settings::where('name', 'verification_charge')->first();
+
+        if (isset($input['bvn'])) {
+            $settM = Settings::where('name', 'verification_charge_bvn')->first();
+            $payload = '{
+                  "bvn":"' . $input['bvn'] . '"
+                }';
+        }
+
+        if (isset($input['nin'])) {
+            $settM = Settings::where('name', 'verification_charge_nin')->first();
+            $payload = '{
+                  "nin":"' . $input['nin'] . '"
+                }';
+        }
+
+        if (isset($input['bvn']) && isset($input['nin'])) {
+            $settM = Settings::where('name', 'verification_charge')->first();
+            $payload = '{
+                  "bvn":"' . $input['bvn'] . '",
+                  "nin":"' . $input['nin'] . '"
+                }';
+        }
 
         if ($settM->value > 0) {
             if ($username->wallet <= 0) {
@@ -120,26 +141,6 @@ class ValidationController extends Controller
 
             $response = json_decode($response, true);
             $token = $response['responseBody']['accessToken'];
-
-            if (isset($input['bvn'])) {
-                $payload = '{
-                  "bvn":"' . $input['bvn'] . '"
-                }';
-            }
-
-            if (isset($input['nin'])) {
-                $payload = '{
-                  "nin":"' . $input['nin'] . '"
-                }';
-            }
-
-            if (isset($input['bvn']) && isset($input['nin'])) {
-                $payload = '{
-                  "bvn":"' . $input['bvn'] . '",
-                  "nin":"' . $input['nin'] . '"
-                }';
-            }
-
 
             Log::info("Monnify Account Update Payload - " . $payload);
 

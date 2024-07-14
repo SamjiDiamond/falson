@@ -41,24 +41,43 @@
 
                                 <div class="input-group mt-2">
                                     <div class="input-group-prepend"><span class="input-group-text">Name</span></div>
-                                    <input type="text" name="name" placeholder="Enter name" class="form-control" >
+                                    <input type="text" name="name" placeholder="Enter name" class="form-control"
+                                           required>
                                 </div>
 
                                 <div class="input-group mt-2">
-                                    <div class="input-group-prepend"><span class="input-group-text">Provider Price </span></div>
-                                    <input type="number" name="price" class="form-control" placeholder="Enter Provider price">
+                                    <div class="input-group-prepend"><span
+                                            class="input-group-text">Provider Price </span></div>
+                                    <input type="number" name="price" class="form-control"
+                                           placeholder="Enter Provider price" required>
                                 </div>
 
                                 <div class="input-group mt-2">
-                                    <div class="input-group-prepend"><span class="input-group-text">Your Price </span></div>
-                                    <input type="number" name="pricing" class="form-control" placeholder="Enter Amount">
+                                    <div class="input-group-prepend"><span class="input-group-text">Your Price </span>
+                                    </div>
+                                    <input type="number" name="pricing" class="form-control" placeholder="Enter Amount"
+                                           required>
                                 </div>
 
                                 <div class="input-group mt-2">
                                     <div class="input-group-prepend"><span class="input-group-text">Coded </span></div>
-                                    <input type="text" name="coded" class="form-control" placeholder="Enter unique code">
+                                    <input type="text" name="coded" class="form-control" placeholder="Enter unique code"
+                                           required>
                                 </div>
 
+                                <div class="input-group mt-2">
+                                    <div class="input-group-prepend"><span class="input-group-text">Plan ID </span>
+                                    </div>
+                                    <input type="text" name="plan_id" class="form-control"
+                                           placeholder="Enter Plan ID of the Server (Optional)">
+                                </div>
+
+                                <div class="input-group mt-2">
+                                    <div class="input-group-prepend"><span class="input-group-text">Category</span>
+                                    </div>
+                                    <input type="text" name="product_code" class="form-control"
+                                           placeholder="Enter the category you want the plan to belong to (Optional)">
+                                </div>
 
                                 <div class="input-group mt-2">
                                     <div class="input-group-prepend"><span class="input-group-text">Server </span></div>

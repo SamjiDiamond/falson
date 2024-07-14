@@ -6,9 +6,9 @@ use App\Models\airtimeserver;
 use App\Models\AppAirtimeControl;
 use App\Models\AppCableTVControl;
 use App\Models\AppDataControl;
+use App\Models\AppElectricityControl;
 use App\Models\AppOtherServices;
 use App\Models\dataserver;
-use App\Models\ResellerElecticity;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -216,12 +216,13 @@ class ServerController
     {
         $input = $request->all();
         $rules = array(
-            'id'      => 'required',
-            'product_name'      => 'required',
+            'id' => 'required',
+            'product_name' => 'required',
             'provider_price' => 'required',
             'amount' => 'required',
             'status' => 'required',
             'server' => 'required',
+            'product_code' => 'sometimes',
             'note' => 'nullable'
         );
 
@@ -243,6 +244,7 @@ class ServerController
         $data->status = $input['status'];
         $data->server = $input['server'];
         $data->note = $input['note'];
+        $data->product_code = $input['product_code'];
         $data->save();
 
         return redirect()->route('dataplans', $data->network)->with('success', $data->name . ' has been updated successfully');
@@ -339,14 +341,14 @@ class ServerController
 
     public function electricityserver()
     {
-        $data = ResellerElecticity::get();
+        $data = AppElectricityControl::get();
 
         return view('electricitycontrol', compact('data'));
     }
 
     public function electricityEdit($id)
     {
-        $data = ResellerElecticity::find($id);
+        $data = AppElectricityControl::find($id);
 
         if(!$data){
             return redirect()->route('electricitycontrol')->with('error', 'Electricity does not exist');
@@ -358,7 +360,7 @@ class ServerController
 
     public function electricityED($id)
     {
-        $data = ResellerElecticity::find($id);
+        $data = AppElectricityControl::find($id);
 
         if(!$data){
             return redirect()->route('electricitycontrol')->with('error', 'Plan does not exist');
@@ -388,7 +390,7 @@ class ServerController
             return back()->with('error', 'Incomplete request. Kindly check and try again');
         }
 
-        $data = ResellerElecticity::where('id', $request->id)->first();
+        $data = AppElectricityControl::where('id', $request->id)->first();
         if(!$data){
             return back()->with('error', 'Kindly choose correct plan. Kindly check and try again');
         }

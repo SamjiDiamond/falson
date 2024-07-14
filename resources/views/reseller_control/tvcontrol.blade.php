@@ -21,49 +21,121 @@
                             toastr.success('{{ session('success') }}', 'Success');
                         </script>
                     @endif
+
+
+                    @if (session('error'))
+                        <div class="alert alert-danger alert-dismissable">
+                            <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+                            {{ session('error') }}
+                        </div>
+                    @endif
+
+
+                    <form class="form-horizontal" method="POST" action="{{ route('reseller.tvDiscountUpdate') }}">
+                        @csrf
+                        <div class="form-group row">
+                            <div class="col-md-12">
+
+                                <div class="input-group mt-2">
+                                    <select class="custom-select form-control" name="type">
+                                        <option selected="selected">GOTV</option>
+                                        <option>DSTV</option>
+                                        <option>STARTIMES</option>
+                                    </select>
+                                </div>
+
+
+                                <div class="input-group mt-2">
+                                    <div class="input-group-prepend"><span
+                                            class="input-group-text">Level1 Discount </span></div>
+                                    <input type="text" name="level1" class="form-control" placeholder="Enter Discount"
+                                           required>
+                                </div>
+
+                                <div class="input-group mt-2">
+                                    <div class="input-group-prepend"><span
+                                            class="input-group-text">Level2 Discount</span></div>
+                                    <input type="text" name="level2" class="form-control" placeholder="Enter Discount"
+                                           required>
+                                </div>
+
+                                <div class="input-group mt-2">
+                                    <div class="input-group-prepend"><span
+                                            class="input-group-text">Level3 Discount</span></div>
+                                    <input type="text" name="level3" class="form-control" placeholder="Enter Discount"
+                                           required>
+                                </div>
+
+                                <div class="input-group mt-2">
+                                    <div class="input-group-prepend"><span
+                                            class="input-group-text">Level4 Discount</span></div>
+                                    <input type="text" name="level4" class="form-control" placeholder="Enter Discount"
+                                           required>
+                                </div>
+
+                                <div class="input-group mt-2">
+                                    <div class="input-group-prepend"><span
+                                            class="input-group-text">Level5 Discount</span></div>
+                                    <input type="text" name="level5" class="form-control" placeholder="Enter Discount"
+                                           required>
+                                </div>
+
+                                <div class="input-group mt-2" style="align-content: center">
+                                    <button class="btn btn-gradient-primary btn-large" type="submit"
+                                            style="align-self: center; align-content: center"><i
+                                            class="fa fa-money-bill-wave"></i> Update Discount
+                                    </button>
+                                </div>
+
+                            </div>
+                        </div>
+                        <!--end row-->
+                    </form>
+
+
                     <p class="text-muted mb-4 font-13">TV Plans</p>
-                        <div class="table-responsive">
-                            <table class="table table-striped table-bordered table-hover dataTables-example">
-                        <thead>
-                        <tr>
-                            <th>id</th>
-                            <th>Type</th>
-                            <th>Name</th>
-                            <th>Price</th>
-                            <th>Level1</th>
-                            <th>Level2</th>
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered table-hover dataTables-example">
+                            <thead>
+                            <tr>
+                                <th>id</th>
+                                <th>Type</th>
+                                <th>Name</th>
+                                <th>Price</th>
+                                <th>Level1</th>
+                                <th>Level2</th>
                             <th>Level3</th>
                             <th>Level4</th>
                             <th>Level5</th>
                             <th>Server</th>
                             <th>Status</th>
                             <th>Date Modified</th>
-                            <th>Action</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr class="gradeX">
-                            @foreach($data as $da)
-                                <td>{{$da['id']}}</td>
-                                <td class="center">{{$da['type']}}</td>
+                                <th>Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr class="gradeX">
+                                @foreach($data as $da)
+                                    <td>{{$da['id']}}</td>
+                                    <td class="center">{{$da['type']}}</td>
 
-                                <td>{{$da['name']}}</td>
-                                <td class="center">&#8358;{{number_format($da['amount'])}}</td>
-                                <td class="center">&#8358;{{number_format($da['level1'])}}</td>
-                                <td class="center">&#8358;{{number_format($da['level2'])}}</td>
-                                <td class="center">&#8358;{{number_format($da['level3'])}}</td>
-                                <td class="center">&#8358;{{number_format($da['level4'])}}</td>
-                                <td class="center">&#8358;{{number_format($da['level5'])}}</td>
-                                <td>
+                                    <td>{{$da['name']}}</td>
+                                    <td class="center">{{$da['amount']}}</td>
+                                    <td class="center">{{$da['level1']}}</td>
+                                    <td class="center">{{$da['level2']}}</td>
+                                    <td class="center">{{$da['level3']}}</td>
+                                    <td class="center">{{$da['level4']}}</td>
+                                    <td class="center">{{$da['level5']}}</td>
+                                    <td>
 
-                                    {{$da['server']}}</option>
+                                        {{$da['server']}}</option>
 
-                                </td>
-                                <td class="center">
-                                    @if($da->status=="1")
-                                        <span class="badge badge-success">Active</span>
-                                    @else
-                                        <span class="badge badge-warning">Inactive</span>
+                                    </td>
+                                    <td class="center">
+                                        @if($da->status=="1")
+                                            <span class="badge badge-success">Active</span>
+                                        @else
+                                            <span class="badge badge-warning">Inactive</span>
                                     @endif
                                 </td>
 

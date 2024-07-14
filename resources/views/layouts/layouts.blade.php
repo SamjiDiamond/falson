@@ -391,16 +391,21 @@
                                             Data Plans</a></li>
                                     <li><a href="{{route('reseller.server_dataList', ['9MOBILE', "3"])}}">IYII 9MOBILE
                                             Data Plans</a></li>
-                                    <li><a href="{{route('reseller.server_dataList', ['9MOBILE', "4"])}}">OGDAMS 9MOBILE
-                                            Data Plans</a></li>
-                                    <li><a href="{{route('reseller.server_dataList', ['9MOBILE', "5"])}}">UZOBEST
-                                            9MOBILE Data Plans</a></li>
+                                        <li><a href="{{route('reseller.server_dataList', ['9MOBILE', "4"])}}">OGDAMS
+                                                9MOBILE
+                                                Data Plans</a></li>
+                                        <li><a href="{{route('reseller.server_dataList', ['9MOBILE', "5"])}}">UZOBEST
+                                                9MOBILE Data Plans</a></li>
 
-                                @endcan
+                                    @endcan
 
-                                @can('reseller_tv-view')
-                                    <li><a href="{{route('reseller.tvcontrol')}}">TV Plans</a></li>
-                                @endcan
+                                    @can('reseller_tv-view')
+                                        <li><a href="{{route('reseller.tvcontrol')}}">TV Plans</a></li>
+                                    @endcan
+
+                                    @can('reseller_tv-view')
+                                        <li><a href="{{route('reseller.electricitycontrol')}}">Electricity</a></li>
+                                    @endcan
                             </ul>
                         </li>
                     @endcanany
@@ -409,7 +414,7 @@
                         <a href="javascript:void(0);" class="waves-effect"><i class="dripicons-card"></i><span> Verification </span><span
                                 class="float-right"><i class="mdi mdi-chevron-right"></i></span></a>
                         <ul class="list-unstyled">
-{{--                            <li><a href="{{route('verification_s1')}}">Server 1</a></li>--}}
+                            {{--                            <li><a href="{{route('verification_s1')}}">Server 1</a></li>--}}
                             <li><a href="{{route('verification_s2')}}">Server 2</a></li>
                             <li><a href="{{route('verification_s3')}}">Server 3</a></li>
                         </ul>

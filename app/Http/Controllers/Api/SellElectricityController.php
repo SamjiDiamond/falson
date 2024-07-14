@@ -125,7 +125,7 @@ class SellElectricityController extends Controller
             Log::info("Ringo Electric Response. - " . $response);
 
         } else {
-            $response = '{ token: "1234-5543-5436-7657", unit: "20kwh", amount: 1000, message: "successful", status: "200", customerName: "Roy", date: "", transId: "bhu76ryu9ijhy", disco: "IKEDC", }';
+            $response = '{"token":"47902051484719373697","unit":58.7,"amount":4000,"amountCharged":4000,"message":"Successful","status":"200","customerName":"AFOLABI OLAYINKA KAZEEM","date":"2024-07-11 21:23:20","TransRef":"1720729394395","disco":"AEDC_PREPAID","resetToken":"","configureToken":""}';
         }
 
         $rep = json_decode($response, true);

@@ -280,6 +280,35 @@ class ResellerServiceController extends Controller
         return redirect()->route('reseller.tvcontrol')->with('success', $data->name . ' has been updated successfully');
     }
 
+    public function tvDiscount(Request $request)
+    {
+        $input = $request->all();
+        $rules = array(
+            'level1' => 'required',
+            'level2' => 'required',
+            'level3' => 'required',
+            'level4' => 'required',
+            'level5' => 'required',
+            'type' => 'required'
+        );
+
+        $validator = Validator::make($input, $rules);
+
+
+        if (!$validator->passes()) {
+            return back()->with('error', 'Incomplete request. Kindly check and try again');
+        }
+
+        ResellerCableTV::where('type', strtolower($request->type))->update([
+            'level1' => $input['level1'] . '%',
+            'level2' => $input['level2'] . '%',
+            'level3' => $input['level3'] . '%',
+            'level4' => $input['level4'] . '%',
+            'level5' => $input['level5'] . '%',
+        ]);
+
+        return redirect()->route('reseller.tvcontrol')->with('success', $request->type . ' discount has been updated successfully');
+    }
 
     public function electricityserver()
     {

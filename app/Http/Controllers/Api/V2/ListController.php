@@ -9,6 +9,7 @@ use App\Models\AppAirtimeControl;
 use App\Models\AppCableTVControl;
 use App\Models\AppDataControl;
 use App\Models\AppEducationControl;
+use App\Models\AppElectricityControl;
 use App\Models\ResellerAirtimeControl;
 use App\Models\ResellerCableTV;
 use App\Models\ResellerElecticity;
@@ -33,7 +34,7 @@ class ListController extends Controller
 
     public function electricity()
     {
-        $airsets = ResellerElecticity::get();
+        $airsets = AppElectricityControl::get();
 
         return response()->json(['success' => 1, 'message' => 'Fetch successfully', 'data' => $airsets]);
     }
@@ -116,7 +117,7 @@ class ListController extends Controller
     public function availableCommissions()
     {
         $air = AppAirtimeControl::select('network', 'discount')->get();
-        $elec = ResellerElecticity::select('name', 'discount')->get();
+        $elec = AppElectricityControl::select('name', 'discount')->get();
         $a2c = Airtime2CashSettings::select('network', 'discount')->get();
         $gotv = AppCableTVControl::select('type', 'discount')->where('type', 'gotv')->first();
         $dstv = AppCableTVControl::select('type', 'discount')->where('type', 'dstv')->first();

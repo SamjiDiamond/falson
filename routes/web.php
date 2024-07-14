@@ -103,7 +103,7 @@ return "hello";
 })->name('balrin');
 
 Route::get('/accst', function () {
-    $data = ['user' => \App\Models\User::find(1), 'trans' => \App\Models\Transaction::limit(10)->get(), 'i' => 1];
+    $data = ['user' => \App\Models\User::find(1), 'trans' => \App\Models\Transaction::limit(10)->get(), 'i' => 1, 'startDate' => "2024-05-01", 'endDate' => "2024-06-05"];
     return view('pdf_accountstatement', $data);
 })->name('accst');
 
@@ -296,6 +296,7 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/tvcontrol/{id}', [ResellerServiceController::class, 'tvEdit'])->name('tvcontrolEdit');
             Route::get('/tvcontrolED/{id}', [ResellerServiceController::class, 'tvcontrolED'])->name('tvcontrolED');
             Route::post('/tvcontrol', [ResellerServiceController::class, 'tvUpdate'])->name('tvcontrolUpdate');
+            Route::post('/tvcontrol-discount', [ResellerServiceController::class, 'tvDiscount'])->name('tvDiscountUpdate');
 
             Route::get('/electricitycontrol', [ResellerServiceController::class, 'electricityserver'])->name('electricitycontrol');
             Route::get('/electricitycontrol/{id}', [ResellerServiceController::class, 'electricityEdit'])->name('electricitycontrolEdit');

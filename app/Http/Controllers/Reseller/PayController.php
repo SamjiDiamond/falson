@@ -100,7 +100,30 @@ class PayController extends Controller
 
         $dis = 0;
         $discount = 0;
-        $debitAmount = $rac->level1;
+
+        $key = $request->header('Authorization');
+
+        $user = User::where("api_key", $key)->first();
+        if (!$user) {
+            return response()->json(['success' => 0, 'message' => 'Invalid API key. Kindly contact support']);
+        }
+
+        switch ($user->level) {
+            case 1:
+                $debitAmount = $rac->level1;
+                break;
+            case 2:
+                $debitAmount = $rac->level2;
+                break;
+            case 3:
+                $debitAmount = $rac->level3;
+                break;
+            case 4:
+                $debitAmount = $rac->level4;
+                break;
+            default:
+                $debitAmount = $rac->level5;
+        }
 
         if ($debitAmount < 1) {
             return response()->json(['success' => 0, 'message' => 'You cannot purchase this plan. Kindly contact support']);
@@ -147,8 +170,33 @@ class PayController extends Controller
             return response()->json(['success' => 0, 'message' => $rac->name . ' currently unavailable']);
         }
 
-        $dis = 1;
-        $discount = $rac->amount * ($dis / 100);
+        $key = $request->header('Authorization');
+
+        $user = User::where("api_key", $key)->first();
+        if (!$user) {
+            return response()->json(['success' => 0, 'message' => 'Invalid API key. Kindly contact support']);
+        }
+
+        switch ($user->level) {
+            case 1:
+                $dis = $rac->level1;
+                break;
+            case 2:
+                $dis = $rac->level2;
+                break;
+            case 3:
+                $dis = $rac->level3;
+                break;
+            case 4:
+                $dis = $rac->level4;
+                break;
+            default:
+                $dis = $rac->level5;
+        }
+
+
+        $dis = explode("%", $dis);
+        $discount = $rac->amount * ($dis[0] / 100);
         $debitAmount = $rac->amount;
 
 

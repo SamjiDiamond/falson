@@ -34,13 +34,24 @@
                                 </div>
 
                                 <div class="input-group mt-2">
-                                    <div class="input-group-prepend"><span class="input-group-text">Provider Price </span></div>
-                                    <input type="number" name="provider_price" class="form-control" placeholder="Enter Amount" value="{{$data->price}}">
+                                    <div class="input-group-prepend"><span
+                                            class="input-group-text">Provider Price </span></div>
+                                    <input type="number" name="provider_price" class="form-control"
+                                           placeholder="Enter Amount" value="{{$data->price}}">
                                 </div>
 
                                 <div class="input-group mt-2">
-                                    <div class="input-group-prepend"><span class="input-group-text">Your Price </span></div>
-                                    <input type="number" name="amount" class="form-control" placeholder="Enter Amount" value="{{$data->pricing}}">
+                                    <div class="input-group-prepend"><span class="input-group-text">Your Price </span>
+                                    </div>
+                                    <input type="number" name="amount" class="form-control" placeholder="Enter Amount"
+                                           value="{{$data->pricing}}">
+                                </div>
+
+                                <div class="input-group mt-2">
+                                    <div class="input-group-prepend"><span class="input-group-text">Category </span>
+                                    </div>
+                                    <input name="product_code" class="form-control" placeholder="Enter category"
+                                           value="{{$data->product_code}}">
                                 </div>
 
                                 <div class="input-group mt-2">

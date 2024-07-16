@@ -20,6 +20,82 @@ use Illuminate\Support\Facades\Validator;
 
 class AuthenticationController extends Controller
 {
+    public function signup(Request $request)
+    {
+        $input = $request->all();
+        $rules = array(
+            'full_name' => 'required',
+            'user_name' => 'required',
+            'password' => 'required',
+            'phoneno' => 'required',
+            'email' => 'required',
+            'referral' => 'nullable',
+        );
+
+        $validator = Validator::make($input, $rules);
+
+        if (!$validator->passes()) {
+            return response()->json(['success' => 0, 'message' => 'Required field(s) is missing']);
+        }
+
+        $input['version'] = $request->header('version');
+
+        $user_name = $input['user_name'];
+        $deviceid = $request->header('device') ?? $_SERVER['HTTP_USER_AGENT'];
+
+        $user = User::where('user_name', $user_name)->get();
+        if (!$user->isEmpty()) {
+            return response()->json(['success' => 0, 'message' => 'User name already exist']);
+        }
+
+        $user = User::where('email', $input['email'])->get();
+        if (!$user->isEmpty()) {
+            return response()->json(['success' => 0, 'message' => 'Email already exist']);
+        }
+
+        $user = User::where('phoneno', $input['phoneno'])->get();
+        if (!$user->isEmpty()) {
+            return response()->json(['success' => 0, 'message' => 'Phone Number already exist']);
+        }
+
+        if (isset($input['referral'])) {
+            $user = User::where('user_name', $input['referral'])->get();
+            if ($user->isEmpty()) {
+                return response()->json(['success' => 0, 'message' => 'Invalid referral ID']);
+            }
+        }
+
+        //values gotten
+        $create["wallet"] = "0";
+        $create["status"] = "client";
+        $create["level"] = "1";
+        $create["target"] = env('NEW_ACCOUNT_MESSAGE');
+        $create["user_name"] = $user_name;
+        $create["full_name"] = $input["full_name"];
+        $create["email"] = $input["email"];
+        $create["phoneno"] = $input["phoneno"];
+        $create["mcdpassword"] = Hash::make($input["password"]);
+        $create["password"] = "";
+        $create["referral"] = $input["referral"];
+        $create["gnews"] = 'Are you looking forward to spending less money on data subscriptions? Or Pay Electricity bills, and even buy airtime conveniently without moving a finger, you just arrived at the right place';
+        $date = date("Y-m-d H:i:s");
+        $create["devices"] = $deviceid;
+        $create["reg_date"] = Carbon::now();
+
+        if (User::create($create)) {
+            // successfully inserted into database
+            $job = (new CreateProvidusAccountJob($create["user_name"]))
+                ->delay(Carbon::now()->addSeconds(10));
+            dispatch($job);
+
+            return response()->json(['success' => 1, 'message' => 'Account created successfully']);
+        } else {
+
+            return response()->json(['success' => 0, 'message' => 'Oops! An error occurred.']);
+        }
+
+    }
+
     public function login(Request $request)
     {
         $input = $request->all();

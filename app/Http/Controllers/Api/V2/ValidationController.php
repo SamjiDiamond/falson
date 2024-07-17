@@ -74,6 +74,12 @@ class ValidationController extends Controller
 
 
         if (isset($input['bvn'])) {
+            $bvne = User::where([['email', $input['email']], ['bvn', $input['bvn']]])->first();
+
+            if (!$bvne) {
+                return response()->json(['success' => 0, 'message' => 'BVN has already been used for another account']);
+            }
+
             $settM = Settings::where('name', 'verification_charge_bvn')->first();
             $payload = '{
                   "bvn":"' . $input['bvn'] . '"
@@ -81,6 +87,12 @@ class ValidationController extends Controller
         }
 
         if (isset($input['nin'])) {
+            $nine = User::where([['email', $input['email']], ['nin', $input['nin']]])->first();
+
+            if (!$nine) {
+                return response()->json(['success' => 0, 'message' => 'NIN has already been used for another account']);
+            }
+
             $settM = Settings::where('name', 'verification_charge_nin')->first();
             $payload = '{
                   "nin":"' . $input['nin'] . '"
@@ -176,6 +188,8 @@ class ValidationController extends Controller
 
             if($response['requestSuccessful']) {
                 $username->bvn = $input['bvn'];
+                $username->nin = $input['nin'];
+                $username->full_name = $response['responseBody']['accountName'];
                 $username->save();
 
 

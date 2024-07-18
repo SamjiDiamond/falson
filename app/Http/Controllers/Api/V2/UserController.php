@@ -32,6 +32,7 @@ class UserController extends Controller
             $sett[$setting->name] = $setting->value;
         }
 
+        $me['full_name'] = $user->full_name;
         $me['user_name'] = $user->user_name;
         $me['account_details'] = $user->account_number;
         $me['referral_plan'] = $user->referral_plan;

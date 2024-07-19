@@ -187,8 +187,13 @@ class ValidationController extends Controller
             $response = json_decode($response, true);
 
             if($response['requestSuccessful']) {
-                $username->bvn = $input['bvn'];
-                $username->nin = $input['nin'];
+                if (isset($input['bvn'])) {
+                    $username->bvn = $input['bvn'];
+                }
+
+                if (isset($input['nin'])) {
+                    $username->nin = $input['nin'];
+                }
                 $username->full_name = $response['responseBody']['accountName'];
                 $username->save();
 

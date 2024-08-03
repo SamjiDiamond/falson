@@ -98,26 +98,31 @@
                             @endcan
 
                             @can('resultchecker-transactions-view')
-                                <li><a href="{{route('transaction_resultchecker')}}">ResultChecker Transaction History</a></li>
-                            @endcan
+                                    <li><a href="{{route('transaction_resultchecker')}}">ResultChecker Transaction
+                                            History</a></li>
+                                @endcan
 
-                            @can('funding-transactions-view')
-                                <li><a href="{{route('transaction_funding')}}">Funding Transaction History</a></li>
-                            @endcan
+                                @can('funding-transactions-view')
+                                    <li><a href="{{route('transaction_funding')}}">Funding Transaction History</a></li>
+                                @endcan
 
-                            @can('pending-transactions-view')
-                                <li><a href="{{route('trans_pending')}}">Pending Transactions</a></li>
-                            @endcan
+                                @can('pending-transactions-view')
+                                    <li><a href="{{route('trans_pending')}}">Pending Transactions</a></li>
+                                @endcan
 
-                            @can('find-transactions-view')
-                                <li><a href="{{route('findtransaction')}}">Find Transaction</a></li>
-                            @endcan
+                                @can('pending-transactions-view')
+                                    <li><a href="{{route('trans_inprogress')}}">Inprogress Transactions</a></li>
+                                @endcan
 
-                            @can('add-airtime-transaction-view')
-                                <li><a href="/addtransaction">Add Airtime Transaction</a></li>
-                            @endcan
+                                @can('find-transactions-view')
+                                    <li><a href="{{route('findtransaction')}}">Find Transaction</a></li>
+                                @endcan
 
-                            @can('add-data-transaction-view')
+                                @can('add-airtime-transaction-view')
+                                    <li><a href="/addtransaction">Add Airtime Transaction</a></li>
+                                @endcan
+
+                                @can('add-data-transaction-view')
                                 <li><a href="/adddatatransaction">Add Data Transaction</a></li>
                             @endcan
 

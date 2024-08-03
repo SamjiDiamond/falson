@@ -1,5 +1,5 @@
 @extends('layouts.layouts')
-@section('title', 'Pending Transactions')
+@section('title', $name.' Transactions')
 @section('parentPageTitle', 'Transactions')
 
 @section('content')
@@ -8,7 +8,7 @@
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="mt-0 header-title">Pending transaction List</h4>
+                    <h4 class="mt-0 header-title">{{$name}} transaction List</h4>
                     <p class="text-muted mb-4 font-13">Click on <code>Re-process</code> to reprocess in background.</p>
 
                     @if (session('success'))

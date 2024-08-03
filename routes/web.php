@@ -169,6 +169,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/transaction_server8', [TransactionController::class, 'server8'])->name('transaction8');
 
     Route::get('/transactions-pending', [TransactionController::class, 'pending'])->name('trans_pending');
+    Route::get('/transactions-inprogress', [TransactionController::class, 'inprogress'])->name('trans_inprogress');
     Route::post('/trans-resubmit', [TransactionController::class, 'trans_resubmit'])->name('trans_resubmit');
     Route::post('/trans-resubmitAll', [TransactionController::class, 'trans_resubmitAll'])->name('trans_resubmitAll');
     Route::get('/trans_delivered/{id}', [TransactionController::class, 'trans_delivered'])->name('trans_delivered');

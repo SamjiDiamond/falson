@@ -135,7 +135,15 @@ class TransactionController extends Controller
 
         $data = Transaction::where('status', 'pending')->orderBy('id', 'desc')->paginate(25);
 
-        return view('transactions_pending', ['data' => $data]);
+        return view('transactions_pending', ['data' => $data, 'name' => 'Pending']);
+    }
+
+
+    public function inprogress(Request $request)
+    {
+        $data = Transaction::where('status', 'inprogress')->orderBy('id', 'desc')->paginate(25);
+
+        return view('transactions_pending', ['data' => $data, 'name' => 'Inprogress']);
     }
 
     public function trans_resubmit(Request $request)

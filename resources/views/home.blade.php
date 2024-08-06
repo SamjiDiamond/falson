@@ -221,6 +221,56 @@
                     </div>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="icon-contain">
+                                <div class="row">
+                                    <div class="col-2 align-self-center"><i class="fas fa-briefcase text-danger"></i>
+                                    </div>
+                                    <div class="col-10 text-right">
+                                        <h5 class="mt-0 mb-1">{{ $pending_trans ?? 'Pending Transactions' }}</h5>
+                                        <p class="mb-0 font-12 text-muted">Pending Transactions</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="icon-contain">
+                                <div class="row">
+                                    <div class="col-2 align-self-center"><i class="fas fa-briefcase text-warning"></i>
+                                    </div>
+                                    <div class="col-10 text-right">
+                                        <h5 class="mt-0 mb-1">{{ $inprogress_trans ?? 'Inprogress Transactions' }}</h5>
+                                        <p class="mb-0 font-12 text-muted">Inprogress Transactions</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="icon-contain">
+                                <div class="row">
+                                    <div class="col-2 align-self-center"><i class="fas fa-briefcase text-success"></i>
+                                    </div>
+                                    <div class="col-10 text-right">
+                                        <h5 class="mt-0 mb-1">{{ $airtime2cash ?? 'Airtime2Cash' }}</h5>
+                                        <p class="mb-0 font-12 text-muted">Today's Airtime2Cash</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
     </div>

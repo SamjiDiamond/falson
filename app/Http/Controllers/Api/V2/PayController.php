@@ -12,6 +12,7 @@ use App\Http\Controllers\Controller;
 use App\Jobs\ATMtransactionserveJob;
 use App\Jobs\PushNotificationJob;
 use App\Jobs\ReverseTransactionJob;
+use App\Mail\AdminNotificationMail;
 use App\Models\Airtime2Cash;
 use App\Models\Airtime2CashSettings;
 use App\Models\AppAirtimeControl;
@@ -30,6 +31,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class PayController extends Controller
@@ -501,12 +503,14 @@ class PayController extends Controller
 
             Airtime2Cash::create($input);
 
-            $am2r=$input['amount'] - (($number->discount/100)*$input['amount']);
+            $am2r = $input['amount'] - (($number->discount / 100) * $input['amount']);
 
-            $message = "User: ".$input['user_name'].", Network: ".$input['network']. ", Amount: ".$input['amount'] ." Number: ".$input['number'];
-            PushNotificationJob::dispatch("Holarmie",$message,"Airtime2Cash Notice");
+            $message = "User: " . $input['user_name'] . ", Network: " . $input['network'] . ", Amount: " . $input['amount'] . " Number: " . $input['number'];
+            PushNotificationJob::dispatch("Holarmie", $message, "Airtime2Cash Notice");
+            $mm = "There is a new Airtime Converter request with the details below. <br />" . $message;
+            Mail::send(new AdminNotificationMail($mm));
 
-            return response()->json(['success' => 1, 'message' => 'Transfer #' . $input['amount'] . ' to ' . $number->number . ' and get your #'.$am2r.' instantly. Reference: ' . $input['ref'] . '. By doing so, you acknowledge that you are the legitimate owner of this airtime and you have permission to send it to us and to take possession of the airtime.']);
+            return response()->json(['success' => 1, 'message' => 'Transfer #' . $input['amount'] . ' to ' . $number->number . ' and get your #' . $am2r . ' instantly. Reference: ' . $input['ref'] . '. By doing so, you acknowledge that you are the legitimate owner of this airtime and you have permission to send it to us and to take possession of the airtime.']);
         } catch (Exception $e) {
             return response()->json(['success' => 0, 'message' => 'An error occured', 'error' => $e]);
         }

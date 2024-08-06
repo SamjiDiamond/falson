@@ -45,6 +45,8 @@ class HomeController extends Controller
         $data['upgrade'] = Transaction::where([['code', 'like', '%aru%'], ['status', 'like', 'successful'], ['date', 'LIKE', $today . '%']])->count();
         $data['airtime2cash'] = Transaction::where([['code', 'like', '%a2b%'], ['status', 'like', 'successful'], ['date', 'LIKE', $today . '%']])->count();
         $data['airtime2wallet'] = Transaction::where([['code', 'like', '%a2w%'], ['status', 'like', 'successful'], ['date', 'LIKE', $today . '%']])->count();
+        $data['pending_trans'] = Transaction::where('status', 'pending')->count();
+        $data['inprogress_trans'] = Transaction::where('status', 'inprogress')->count();
 
 
         try {
@@ -117,7 +119,7 @@ class HomeController extends Controller
     }
 
     public function allsettings(){
-        $data = Settings::where('name', 'min_funding')->orWhere('name', 'max_funding')->orWhere('name', 'bithday_message')->orWhere('name', 'disable_resellers')->orWhere('name', 'live_chat')->orWhere('name', 'email_note')->orWhere('name', 'transaction_email_copy')->orWhere('name', 'reseller_fee')->orWhere('name', 'reseller_terms')->orWhere('name', 'biz_verification_price_reseller')->orWhere('name', 'biz_verification_price_customer')->orWhere('name', 'data')->orWhere('name', 'airtime')->orWhere('name', 'paytv')->orWhere('name', 'resultchecker')->orWhere('name', 'rechargecard')->orWhere('name', 'electricity')->orWhere('name', 'airtimeconverter')->orWhere('name', 'LIKE', 'support_%')->orWhere('name', 'LIKE', 'enable_%')->orWhere('name', 'privacy_policy')->orWhere('name', 'cg_wallet_bank_details')->orWhere('name', 'tv_server')->orWhere('name', 'referral_bonus')->orWhere('name', 'referral_bonus_min_funding')->orWhere('name', 'LIKE', 'verification_charge%')->get();
+        $data = Settings::where('name', 'min_funding')->orWhere('name', 'max_funding')->orWhere('name', 'bithday_message')->orWhere('name', 'disable_resellers')->orWhere('name', 'live_chat')->orWhere('name', 'email_note')->orWhere('name', 'transaction_email_copy')->orWhere('name', 'reseller_fee')->orWhere('name', 'reseller_terms')->orWhere('name', 'biz_verification_price_reseller')->orWhere('name', 'biz_verification_price_customer')->orWhere('name', 'data')->orWhere('name', 'airtime')->orWhere('name', 'paytv')->orWhere('name', 'resultchecker')->orWhere('name', 'rechargecard')->orWhere('name', 'electricity')->orWhere('name', 'airtimeconverter')->orWhere('name', 'LIKE', 'support_%')->orWhere('name', 'LIKE', 'enable_%')->orWhere('name', 'privacy_policy')->orWhere('name', 'cg_wallet_bank_details')->orWhere('name', 'tv_server')->orWhere('name', 'referral_bonus')->orWhere('name', 'referral_bonus_min_funding')->orWhere('name', 'LIKE', 'verification_charge%')->orWhere('name', 'admin_emails')->get();
 
         return view('allsettings', ['data' => $data]);
     }

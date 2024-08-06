@@ -13,6 +13,7 @@ use App\Models\Settings;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Models\Wallet;
+use App\Notifications\UserNotification;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
 
@@ -20,15 +21,29 @@ class ATMmanagerController extends Controller
 {
     public function RAfundwallet($name, $amount, $reference, $transactionreference, $cfee, $input, $account_number, $payment_method)
     {
-        $data = Settings::where('name', 'funding_charges')->first();
-        $charges = $data->value;
 
         $u = User::where('user_name', '=', $reference)->first();
         $w = Wallet::where('ref', $transactionreference)->first();
 
-        if ($payment_method == "Monnify" || $payment_method == "Paylony") {
+        if ($payment_method == "Monnify") {
+            $data = Settings::where('name', 'monnify_funding_charges')->first();
+            $charges = $data->value;
+
             $crAmount = $amount - $charges - $cfee;
+        } else if ($payment_method == "Paylony") {
+            $data = Settings::where('name', 'paylony_funding_charges')->first();
+            $charges = $data->value;
+
+            $crAmount = $amount - $charges - $cfee;
+        } else if ($payment_method == "Budpay") {
+            $data = Settings::where('name', 'budpay_funding_charges')->first();
+            $charges = $data->value;
+
+            $crAmount = $amount - $charges;
         } else {
+            $data = Settings::where('name', 'funding_charges')->first();
+            $charges = $data->value;
+
             $crAmount = $amount - $charges;
         }
 
@@ -91,6 +106,8 @@ class ATMmanagerController extends Controller
 
                     PndL::create($input);
                 }
+
+                $u->notify(new UserNotification($notimssg, "Wallet Funding"));
 
                 $noti = new PushNotificationController();
                 $noti->PushNoti($input['user_name'], $notimssg, "Account Transfer Successful");

@@ -519,11 +519,12 @@ class OtherController extends Controller
             return response()->json(['success' => 0, 'message' => 'Kindly provide correct wallet type']);
         }
 
+        $prevw = $u->wallet;
         $u->wallet += $amount;
         $u->save();
 
 
-        $tr['name'] = ucfirst($method) . "2Wallet";
+        $tr['name'] = "wallet funding";
         $tr['description'] = "Moved " . $amount . " " . $method . " to wallet";
         $tr['amount'] = $amount;
         $tr['date'] = Carbon::now();
@@ -536,6 +537,12 @@ class OtherController extends Controller
         $tr['code'] = "mfunds";
         $tr['status'] = "successful";
         $tr['extra'] = $method;
+        $tr['i_wallet'] = $prevw;
+        $tr['f_wallet'] = $u->wallet;
+
+        $t = Transaction::create($tr);
+
+        $tr['name'] = ucfirst($method);
         $tr['i_wallet'] = $prevb;
         $tr['f_wallet'] = $tr['i_wallet'] - $amount;
 

@@ -13,6 +13,7 @@ use App\Models\Settings;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Models\VirtualAccount;
+use App\Notifications\UserNotification;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
@@ -108,6 +109,9 @@ class UserController extends Controller
         $pay['funding_message'] = $sett['funding_message'];
         $pay['monnify_funding_message'] = $sett['monnify_funding_message'];
         $pay['budpay_funding_message'] = $sett['budpay_funding_message'];
+        $pay['monnify_funding_charges'] = $sett['monnify_funding_charges'];
+        $pay['budpay_funding_charges'] = $sett['budpay_funding_charges'];
+        $pay['paylony_funding_charges'] = $sett['paylony_funding_charges'];
 
         return response()->json(['success' => 1, 'message' => 'Fetched successfully', 'data' => ['user' => $me, 'balances' => $balances, 'services' => $services, 'news' => $user->gnews, 'others' => $others, 'payment' => $pay]]);
     }
@@ -747,6 +751,7 @@ class UserController extends Controller
         $message = $user->user_name. " just regenerate api key";
         PushNotificationJob::dispatch("Holarmie",$message,"Reseller Key Notice");
 
+        $user->notify(new UserNotification("You just regenerate your api key. If it is not done by you, kindly contact admin.", "Reseller Key Notice"));
 
         return response()->json(['success' => 1, 'message' => 'Key has been regenerated successfully. Kindly copy now and change it on your platform.', 'data'=>$key]);
     }

@@ -187,4 +187,12 @@ class TransactionsController extends Controller
 
         return response()->json(['success' => 1, 'message' => 'Fetched successfully', 'data' => $trans]);
     }
+
+    public function bonus()
+    {
+        $user = Auth::user();
+        $trans = Transaction::where([['user_name', $user->user_name], ['name', 'Bonus']])->OrderBy('id', 'desc')->simplepaginate();
+
+        return response()->json(['success' => 1, 'message' => 'Fetched successfully', 'data' => $trans]);
+    }
 }

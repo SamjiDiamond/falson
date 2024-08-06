@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V2;
 use App\Http\Controllers\Controller;
 use App\Models\Transaction;
 use App\Models\User;
+use App\Notifications\UserNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -127,14 +128,16 @@ class WalletTransferController extends Controller
 
         Transaction::create($input);
 
-        $input['user_name']=$r_user->user_name;
-        $input['i_wallet']=$r_user->wallet;
-        $input['f_wallet']=$r_user->wallet + $amount;
+        $input['user_name'] = $r_user->user_name;
+        $input['i_wallet'] = $r_user->wallet;
+        $input['f_wallet'] = $r_user->wallet + $amount;
 
         Transaction::create($input);
 
-        $r_user->wallet+=$amount;
+        $r_user->wallet += $amount;
         $r_user->save();
+
+        $r_user->notify(new UserNotification($input['description'], "Wallet Transfer"));
 
         return response()->json(['success' => 1, 'message' => 'Transfer Successful']);
     }

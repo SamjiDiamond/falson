@@ -71,6 +71,7 @@ Route::prefix('v2')->group(function () {
         Route::get('transactions-education', [TransactionsController::class, 'transactionsEducation']);
         Route::get('transactions-funding', [TransactionsController::class, 'transactionsFunding']);
         Route::get('commissions', [TransactionsController::class, 'commissions']);
+        Route::get('bonus', [TransactionsController::class, 'bonus']);
         Route::get('gmtransactions', [OtherController::class, 'getGmTrans']);
 
         Route::post('changepassword', [UserController::class, 'change_password']);

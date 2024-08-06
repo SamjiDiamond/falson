@@ -4,11 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Jobs\PushNotificationJob;
 use App\Jobs\WithdrawalPayoutJob;
-use App\Models\PndL;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Models\Wallet;
 use App\Models\Withdraw;
+use App\Notifications\UserNotification;
 use Carbon\Carbon;
 use DB;
 use Illuminate\Http\Request;
@@ -88,19 +88,22 @@ class WalletController extends Controller
 
                 $input["ip_address"]="127.0.0.1";
                 $input["code"]="admin_".$input["type"];
-                $input["status"]="successful";
-                $input["date"]=date("y-m-d H:i:s");
-                $input["name"]="wallet ".$input["type"];
-                $input["extra"]='Initiated by ' . Auth::user()->full_name;
+                $input["status"] = "successful";
+                $input["date"] = date("y-m-d H:i:s");
+                $input["name"] = "wallet " . $input["type"];
+                $input["extra"] = 'Initiated by ' . Auth::user()->full_name;
 
                 Transaction::create($input);
 
-                $user->wallet=$input["f_wallet"];
+                $user->wallet = $input["f_wallet"];
                 $user->save();
 
-                PushNotificationJob::dispatch($input['user_name'], $notify_description, "Wallet Funded");
 
-                return redirect('/addfund')->with('success', $input["user_name"]. ' wallet funded successfully!');
+                $user->notify(new UserNotification($notify_description, "Wallet " . $input['type'] . "ed"));
+
+                PushNotificationJob::dispatch($input['user_name'], $notify_description, "Wallet " . $input['type'] . "ed");
+
+                return redirect('/addfund')->with('success', $input["user_name"] . ' wallet ' . $input['type'] . 'ed' . ' successfully!');
             }else{
                 $validator->errors()->add('username', 'The username does not exist!');
 

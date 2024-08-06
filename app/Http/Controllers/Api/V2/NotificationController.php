@@ -85,6 +85,7 @@ class NotificationController extends Controller
             PDF::loadView('pdf_accountstatement', $data)->save($filePath);
         }
 
+        Auth::user()->notify(new UserNotification("Hello " . $customer->user_name . ", Your " . $input['from'] . " - " . $input['to'] . " statement has been sent to your email address " . $customer->email, "Account Statement"));
         Mail::to($customer->email)->queue(new AccountStatementEmail($customer, $filePath));
 
         return response()->json(['success' => 1, 'message' => 'Action completed successfully. You will receive an email soon.']);

@@ -44,9 +44,10 @@ class GenerateRingoPlans extends Command
     private function tvPlans()
     {
 
-        AppCableTVControl::truncate();
-        ResellerCableTV::truncate();
-        
+        ResellerCableTV::where('server', '2')->delete();;
+        AppCableTVControl::where('server', '2')->delete();;
+
+
         $this->info("Fetching tv plans");
 
         $curl = curl_init();

@@ -2,10 +2,9 @@
 
 namespace App\Jobs;
 
-use App\Http\Controllers\PushNotificationController;
 use App\Models\Settings;
-use App\Models\VirtualAccount;
 use App\Models\User;
+use App\Models\VirtualAccount;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -50,13 +49,23 @@ class BudpayVirtualAccountJob implements ShouldQueue
 
             try {
 
+
+                if ($u->full_name == null) {
+                    $fname = $u->user_name;
+                    $lname = $u->user_name;
+                } else {
+                    $fname = explode(" ", $u->full_name)[0];
+                    $lname = explode(" ", $u->full_name)[1] ?? "";
+                }
+
                 $payload = '{
     "email": "' . $u->email . '",
-    "first_name": "' . $u->user_name . '",
-    "last_name": "PlatnetF",
+    "first_name": "' . $fname . '",
+    "last_name": "' . $lname . '",
     "phone": "' . $u->phone . '"
 }';
 
+                dd($payload);
                 Log::info($payload);
                 echo $payload;
 

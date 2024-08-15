@@ -6,7 +6,6 @@ use App\Models\Settings;
 use App\Models\User;
 use App\Models\VirtualAccount;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -47,27 +46,36 @@ class CreatePaylonyVirtualAccountJob implements ShouldQueue
 
         if (!$w){
 
-            $settS=Settings::where('name', 'fund_paylony_secretkey')->first();
-            $settB=Settings::where('name', 'fund_paylony_bank')->first();
+            $settS = Settings::where('name', 'fund_paylony_secretkey')->first();
+            $settB = Settings::where('name', 'fund_paylony_bank')->first();
 
             $gender = "Male";
             $address = "34b Olaiya close, Mogodo Phase 1, Lagos";
             $dob = "1996-10-10";
-            $phone=preg_replace('/234/', '0', $u->phoneno, 1);
+            $phone = preg_replace('/234/', '0', $u->phoneno, 1);
 
-            $provider=$settB->value ?? 'gtb';
+            $provider = $settB->value ?? 'gtb';
+
+            if ($u->full_name == null) {
+                $fname = $u->user_name;
+                $lname = $u->user_name;
+            } else {
+                $fname = explode(" ", $u->full_name)[0];
+                $lname = explode(" ", $u->full_name)[1] ?? "";
+            }
 
             $payload = '{
-    "firstname": "' . $u->user_name . '",
-    "lastname": "PlanetF",
+    "firstname": "' . $fname . '",
+    "lastname": "' . $lname . '",
     "address": "' . $address . '",
     "gender": "' . $gender . '",
     "email": "' . $u->email . '",
     "phone": "' . $phone . '",
     "dob": "' . $dob . '",
-    "provider":"'.$provider.'"
+    "provider":"' . $provider . '"
 }';
 
+            dd($payload);
             echo $payload;
 
             Log::info("Create Paylony Account for " . $u->email);

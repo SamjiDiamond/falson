@@ -2,17 +2,14 @@
 
 namespace App\Jobs;
 
-use App\Http\Controllers\PushNotificationController;
 use App\Models\Settings;
-use App\Models\VirtualAccount;
-use App\Models\Wallet;
 use App\Models\User;
+use App\Models\VirtualAccount;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class CreateProvidusAccountJob implements ShouldQueue
@@ -83,6 +80,11 @@ class CreateProvidusAccountJob implements ShouldQueue
                 $response = json_decode($response, true);
                 $token = $response['responseBody']['accessToken'];
 
+
+                $fname = $u->full_name == null ? $u->user_name : $u->full_name;
+
+                dd($fname);
+
                 $curl = curl_init();
                 curl_setopt_array($curl, array(
                     CURLOPT_URL => env("MONNIFY_URL") . "/v2/bank-transfer/reserved-accounts",
@@ -96,11 +98,11 @@ class CreateProvidusAccountJob implements ShouldQueue
                     CURLOPT_SSL_VERIFYPEER => false,
                     CURLOPT_POSTFIELDS => '{
 	"accountReference": "' . $u->user_name . '",
-	"accountName": "PlanetF-' . $u->user_name . '",
+	"accountName": "' . $fname . '",
 	"currencyCode": "NGN",
 	"contractCode": "' . $settC->value . '",
 	"customerEmail": "' . $u->email . '",
-	"customerName": "PlanetF-' . $u->user_name . '",
+	"customerName": "' . $fname . '",
 	"getAllAvailableBanks": true
 }',
                     CURLOPT_HTTPHEADER => array(

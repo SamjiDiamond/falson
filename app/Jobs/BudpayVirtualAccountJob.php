@@ -49,6 +49,7 @@ class BudpayVirtualAccountJob implements ShouldQueue
 
             try {
 
+                Log::info("Running BUDPAY Virtual account name " . $u->full_name);
 
                 if ($u->full_name == null) {
                     $fname = $u->user_name;

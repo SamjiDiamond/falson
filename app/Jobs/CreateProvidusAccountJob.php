@@ -83,8 +83,6 @@ class CreateProvidusAccountJob implements ShouldQueue
 
                 $fname = $u->full_name == null ? $u->user_name : $u->full_name;
 
-                dd($fname);
-
                 $curl = curl_init();
                 curl_setopt_array($curl, array(
                     CURLOPT_URL => env("MONNIFY_URL") . "/v2/bank-transfer/reserved-accounts",

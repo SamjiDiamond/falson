@@ -65,8 +65,6 @@ class BudpayVirtualAccountJob implements ShouldQueue
     "last_name": "' . $lname . '",
     "phone": "' . $u->phone . '"
 }';
-
-                dd($payload);
                 Log::info($payload);
                 echo $payload;
 

@@ -75,7 +75,6 @@ class CreatePaylonyVirtualAccountJob implements ShouldQueue
     "provider":"' . $provider . '"
 }';
 
-            dd($payload);
             echo $payload;
 
             Log::info("Create Paylony Account for " . $u->email);

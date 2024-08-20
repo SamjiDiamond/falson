@@ -115,6 +115,43 @@ class ResellerServiceController extends Controller
         return view('reseller_control.datacontrol', compact('data', 'sme', 'sme2', 'cg', 'dg', 'all', 'server'));
     }
 
+    public function datanew(Request $request)
+    {
+        $input = $request->all();
+        $rules = array(
+            'network' => 'required',
+            'name' => 'required',
+            'price' => 'required',
+            'pricing' => 'required',
+            'code' => 'required|unique:tbl_reseller_dataplans',
+            'plan_id' => 'sometimes',
+            'product_code' => 'sometimes',
+            'server' => 'required',
+            'allowance' => 'required|numeric',
+            'note' => 'sometimes'
+        );
+
+        $validator = Validator::make($input, $rules);
+
+
+        if (!$validator->passes()) {
+            return redirect()->route('reseller.datanew')->withInput($input)->with('error', implode(",", $validator->errors()->all()));
+        }
+
+        $input['level1'] = $input['pricing'];
+        $input['level2'] = $input['pricing'];
+        $input['level3'] = $input['pricing'];
+        $input['level4'] = $input['pricing'];
+        $input['level5'] = $input['pricing'];
+        $input['status'] = 1;
+        $input['type'] = $input['allowance'];
+
+        ResellerDataPlans::create($input);
+
+        return redirect()->route('reseller.datanew')->with('success', 'Data Plan created successfully');
+    }
+
+
     public function dataserveMultipleedit($network, $type, $status,$server)
     {
         if($type == "ALL"){

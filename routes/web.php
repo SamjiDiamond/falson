@@ -302,6 +302,9 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/electricitycontrol', [ResellerServiceController::class, 'electricityserver'])->name('electricitycontrol');
             Route::get('/electricitycontrol/{id}', [ResellerServiceController::class, 'electricityEdit'])->name('electricitycontrolEdit');
             Route::post('/electricitycontrol', [ResellerServiceController::class, 'electricityUpdate'])->name('electricitycontrolUpdate');
+
+            Route::view('/datanew', 'reseller_control.datacontrol_new')->name('datanew');
+            Route::post('/datanew', [ResellerServiceController::class, 'datanew'])->name('datanew');
         });
 
         Route::get('sliders', [SliderController::class, 'index'])->name('sliders.index');

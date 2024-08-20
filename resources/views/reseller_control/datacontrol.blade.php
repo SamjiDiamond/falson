@@ -49,6 +49,13 @@
                         </div>
                     @endif
 
+
+                        @can('data-plans-create')
+                            <a href="{{route('reseller.datanew')}}" class="btn btn-gradient-success mr-3 mb-4">Create
+                                New Data
+                                Plan</a>
+                        @endcan
+
                     <div class="table-responsive">
                         <table class="table table-striped table-bordered table-hover dataTables-example">
                             <thead>

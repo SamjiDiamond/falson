@@ -27,6 +27,19 @@
                         @csrf
                         <div class="form-group row">
                             <div class="col-md-12">
+
+                                <div class="input-group mt-2">
+                                    <div class="input-group-prepend"><span class="input-group-text">User Category</span>
+                                    </div>
+                                    <select class="custom-select form-control" name="category">
+                                        <option value="all">All Users</option>
+                                        <option value="admin">Admin Users</option>
+                                        <option value="reseller">Reseller Users</option>
+                                        <option value="top">Top Users</option>
+                                        <option value="client">Client Users</option>
+                                    </select>
+                                </div>
+
                                 <div class="input-group mt-2">
                                     <div class="input-group-prepend"><span class="input-group-text"><i class="far fa-user"></i></span></div>
                                     <input type="text" name="user_name" placeholder="Enter Username (Optional)" class="form-control @error('username') is-invalid @enderror">
@@ -45,8 +58,10 @@
 
 
                                 <div class="input-group mt-2">
-                                    <div class="input-group-prepend"><span class="input-group-text">Banner </span></div>
-                                    <input type="file" name="image" placeholder="Select Image" class="form-control input-lg m-b" required>
+                                    <div class="input-group-prepend"><span
+                                            class="input-group-text">Banner (Optional) </span></div>
+                                    <input type="file" name="image" placeholder="Select Image"
+                                           class="form-control input-lg m-b">
                                 </div>
 
 

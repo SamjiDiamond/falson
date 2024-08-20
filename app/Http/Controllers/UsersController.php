@@ -353,7 +353,20 @@ class UsersController extends Controller
             PushNotificationJob::dispatch('general_notification', $input['message'], "General Notification");
         }else{
             if ($input["user_name"] == "") {
-                User::where('user_name','!=',$input["user_name"])->update(['gnews'=>$input["message"]]);
+
+                if ($input['category'] == "all") {
+                    User::where('user_name', '!=', "")->update(['gnews' => $input["message"]]);
+
+                } else if ($input['category'] == "admin") {
+                    User::whereIn('status', ["admin", "superadmin"])->update(['gnews' => $input["message"]]);
+                } else if ($input['category'] == "reseller") {
+                    User::where('status', '=', "reseller")->update(['gnews' => $input["message"]]);
+                } else if ($input['category'] == "client") {
+                    User::where('status', '=', "client")->update(['gnews' => $input["message"]]);
+                } else if ($input['category'] == "top") {
+                    User::where('status', '=', "client")->update(['gnews' => $input["message"]]);
+                }
+
 
             }else{
                 $user=User::where('user_name','=',$input["user_name"])->exists();

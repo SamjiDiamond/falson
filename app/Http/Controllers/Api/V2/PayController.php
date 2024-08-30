@@ -406,7 +406,7 @@ class PayController extends Controller
         $input['code'] = 'bulksms';
 
 
-        $payload = array('sender' => $input['sender'], 'message' => $input['sender'], 'recipient' => $input['recipient'], 'responsetype' => 'json', 'dlr' => '1', 'clientbatchid' => $input['ref']);
+        $payload = array('sender' => $input['sender'], 'message' => $input['message'], 'recipient' => $input['recipient'], 'responsetype' => 'json', 'dlr' => '1', 'clientbatchid' => $input['ref']);
 
         $input['extra'] = json_encode($payload);
 

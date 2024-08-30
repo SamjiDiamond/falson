@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\AppCableTVControl;
+use App\Models\AppDataControl;
 use App\Models\ResellerCableTV;
 use App\Models\ResellerDataPlans;
 use App\Models\ResellerElecticity;
@@ -65,7 +66,8 @@ class GenerateVTPlans extends Command
     {
         $this->info("Fetching tv plans");
 
-        $inters = ['dstv', 'gotv', 'startimes', 'showmax'];
+//        $inters = ['dstv', 'gotv', 'startimes', 'showmax'];
+        $inters = ['showmax'];
 
         foreach ($inters as $inte) {
 
@@ -105,14 +107,18 @@ class GenerateVTPlans extends Command
                     'code' => $plans['variation_code'],
                     'amount' => $plans['variation_amount'],
                     'type' => $inte,
-                    'discount' => '1%',
+                    'level1' => '1%',
+                    'level2' => '1%',
+                    'level3' => '1%',
+                    'level4' => '1%',
+                    'level5' => '1.5%',
                     'status' => 1,
                     'server' => 6,
                 ]);
 
                 AppCableTVControl::create([
                     'name' => $plans['name'],
-                    'coded' => $plans['variation_code'],
+                    'coded' => "6_" . $plans['variation_code'],
                     'code' => $plans['variation_code'],
                     'price' => $plans['variation_amount'],
                     'type' => $inte,
@@ -128,36 +134,7 @@ class GenerateVTPlans extends Command
     private function dataPlans()
     {
         $this->info("Fetching data plans");
-        $inters = ['mtn-data', 'airtel-data', 'glo-data', 'etisalat-data', 'smile-direct'];
-        $vds = ['mtn', 'airtel', 'glo', '9mobile', "smile"];
-
-
-        $dtp = ResellerDataPlans::create([
-            'name' => "MTN 1gb - SME",
-            'code' => "MTN1GB",
-            'amount' => "290",
-            'price' => "255",
-            'type' => "mtn-data",
-            'discount' => '2%',
-            'status' => 1,
-        ]);
-
-        $billing = $dtp->replicate()->fill([
-            'name' => "MTN 2gb - SME",
-            'code' => "MTN2GB",
-            'amount' => "580",
-            'price' => "510",
-        ]);
-
-
-        $billing = $dtp->replicate()->fill([
-            'name' => "MTN 5gb - SME",
-            'code' => "MTN5GB",
-            'amount' => "1300",
-            'price' => "1275",
-        ]);
-
-        $billing->save();
+        $inters = ['smile-direct', 'spectranet'];
 
         foreach ($inters as $inte) {
 
@@ -188,15 +165,49 @@ class GenerateVTPlans extends Command
             $rep = json_decode($response, true);
 
             foreach ($rep['content']['varations'] as $plans) {
-                ResellerDataPlans::create([
-                    'name' => $plans['name'],
-                    'code' => $plans['variation_code'],
-                    'amount' => $plans['variation_amount'],
-                    'price' => $plans['variation_amount'],
-                    'type' => $inte,
-                    'discount' => '2%',
-                    'status' => 1,
-                ]);
+                if ($plans['name'] != "Buy Airtime") {
+
+                    $vp = explode(" ", $plans['name']);
+                    $vp = $vp[0];
+
+                    if (str_contains($vp, "MB")) {
+                        $allowance = (explode("MB", $vp)[0] / 1000);
+                    } elseif (str_contains($vp, "TB")) {
+                        $allowance = explode("TB", $vp)[0] * 1000;
+                    } else {
+                        $allowance = explode("GB", $vp)[0];
+                    }
+
+                    ResellerDataPlans::create([
+                        'name' => $plans['name'],
+                        'product_code' => "DG",
+                        'code' => "6_" . $plans['variation_code'],
+                        'level1' => $plans['variation_amount'],
+                        'level2' => $plans['variation_amount'],
+                        'level3' => $plans['variation_amount'],
+                        'level4' => $plans['variation_amount'],
+                        'level5' => $plans['variation_amount'],
+                        'price' => $plans['variation_amount'],
+                        'type' => $allowance,
+                        'network' => str_replace('ETISALAT', '9MOBILE', strtoupper(explode('-', $inte)[0])),
+                        'plan_id' => $plans['variation_code'],
+                        'server' => 6,
+                        'status' => 1,
+                    ]);
+
+                    AppDataControl::create([
+                        'name' => $plans['name'],
+//                        'dataplan' => $allowance,
+                        'product_code' => "DG",
+                        'network' => str_replace('ETISALAT', '9MOBILE', strtoupper(explode('-', $inte)[0])),
+                        'coded' => "6_" . $plans['variation_code'],
+                        'plan_id' => $plans['variation_code'],
+                        'pricing' => $plans['variation_amount'],
+                        'price' => $plans['variation_amount'],
+                        'server' => 6,
+                        'status' => 1,
+                    ]);
+                }
             }
         }
     }

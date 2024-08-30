@@ -98,7 +98,9 @@ Route::prefix('v2')->group(function () {
             Route::post('airtimeconverter', [PayController::class, 'a2ca2b']);
             Route::post('resultchecker', [PayController::class, 'resultchecker']);
 
-            Route::post('epins', [OtherController::class, 'insertRechargecard']);
+            Route::post('bulk-sms', [PayController::class, 'bulkSMS']);
+
+            Route::post('epins', [PayController::class, 'epins']);
         });
 
         Route::get('profile', [UserController::class, 'profile']);

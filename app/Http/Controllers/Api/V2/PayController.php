@@ -353,6 +353,224 @@ class PayController extends Controller
         return $this->handlePassage($request, $proceed);
     }
 
+    function bulkSMS(Request $request)
+    {
+        $input = $request->all();
+        $rules = array(
+            'sender' => 'required',
+            'message' => 'required',
+            'recipient' => 'required',
+            'type' => 'required|in:dnd,normal'
+        );
+
+        $validator = Validator::make($input, $rules);
+
+        if (!$validator->passes()) {
+
+            return response()->json(['success' => 0, 'message' => implode(",", $validator->errors()->all())]);
+        }
+
+        if ($input['type'] == "dnd") {
+            $set = Settings::where('name', 'bulk_sms_price_dnd')->first();
+        } else {
+            $set = Settings::where('name', 'bulk_sms_price_normal')->first();
+        }
+
+        $rep_count = explode(",", $input['recipient']);
+
+
+        $input["user_name"] = Auth::user()->user_name;
+        $input['name'] = "BULKSMS";
+
+        $input['ref'] = "bsms" . rand() . time();
+        $input['amount'] = $set->value * count($rep_count);
+
+        $user = User::where('user_name', $input["user_name"])->first();
+
+        if (!$user) {
+            return response()->json(['success' => 0, 'message' => 'User not found']);
+        }
+
+        if ($input['amount'] > $user->wallet) {
+            return response()->json(['success' => 0, 'message' => 'Insufficient Balance']);
+        }
+
+        $input["i_wallet"] = $user->wallet;
+        $input['f_wallet'] = $input["i_wallet"] - $input['amount'];
+
+        $input['date'] = Carbon::now();
+        $input['ip_address'] = $_SERVER['REMOTE_ADDR'];
+        $input['description'] = "BULK SMS on " . $input['sender'] . " to " . $input['recipient'];
+
+        $input['status'] = 'sent';
+        $input['code'] = 'bulksms';
+
+
+        $payload = array('sender' => $input['sender'], 'message' => $input['sender'], 'recipient' => $input['recipient'], 'responsetype' => 'json', 'dlr' => '1', 'clientbatchid' => $input['ref']);
+
+        $input['extra'] = json_encode($payload);
+
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => env('VTPASS_MSG_BASEURL') . '/sms/sendsms',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_SSL_VERIFYHOST => false,
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_POSTFIELDS => $payload,
+            CURLOPT_HTTPHEADER => array(
+                'X-Token: ' . env('VTPASS_MSG_PK'),
+                'X-Secret: ' . env('VTPASS_MSG_SK')
+            ),
+        ));
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+
+        $response = curl_exec($curl);
+
+        curl_close($curl);
+
+        Log::info("VTPASS Bulk SMS - ");
+        Log::info(json_encode($payload));
+        Log::info($response);
+
+
+        $rep = json_decode($response, true);
+
+        if ($rep['responseCode'] != "TG00") {
+            return response()->json(['success' => 0, 'message' => $rep['response']]);
+        }
+
+        $input['server_response'] = $response;
+
+        // mysql inserting a new row
+        Transaction::create($input);
+
+        $user->wallet = $input['f_wallet'];
+        $user->save();
+
+        return response()->json(['success' => 1, 'message' => 'Message Sent']);
+
+    }
+
+    function epins(Request $request)
+    {
+        $input = $request->all();
+        $rules = array(
+            'network' => 'required|in:MTN,GLO,AIRTEL,9MOBILE',
+            'amount' => 'required|in:100,200,500',
+            'quantity' => 'required|numeric',
+            'ref' => 'required'
+        );
+
+        $validator = Validator::make($input, $rules);
+
+        if (!$validator->passes()) {
+
+            return response()->json(['success' => 0, 'message' => implode(",", $validator->errors()->all())]);
+        }
+
+        $price = $input['amount'];
+
+        $input["user_name"] = Auth::user()->user_name;
+        $input['name'] = $input['network'] . " Airtime Pin";
+
+        $input['amount'] = $input['amount'] * $input['quantity'];
+
+        $user = User::where('user_name', $input["user_name"])->first();
+
+        if (!$user) {
+            return response()->json(['success' => 0, 'message' => 'User not found']);
+        }
+
+        if ($input['amount'] > $user->wallet) {
+            return response()->json(['success' => 0, 'message' => 'Insufficient Balance']);
+        }
+
+
+        $trans_exist = Transaction::where('ref', $input['ref'])->exists();
+
+        if ($trans_exist) {
+            return response()->json(['success' => 0, 'message' => 'Transaction reference already exist']);
+        }
+
+        $input["i_wallet"] = $user->wallet;
+        $input['f_wallet'] = $input["i_wallet"] - $input['amount'];
+
+        $input['date'] = Carbon::now();
+        $input['ip_address'] = $_SERVER['REMOTE_ADDR'];
+        $input['description'] = "Airtime Pin of " . $input['network'] . $price . ",  " . $input['quantity'] . " cps";
+
+        $input['status'] = 'delivered';
+        $input['code'] = 'airtimepin';
+
+        $payload = '{
+    "network": "' . strtoupper($input['network']) . '",
+    "amount" : "' . $input['amount'] . '",
+    "quantity" : "' . $input['quantity'] . '",
+    "order" : "instant"
+}';
+
+        if (env('FAKE_TRANSACTION', 1) == 0) {
+
+            $curl = curl_init();
+
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => env('5STARRC_URL') . 'generate-epins',
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'POST',
+                CURLOPT_POSTFIELDS => $payload,
+                CURLOPT_HTTPHEADER => array(
+                    'Authorization: Bearer ' . env('5STARRC_AUTH'),
+                    'Content-Type: application/json',
+                    'User-Agent: FALSON'
+                ),
+            ));
+
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+
+            $response = curl_exec($curl);
+
+            curl_close($curl);
+
+        } else {
+            $response = '{"success":true,"message":"Epins generated successfully!","data":{"reference":"12312b802e031F","epins":[{"pin":"7938855782","serial":"0891319068","amount":"100","expiry":"21\/09\/2035","id":113575,"network":"MTN"}]}}';
+        }
+
+        Log::info("5Star RC Transaction. - " . $input['ref']);
+        Log::info($payload);
+        Log::info($response);
+
+        $rep = json_decode($response, true);
+
+        if (!$rep['success']) {
+            return response()->json(['success' => 0, 'message' => $rep['message']]);
+        }
+
+        $input['server_response'] = $response;
+        $input['server_ref'] = $rep['data']['reference'];
+        $input['token'] = $rep['data']['epins'];
+
+        // mysql inserting a new row
+        Transaction::create($input);
+
+        $user->wallet = $input['f_wallet'];
+        $user->save();
+
+        return response()->json(['success' => 1, 'message' => $rep['message'], 'data' => $rep['data']['epins']]);
+
+    }
+
     public function bizverification(Request $request)
     {
         $input = $request->all();
@@ -423,7 +641,7 @@ class PayController extends Controller
                 CURLOPT_SSL_VERIFYPEER => false,
                 CURLOPT_POSTFIELDS => $payload,
                 CURLOPT_HTTPHEADER => array(
-                    'Authorization: ' . env('MCD_KEY')
+                    'Authorization: Bearer ' . env('MCD_KEY')
                 ),
             ));
             curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
@@ -440,7 +658,7 @@ class PayController extends Controller
         $rep = json_decode($response, true);
 
         if($rep['success'] != 1){
-            return response()->json(['success' => 0, 'message' => 'Temporary unable to validate business. Check back later']);
+            return response()->json(['success' => 0, 'message' => $rep['message']]);
         }
 
         // mysql inserting a new row

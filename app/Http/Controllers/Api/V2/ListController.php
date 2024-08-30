@@ -66,6 +66,10 @@ class ListController extends Controller
             }
         }
 
+        if (strtolower($network) == "showmax") {
+            $server = 6;
+        }
+
         $datasets = AppCableTVControl::where([['type', '=', strtolower($network)], ['status', 1], ['server', $server]])->select('name', 'coded', 'price', 'type', 'status','discount')->get();
 
         return response()->json(['success' => 1, 'message' => 'Fetch successfully', 'data' => $datasets]);

@@ -2,14 +2,14 @@
 
 namespace App\Http;
 
-// use App\Http\Middleware\ApiPlatformAccessMiddleware;
-use App\Http\Middleware\AuthorizationCheck;
-use App\Http\Middleware\CheckUserDisabledServiceMiddleware;
-use App\Http\Middleware\GeneralMiddleware;
-use App\Http\Middleware\ResellerAuth;
-use Illuminate\Foundation\Http\Kernel as HttpKernel;
+ use App\Http\Middleware\ApiPlatformAccessMiddleware;
+ use App\Http\Middleware\AuthorizationCheck;
+ use App\Http\Middleware\CheckUserDisabledServiceMiddleware;
+ use App\Http\Middleware\GeneralMiddleware;
+ use App\Http\Middleware\ResellerAuth;
+ use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
-class Kernel extends HttpKernel
+ class Kernel extends HttpKernel
 {
     /**
      * The application's global HTTP middleware stack.
@@ -47,7 +47,7 @@ class Kernel extends HttpKernel
             // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
             'throttle:api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
-            // ApiPlatformAccessMiddleware::class
+            ApiPlatformAccessMiddleware::class
         ],
     ];
 

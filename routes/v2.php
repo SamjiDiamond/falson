@@ -85,18 +85,18 @@ Route::prefix('v2')->group(function () {
 
 
         Route::middleware(['general_middleware'])->group(function () {
-            Route::post('airtime', [PayController::class, 'buyairtime'])->middleware('check_UDS_middleware:airtime');
-            Route::post('data', [PayController::class, 'buydata'])->middleware('check_UDS_middleware:data');
-            Route::post('tv', [PayController::class, 'buytv'])->middleware('check_UDS_middleware:tv');
-            Route::post('electricity', [PayController::class, 'buyelectricity'])->middleware('check_UDS_middleware:electricity');
+            Route::post('airtime', [PayController::class, 'buyairtime']);
+            Route::post('data', [PayController::class, 'buydata']);
+            Route::post('tv', [PayController::class, 'buytv']);
+            Route::post('electricity', [PayController::class, 'buyelectricity']);
             Route::post('betting', [PayController::class, 'buybetting']);
             Route::post('jamb', [PayController::class, 'buyJamb']);
             Route::post('bizverification', [PayController::class, 'bizverification']);
 
             Route::post('bulkairtime', [UserController::class, 'bulkAirtime']);
 
-            Route::post('airtimeconverter', [PayController::class, 'a2ca2b'])->middleware('check_UDS_middleware:airtime2cash');
-            Route::post('resultchecker', [PayController::class, 'resultchecker'])->middleware('check_UDS_middleware:education');
+            Route::post('airtimeconverter', [PayController::class, 'a2ca2b']);
+            Route::post('resultchecker', [PayController::class, 'resultchecker']);
 
             Route::post('bulk-sms', [PayController::class, 'bulkSMS']);
 
@@ -135,7 +135,7 @@ Route::prefix('v2')->group(function () {
         Route::get('sliders', [OthersController::class, 'sliders']);
 
         Route::post('username/validate', [WalletTransferController::class, 'validateUsername']);
-        Route::post('w2w/transfer', [WalletTransferController::class, 'transfer'])->middleware('check_UDS_middleware:wallet_transfer');
+        Route::post('w2w/transfer', [WalletTransferController::class, 'transfer']);
 
         Route::get('apikey/regenerate', [UserController::class, 'requestAPIkey']);
         Route::get('getfaqs', [OtherController::class, 'getFAQs']);

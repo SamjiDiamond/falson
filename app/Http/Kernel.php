@@ -2,7 +2,9 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\ApiPlatformAccessMiddleware;
 use App\Http\Middleware\AuthorizationCheck;
+use App\Http\Middleware\CheckUserDisabledServiceMiddleware;
 use App\Http\Middleware\GeneralMiddleware;
 use App\Http\Middleware\ResellerAuth;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
@@ -45,6 +47,7 @@ class Kernel extends HttpKernel
             // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
             'throttle:api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            ApiPlatformAccessMiddleware::class
         ],
     ];
 
@@ -72,5 +75,6 @@ class Kernel extends HttpKernel
         'permission' => \Spatie\Permission\Middlewares\PermissionMiddleware::class,
         'role_or_permission' => \Spatie\Permission\Middlewares\RoleOrPermissionMiddleware::class,
         'general_middleware' => GeneralMiddleware::class,
+        'check_UDS_middleware' => CheckUserDisabledServiceMiddleware::class,
     ];
 }

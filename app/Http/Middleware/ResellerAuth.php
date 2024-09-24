@@ -25,7 +25,7 @@ class ResellerAuth
 
         $us = User::where("api_key", $key)->first();
         if (!$us) {
-            return response()->json(['status' => 0, 'message' => 'Invalid API key. Kindly contact us on whatsapp@07011223737']);
+            return response()->json(['status' => 0, 'message' => 'Invalid API key. Kindly contact support']);
         }
 
         $request->merge(["reseller_auth" => $us]);

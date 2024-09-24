@@ -142,6 +142,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/request_approve', [UsersController::class, 'approve'])->name('user approval');
     Route::get('/profile/{id}',  [UsersController::class, 'profile'])->name('profile');
     Route::post('/update-profile', [UsersController::class, 'updateProfile'])->name('updateProfile');
+    Route::post('/update-service', [UsersController::class, 'updateService'])->name('updateService');
     Route::post('/user-password-reset', [UsersController::class, 'passwordReset'])->name('userPasswordReset');
     Route::post('/user-pin-reset', [UsersController::class, 'pinReset'])->name('userPinReset');
     Route::get('/admin-password-reset/{id}', [UsersController::class, 'passwordResetAdmin'])->name('adminPasswordReset');

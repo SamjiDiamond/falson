@@ -62,25 +62,37 @@
                 <!--end card-body-->
                 <div class="card-body">
                     <ul class="nav nav-pills mb-0" id="pills-tab" role="tablist">
-                        <li class="nav-item"><a class="nav-link active" id="general_detail_tab" data-toggle="pill" href="#general_detail">General</a></li>
-                        <li class="nav-item"><a class="nav-link" id="activity_detail_tab" data-toggle="pill" href="#activity_detail">Transactions</a></li>
-                        <li class="nav-item"><a class="nav-link" id="portfolio_detail_tab" data-toggle="pill" href="#portfolio_detail">Wallet</a></li>
-                        <li class="nav-item"><a class="nav-link" id="settings_detail_tab" data-toggle="pill" href="#settings_detail">Charges</a></li>
-                        <li class="nav-item"><a class="nav-link" id="email_tab" data-toggle="pill" href="#email_detail">Email</a></li>
-{{--                        <li class="nav-item"><a class="nav-link" id="sms_tab" data-toggle="pill" href="#sms_detail">SMS</a></li>--}}
-                        <li class="nav-item"><a class="nav-link" id="pushnoti_tab" data-toggle="pill" href="#pushnoti_detail">Push Notification</a></li>
-                        <li class="nav-item"><a class="nav-link" id="login_tab" data-toggle="pill" href="#login_detail">Login Attempts</a></li>
-                        <li class="nav-item"><a class="nav-link" id="information_tab" data-toggle="pill" href="#information">Information</a></li>
-                        <li class="nav-item"><a class="nav-link" id="vaccount_tab" data-toggle="pill" href="#vaccount_detail">Virtual Accounts</a></li>
-                        <li class="nav-item"><a class="nav-link" id="cg_tab" data-toggle="pill" href="#cg_detail">CG Wallets</a></li>
-{{--                        <li class="nav-item"><a class="nav-link" id="crypto_tab" data-toggle="pill" href="#crypto_detail">Crypto Request</a></li>--}}
+                        <li class="nav-item"><a class="nav-link active" id="general_detail_tab" data-toggle="pill"
+                                                href="#general_detail">General</a></li>
+                        <li class="nav-item"><a class="nav-link" id="activity_detail_tab" data-toggle="pill"
+                                                href="#activity_detail">Transactions</a></li>
+                        <li class="nav-item"><a class="nav-link" id="portfolio_detail_tab" data-toggle="pill"
+                                                href="#portfolio_detail">Wallet</a></li>
+                        <li class="nav-item"><a class="nav-link" id="settings_detail_tab" data-toggle="pill"
+                                                href="#settings_detail">Charges</a></li>
+                        <li class="nav-item"><a class="nav-link" id="email_tab" data-toggle="pill" href="#email_detail">Email</a>
+                        </li>
+                        {{--                        <li class="nav-item"><a class="nav-link" id="sms_tab" data-toggle="pill" href="#sms_detail">SMS</a></li>--}}
+                        <li class="nav-item"><a class="nav-link" id="pushnoti_tab" data-toggle="pill"
+                                                href="#pushnoti_detail">Push Notification</a></li>
+                        <li class="nav-item"><a class="nav-link" id="login_tab" data-toggle="pill" href="#login_detail">Login
+                                Attempts</a></li>
+                        <li class="nav-item"><a class="nav-link" id="information_tab" data-toggle="pill"
+                                                href="#information">Information</a></li>
+                        <li class="nav-item"><a class="nav-link" id="vaccount_tab" data-toggle="pill"
+                                                href="#vaccount_detail">Virtual Accounts</a></li>
+                        <li class="nav-item"><a class="nav-link" id="cg_tab" data-toggle="pill" href="#cg_detail">CG
+                                Wallets</a></li>
+                        <li class="nav-item"><a class="nav-link" id="service_management_tab" data-toggle="pill"
+                                                href="#service_management">Service Management</a></li>
+                        {{--                        <li class="nav-item"><a class="nav-link" id="crypto_tab" data-toggle="pill" href="#crypto_detail">Crypto Request</a></li>--}}
                     </ul>
                 </div>
                 <!--end card-body-->
             </div>
             <!--end card-->
         </div>
-        <!--end col-->
+            <!--end col-->
     </div>
     <!--end row-->
 
@@ -920,19 +932,35 @@
                                                 </div>
 
                                                 <div class="input-group mt-5" style="align-content: center">
-                                                    <button class="btn btn-gradient-primary btn-large mr-4" type="submit" style="align-self: center; align-content: center">Update Profile</button>
+                                                    <button class="btn btn-gradient-primary btn-large mr-4"
+                                                            type="submit"
+                                                            style="align-self: center; align-content: center">Update
+                                                        Profile
+                                                    </button>
 
-                                                    <form class="form-horizontal" method="POST" action="{{ route('userPasswordReset') }}">
+                                                    <form class="form-horizontal" method="POST"
+                                                          action="{{ route('userPasswordReset') }}">
                                                         @csrf
-                                                        <input type="hidden" name="id" class="form-control" value="{{$user->id}}">
-                                                        <button class="btn btn-gradient-danger btn-large ml-5" type="submit" style="align-self: center; align-content: center">Password Reset</button>
+                                                        <input type="hidden" name="id" class="form-control"
+                                                               value="{{$user->id}}">
+                                                        <button class="btn btn-gradient-danger btn-large ml-5"
+                                                                type="submit"
+                                                                style="align-self: center; align-content: center">
+                                                            Password Reset
+                                                        </button>
                                                     </form>
 
 
-                                                    <form class="form-horizontal" method="POST" action="{{ route('userPinReset') }}">
+                                                    <form class="form-horizontal" method="POST"
+                                                          action="{{ route('userPinReset') }}">
                                                         @csrf
-                                                        <input type="hidden" name="id" class="form-control" value="{{$user->id}}">
-                                                        <button class="btn btn-gradient-danger btn-large ml-5" type="submit" style="align-self: center; align-content: center">Pin Reset</button>
+                                                        <input type="hidden" name="id" class="form-control"
+                                                               value="{{$user->id}}">
+                                                        <button class="btn btn-gradient-danger btn-large ml-5"
+                                                                type="submit"
+                                                                style="align-self: center; align-content: center">Pin
+                                                            Reset
+                                                        </button>
                                                     </form>
                                                 </div>
 
@@ -949,6 +977,167 @@
                     <!-- end row -->
                 </div>
 
+                <div class="tab-pane fade" id="service_management">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-10">
+                                            <h4 class="mt-0 header-title">Service Management</h4>
+                                        </div>
+
+                                    </div>
+
+
+                                    <p class="text-muted mb-4 font-13">Edit User <code>service</code>.</p>
+
+                                    @if (session('success'))
+                                        <div class="alert alert-success alert-dismissable">
+                                            <button aria-hidden="true" data-dismiss="alert" class="close" type="button">
+                                                ×
+                                            </button>
+                                            {{ session('success') }}
+                                        </div>
+                                    @endif
+
+                                    @if (session('error'))
+                                        <div class="alert alert-danger alert-dismissable">
+                                            <button aria-hidden="true" data-dismiss="alert" class="close" type="button">
+                                                ×
+                                            </button>
+                                            {{ session('error') }}
+                                        </div>
+                                    @endif
+
+                                    <form class="form-horizontal" method="POST" action="{{ route('updateService') }}">
+                                        @csrf
+                                        <div class="form-group row">
+                                            <div class="col-md-12">
+
+                                                <input type="hidden" name="id" class="form-control"
+                                                       value="{{$user->id}}">
+
+                                                <div class="input-group mt-2">
+                                                    <div class="input-group-prepend"><span class="input-group-text">Airtime</span>
+                                                    </div>
+                                                    <select class="custom-select form-control" name="airtime">
+                                                        <option value="1"
+                                                                @if($user->airtime == "1") selected @endif >Enabled
+                                                        </option>
+                                                        <option value="0"
+                                                                @if($user->airtime == "0") selected @endif>
+                                                            Disabled
+                                                        </option>
+                                                    </select>
+                                                </div>
+
+                                                <div class="input-group mt-2">
+                                                    <div class="input-group-prepend"><span
+                                                            class="input-group-text">Data</span>
+                                                    </div>
+                                                    <select class="custom-select form-control" name="data">
+                                                        <option value="1"
+                                                                @if($user->data == "1") selected @endif >Enabled
+                                                        </option>
+                                                        <option value="0"
+                                                                @if($user->data == "0") selected @endif>
+                                                            Disabled
+                                                        </option>
+                                                    </select>
+                                                </div>
+
+                                                <div class="input-group mt-2">
+                                                    <div class="input-group-prepend"><span class="input-group-text">Cable TV</span>
+                                                    </div>
+                                                    <select class="custom-select form-control" name="tv">
+                                                        <option value="1"
+                                                                @if($user->tv == "1") selected @endif >Enabled
+                                                        </option>
+                                                        <option value="0"
+                                                                @if($user->tv == "0") selected @endif>
+                                                            Disabled
+                                                        </option>
+                                                    </select>
+                                                </div>
+
+                                                <div class="input-group mt-2">
+                                                    <div class="input-group-prepend"><span class="input-group-text">Electricity</span>
+                                                    </div>
+                                                    <select class="custom-select form-control" name="electricity">
+                                                        <option value="1"
+                                                                @if($user->electricity == "1") selected @endif >Enabled
+                                                        </option>
+                                                        <option value="0"
+                                                                @if($user->electricity == "0") selected @endif>
+                                                            Disabled
+                                                        </option>
+                                                    </select>
+                                                </div>
+
+                                                <div class="input-group mt-2">
+                                                    <div class="input-group-prepend"><span class="input-group-text">Education</span>
+                                                    </div>
+                                                    <select class="custom-select form-control" name="education">
+                                                        <option value="1"
+                                                                @if($user->education == "1") selected @endif >Enabled
+                                                        </option>
+                                                        <option value="0"
+                                                                @if($user->education == "0") selected @endif>
+                                                            Disabled
+                                                        </option>
+                                                    </select>
+                                                </div>
+
+                                                <div class="input-group mt-2">
+                                                    <div class="input-group-prepend"><span class="input-group-text">Airtime 2 Cash</span>
+                                                    </div>
+                                                    <select class="custom-select form-control" name="airtime2cash">
+                                                        <option value="1"
+                                                                @if($user->airtime2cash == "1") selected @endif >Enabled
+                                                        </option>
+                                                        <option value="0"
+                                                                @if($user->airtime2cash == "0") selected @endif>
+                                                            Disabled
+                                                        </option>
+                                                    </select>
+                                                </div>
+
+                                                <div class="input-group mt-2">
+                                                    <div class="input-group-prepend"><span class="input-group-text">Wallet Transfer</span>
+                                                    </div>
+                                                    <select class="custom-select form-control" name="wallet_transfer">
+                                                        <option value="1"
+                                                                @if($user->wallet_transfer == "1") selected @endif >
+                                                            Enabled
+                                                        </option>
+                                                        <option value="0"
+                                                                @if($user->wallet_transfer == "0") selected @endif>
+                                                            Disabled
+                                                        </option>
+                                                    </select>
+                                                </div>
+
+                                                <div class="input-group mt-5" style="align-content: center">
+                                                    <button class="btn btn-gradient-primary btn-large mr-4"
+                                                            type="submit"
+                                                            style="align-self: center; align-content: center">Update
+                                                        Service
+                                                    </button>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <!--end row-->
+                                    </form>
+
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end col -->
+                    </div>
+                    <!-- end row -->
+                </div>
 
 
             </div>

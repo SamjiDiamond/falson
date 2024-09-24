@@ -63,7 +63,6 @@ class UserController extends Controller
         $services['airtime'] = $sett['airtime'];
         $services['data'] = $sett['data'];
         $services['paytv'] = $sett['paytv'];
-        $services['paytv'] = $sett['paytv'];
         $services['resultchecker'] = $sett['resultchecker'];
         $services['rechargecard'] = $sett['resultchecker'];
         $services['electricity'] = $sett['electricity'];

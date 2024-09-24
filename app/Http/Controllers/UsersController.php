@@ -493,15 +493,15 @@ class UsersController extends Controller
     public function updateProfile(Request $request){
         $input = $request->all();
 
-        $user=User::find($input['id']);
+        $user = User::find($input['id']);
 
-        $user->full_name=$input['full_name'] ?? "";
-        $user->company_name=$input['company_name'] ?? "";
-        $user->bvn=$input['bvn'] ?? "";
-        $user->email=$input['email'] ?? "";
-        $user->phoneno=$input['phoneno'] ?? "";
-        $user->address=$input['address'] ?? "";
-        $user->target=$input['target'] ?? "";
+        $user->full_name = $input['full_name'] ?? "";
+        $user->company_name = $input['company_name'] ?? "";
+        $user->bvn = $input['bvn'] ?? "";
+        $user->email = $input['email'] ?? "";
+        $user->phoneno = $input['phoneno'] ?? "";
+        $user->address = $input['address'] ?? "";
+        $user->target = $input['target'] ?? "";
         $user->status = $input['status'] ?? "";
         $user->level = $input['level'] ?? "";
         $user->save();
@@ -509,10 +509,29 @@ class UsersController extends Controller
         return redirect()->route('profile', $user->user_name)->with("success", "Profile Updated successfully");
     }
 
-    public function passwordReset(Request $request){
+    public function updateService(Request $request)
+    {
         $input = $request->all();
 
-        $user=User::find($input['id']);
+        $user = User::find($input['id']);
+
+        $user->airtime = $input['airtime'];
+        $user->data = $input['data'];
+        $user->tv = $input['tv'];
+        $user->electricity = $input['electricity'];
+        $user->education = $input['education'];
+        $user->airtime2cash = $input['airtime2cash'];
+        $user->wallet_transfer = $input['wallet_transfer'];
+        $user->save();
+
+        return redirect()->route('profile', $user->user_name)->with("success", "Service Updated successfully");
+    }
+
+    public function passwordReset(Request $request)
+    {
+        $input = $request->all();
+
+        $user = User::find($input['id']);
 
         $pass = str_shuffle(substr(date('sydmM') . rand() . $user->user_name, 0, 8));
 

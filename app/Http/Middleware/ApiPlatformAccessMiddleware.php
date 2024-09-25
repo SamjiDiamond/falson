@@ -31,17 +31,21 @@ class ApiPlatformAccessMiddleware
             }
         } elseif (str_contains($device, "| true")) {
             $settings = Settings::where('name', 'app_enabled')->first();
-            if (str_contains($settings->value, "0")) {
-                return response()->json(['success' => 0, 'message' => 'This medium is currently disabled. Kindly contact support.']);
-            } else {
-                return response()->json(['success' => 0, 'message' => $settings->value]);
+            if ($settings->value != "1") {
+                if (str_contains($settings->value, "0")) {
+                    return response()->json(['success' => 0, 'message' => 'This medium is currently disabled. Kindly contact support.']);
+                } else {
+                    return response()->json(['success' => 0, 'message' => $settings->value]);
+                }
             }
         } else {
             $settings = Settings::where('name', 'web_enabled')->first();
-            if (str_contains($settings->value, "0")) {
-                return response()->json(['success' => 0, 'message' => 'This medium is currently disabled. Kindly contact support.']);
-            } else {
-                return response()->json(['success' => 0, 'message' => $settings->value]);
+            if ($settings->value != "1") {
+                if (str_contains($settings->value, "0")) {
+                    return response()->json(['success' => 0, 'message' => 'This medium is currently disabled. Kindly contact support.']);
+                } else {
+                    return response()->json(['success' => 0, 'message' => $settings->value]);
+                }
             }
         }
 

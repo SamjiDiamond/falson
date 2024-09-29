@@ -454,6 +454,129 @@ class SellDataController extends Controller
             $rac = AppDataControl::where("coded", strtolower($input['coded']))->first();
         }
 
+
+        switch ($rac->network) {
+            case "MTN":
+                $service_id = 1;
+                break;
+
+            case "9MOBILE":
+                $service_id = 3;
+                break;
+
+            case "GLO":
+                $service_id = 2;
+                break;
+
+            case "AIRTEL":
+                $service_id = 4;
+                break;
+
+            default:
+                return response()->json(['success' => 0, 'message' => 'Invalid Network. Available are m for MTN, 9 for 9MOBILE, g for GLO, a for AIRTEL.']);
+        }
+
+
+        $payload = '{
+    "network": ' . $service_id . ',
+    "mobile_number": "' . $phone . '",
+    "plan": ' . $rac->plan_id . ',
+    "Ported_number": true
+}';
+
+        Log::info("UZOBEST Payload. - " . $payload);
+
+        if (env('FAKE_TRANSACTION', 1) == 0) {
+            $curl = curl_init();
+
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => env('UZOBEST_BASEURL') . 'data/',
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'POST',
+                CURLOPT_POSTFIELDS => $payload,
+                CURLOPT_HTTPHEADER => array(
+                    'Authorization: Token ' . env('UZOBEST_TOKEN'),
+                    'Content-Type: application/json'
+                ),
+            ));
+
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+
+            $response = curl_exec($curl);
+
+            curl_close($curl);
+
+            Log::info("UZOBEST Transaction. - " . $transid);
+            Log::info($response);
+
+        } else {
+            $response = '{"status":"successful","message":"Data topup of 500MB - SME topped up to to 07037773815 was successful ","transaction_id":"Data6605238e5739d","response":"Dear Customer, You have successfully shared 500MB Data to 2347037773815. Your SME data balance is 19563.68GB expires 03\/05\/2024. Thankyou"}';
+        }
+
+
+        $tran = new ServeRequestController();
+        $rs = new PayController();
+        $ms = new V2\PayController();
+
+        $rep = json_decode($response, true);
+
+        if (isset($rep['error'])) {
+            $dada['message'] = 'Transaction failed. Kindly buy another plan for now, this plan will be restored soon. Your money will be refund in a minute.';
+            return $ms->outputResp($request, $transid, 2, $dada);
+        }
+
+        if (!isset($rep['ident'])) {
+            $dada['message'] = 'Something went wrong. Try again later';
+            return $ms->outputResp($request, $transid, 0, $dada);
+        }
+
+        $dada['server_ref'] = $rep['ident'];
+        $dada['message'] = $rep['api_response'];
+
+        $dada['server_response'] = $response;
+
+        if ($rep['Status'] == "successful" || $rep['Status'] == "processing") {
+            if ($requester == "reseller") {
+                return $rs->outputResponse($request, $transid, 1, $dada);
+            } else {
+                return $ms->outputResp($request, $transid, 1, $dada);
+            }
+        } else {
+            if (env('ENABLE_DELIVERY_NIN_ISSUE', 0) == 1) {
+                if (str_contains($dada['message'], "was not successful. Please try again")) {
+                    if ($requester == "reseller") {
+                        return $rs->outputResponse($request, $transid, 1, $dada);
+                    } else {
+                        return $ms->outputResp($request, $transid, 1, $dada);
+                    }
+                }
+            }
+
+
+            $dada['message'] = explode("Sponsor", $rep['response'])[0];
+
+            if ($requester == "reseller") {
+                return $rs->outputResponse($request, $transid, 0, $dada);
+            } else {
+                return $ms->outputResp($request, $transid, 0, $dada);
+            }
+        }
+    }
+
+    public function server5old($request, $code, $phone, $transid, $net, $input, $dada, $requester)
+    {
+
+        if ($requester == "reseller") {
+            $rac = ResellerDataPlans::where("code", strtolower($input['coded']))->first();
+        } else {
+            $rac = AppDataControl::where("coded", strtolower($input['coded']))->first();
+        }
+
         switch ($rac->network) {
             case "MTN":
                 $service_id = 1;
@@ -514,8 +637,8 @@ class SellDataController extends Controller
             Log::info("UZOBEST Transaction. - " . $transid);
             Log::info($response);
 
-        }else{
-            $response='{"status":"successful","message":"Data topup of 500MB - SME topped up to to 07037773815 was successful ","transaction_id":"Data6605238e5739d","response":"Dear Customer, You have successfully shared 500MB Data to 2347037773815. Your SME data balance is 19563.68GB expires 03\/05\/2024. Thankyou"}';
+        } else {
+            $response = '{"status":"successful","message":"Data topup of 500MB - SME topped up to to 07037773815 was successful ","transaction_id":"Data6605238e5739d","response":"Dear Customer, You have successfully shared 500MB Data to 2347037773815. Your SME data balance is 19563.68GB expires 03\/05\/2024. Thankyou"}';
         }
 
 
@@ -528,7 +651,7 @@ class SellDataController extends Controller
         $dada['server_response'] = $response;
         $dada['message'] = $rep['response'];
 
-        if ($rep['status'] == "successful" || $rep['status'] == "processing" ) {
+        if ($rep['status'] == "successful" || $rep['status'] == "processing") {
             $dada['server_ref'] = $rep['transaction_id'];
             if ($requester == "reseller") {
                 return $rs->outputResponse($request, $transid, 1, $dada);

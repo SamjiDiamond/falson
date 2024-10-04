@@ -123,9 +123,43 @@ class TransactionController extends Controller
 
         $data = Transaction::where("name", 'LIKE', 'wallet funding')->orderBy('id', 'desc')->limit(500)->get();
         $tt = Transaction::where("name", 'LIKE', 'wallet funding')->count();
-        $ft = Transaction::where([["name", 'LIKE', 'wallet funding'],['date', 'like', Carbon::now()->format('Y-m-d') . '%']])->count();
-        $st = Transaction::where([["name", 'LIKE', 'wallet funding'],['date', 'like', Carbon::now()->subDay()->format('Y-m-d') . '%']])->count();
-        $rt = Transaction::where([["name", 'LIKE', 'wallet funding'],['date', 'like', Carbon::now()->subDays(2)->format('Y-m-d') . '%']])->count();
+        $ft = Transaction::where([["name", 'LIKE', 'wallet funding'], ['date', 'like', Carbon::now()->format('Y-m-d') . '%']])->count();
+        $st = Transaction::where([["name", 'LIKE', 'wallet funding'], ['date', 'like', Carbon::now()->subDay()->format('Y-m-d') . '%']])->count();
+        $rt = Transaction::where([["name", 'LIKE', 'wallet funding'], ['date', 'like', Carbon::now()->subDays(2)->format('Y-m-d') . '%']])->count();
+
+        return view('transactions', ['data' => $data, 'tt' => $tt, 'ft' => $ft, 'st' => $st, 'rt' => $rt]);
+    }
+
+    public function commission_history(Request $request)
+    {
+
+        $data = Transaction::where("name", 'Commission')->orderBy('id', 'desc')->limit(500)->get();
+        $tt = Transaction::where("name", 'Commission')->count();
+        $ft = Transaction::where([["name", 'Commission'], ['date', 'like', Carbon::now()->format('Y-m-d') . '%']])->count();
+        $st = Transaction::where([["name", 'Commission'], ['date', 'like', Carbon::now()->subDay()->format('Y-m-d') . '%']])->count();
+        $rt = Transaction::where([["name", 'Commission'], ['date', 'like', Carbon::now()->subDays(2)->format('Y-m-d') . '%']])->count();
+
+        return view('transactions', ['data' => $data, 'tt' => $tt, 'ft' => $ft, 'st' => $st, 'rt' => $rt]);
+    }
+
+    public function referral_bonus_history(Request $request)
+    {
+        $data = Transaction::where("code", 'rbonus')->orderBy('id', 'desc')->limit(500)->get();
+        $tt = Transaction::where("code", 'rbonus')->count();
+        $ft = Transaction::where([["code", 'rbonus'], ['date', 'like', Carbon::now()->format('Y-m-d') . '%']])->count();
+        $st = Transaction::where([["code", 'rbonus'], ['date', 'like', Carbon::now()->subDay()->format('Y-m-d') . '%']])->count();
+        $rt = Transaction::where([["code", 'rbonus'], ['date', 'like', Carbon::now()->subDays(2)->format('Y-m-d') . '%']])->count();
+
+        return view('transactions', ['data' => $data, 'tt' => $tt, 'ft' => $ft, 'st' => $st, 'rt' => $rt]);
+    }
+
+    public function bonus_history(Request $request)
+    {
+        $data = Transaction::where("code", 'bonus')->orderBy('id', 'desc')->limit(500)->get();
+        $tt = Transaction::where("code", 'bonus')->count();
+        $ft = Transaction::where([["code", 'bonus'], ['date', 'like', Carbon::now()->format('Y-m-d') . '%']])->count();
+        $st = Transaction::where([["code", 'bonus'], ['date', 'like', Carbon::now()->subDay()->format('Y-m-d') . '%']])->count();
+        $rt = Transaction::where([["code", 'bonus'], ['date', 'like', Carbon::now()->subDays(2)->format('Y-m-d') . '%']])->count();
 
         return view('transactions', ['data' => $data, 'tt' => $tt, 'ft' => $ft, 'st' => $st, 'rt' => $rt]);
     }

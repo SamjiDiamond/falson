@@ -95,15 +95,28 @@
 
                             @can('electricity-transactions-view')
                                 <li><a href="{{route('transaction_electricity')}}">Electricity Transaction History</a></li>
-                            @endcan
+                                @endcan
 
-                            @can('resultchecker-transactions-view')
+                                @can('resultchecker-transactions-view')
                                     <li><a href="{{route('transaction_resultchecker')}}">ResultChecker Transaction
                                             History</a></li>
                                 @endcan
 
                                 @can('funding-transactions-view')
                                     <li><a href="{{route('transaction_funding')}}">Funding Transaction History</a></li>
+                                @endcan
+
+                                @can('funding-transactions-view')
+                                    <li><a href="{{route('transaction_commission_history')}}">Commission History</a>
+                                    </li>
+                                @endcan
+
+                                @can('funding-transactions-view')
+                                    <li><a href="{{route('transaction_rb_history')}}">Referral Bonus History</a></li>
+                                @endcan
+
+                                @can('funding-transactions-view')
+                                    <li><a href="{{route('transaction_bonus_history')}}">Bonus History</a></li>
                                 @endcan
 
                                 @can('pending-transactions-view')

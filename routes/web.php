@@ -167,6 +167,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/transaction_tv', [TransactionController::class, 'trans_tv'])->name('transaction_tv');
     Route::get('/transaction_resultchecker', [TransactionController::class, 'trans_resultchecker'])->name('transaction_resultchecker');
     Route::get('/transaction_funding', [TransactionController::class, 'trans_funding'])->name('transaction_funding');
+    Route::get('/transaction_commissions', [TransactionController::class, 'commission_history'])->name('transaction_commission_history');
+    Route::get('/transaction_rb', [TransactionController::class, 'referral_bonus_history'])->name('transaction_rb_history');
+    Route::get('/transaction_bonus', [TransactionController::class, 'bonus_history'])->name('transaction_bonus_history');
     Route::get('/transaction_server8', [TransactionController::class, 'server8'])->name('transaction8');
 
     Route::get('/transactions-pending', [TransactionController::class, 'pending'])->name('trans_pending');

@@ -113,27 +113,31 @@ class ServerController
 
     public function dataserve2($network)
     {
-        $data = dataserver::where('network', 'LIKE', strtoupper($network) . '%')->paginate(10);
-        $sme = dataserver::where([['name', 'LIKE', '%SME%'], ['name', 'NOT LIKE', '%SME2%'], ['network', 'LIKE', strtoupper($network) . '%'], ['status', 1]])->count() > 0 ? 1 : 0;
-        $sme2 = dataserver::where([['name', 'LIKE', '%SME2%'], ['network', 'LIKE', strtoupper($network) . '%'], ['status', 1]])->count() > 0 ? 1 : 0;
-        $cg = dataserver::where([['name', 'LIKE', '%CG%'], ['network', 'LIKE', strtoupper($network) . '%'], ['status', 1]])->count() > 0 ? 1 : 0;
-        $dg = dataserver::where([['name', 'LIKE', '%DG%'], ['network', 'LIKE', strtoupper($network) . '%'], ['status', 1]])->count() > 0 ? 1 : 0;
+        $data = dataserver::where('network', strtoupper($network))->paginate(10);
+        $sme = dataserver::where([['product_code', 'SME'], ['network', strtoupper($network)], ['status', 1]])->count() > 0 ? 1 : 0;
+        $sme2 = dataserver::where([['product_code', 'SME2'], ['network', strtoupper($network)], ['status', 1]])->count() > 0 ? 1 : 0;
+        $cg = dataserver::where([['product_code', 'CG'], ['network', strtoupper($network)], ['status', 1]])->count() > 0 ? 1 : 0;
+        $dg = dataserver::where([['product_code', 'DG'], ['network', strtoupper($network)], ['status', 1]])->count() > 0 ? 1 : 0;
+        $dt = dataserver::where([['product_code', 'DATA TRANSFER'], ['network', strtoupper($network)], ['status', 1]])->count() > 0 ? 1 : 0;
+        $dc = dataserver::where([['product_code', 'DATA COUPONS'], ['network', strtoupper($network)], ['status', 1]])->count() > 0 ? 1 : 0;
         $all = dataserver::where([['network', 'LIKE', strtoupper($network) . '%'], ['status', 1]])->count() > 0 ? 1 : 0;
 
         $server = 0;
-        return view('datacontrol', compact('data', 'sme', 'sme2', 'cg', 'dg', 'all', 'server'));
+        return view('datacontrol', compact('data', 'sme', 'sme2', 'cg', 'dg', 'dc', 'dt', 'all', 'server'));
     }
 
     public function dataserve3($network, $server)
     {
-        $data = dataserver::where([['network', 'LIKE', strtoupper($network) . '%'], ['server', $server]])->paginate(10);
-        $sme = dataserver::where([['name', 'LIKE', '%SME%'], ['name', 'NOT LIKE', '%SME2%'], ['network', 'LIKE', strtoupper($network) . '%'], ['server', $server], ['status', 1]])->count() > 0 ? 1 : 0;
-        $sme2 = dataserver::where([['name', 'LIKE', '%SME2%'], ['network', 'LIKE', strtoupper($network) . '%'], ['server', $server], ['status', 1]])->count() > 0 ? 1 : 0;
-        $cg = dataserver::where([['name', 'LIKE', '%CG%'], ['network', 'LIKE', strtoupper($network) . '%'], ['server', $server], ['status', 1]])->count() > 0 ? 1 : 0;
-        $dg = dataserver::where([['name', 'LIKE', '%DG%'], ['network', 'LIKE', strtoupper($network) . '%'], ['server', $server], ['status', 1]])->count() > 0 ? 1 : 0;
-        $all = dataserver::where([['network', 'LIKE', strtoupper($network) . '%'], ['server', $server], ['status', 1]])->count() > 0 ? 1 : 0;
+        $data = dataserver::where([['network', strtoupper($network)], ['server', $server]])->paginate(20);
+        $sme = dataserver::where([['product_code', 'SME'], ['network', strtoupper($network)], ['server', $server], ['status', 1]])->count() > 0 ? 1 : 0;
+        $sme2 = dataserver::where([['product_code', 'SME2'], ['network', strtoupper($network)], ['server', $server], ['status', 1]])->count() > 0 ? 1 : 0;
+        $cg = dataserver::where([['product_code', 'CG'], ['network', strtoupper($network)], ['server', $server], ['status', 1]])->count() > 0 ? 1 : 0;
+        $dg = dataserver::where([['product_code', 'DG'], ['network', strtoupper($network)], ['server', $server], ['status', 1]])->count() > 0 ? 1 : 0;
+        $dc = dataserver::where([['product_code', 'DATA COUPONS'], ['network', strtoupper($network)], ['server', $server], ['status', 1]])->count() > 0 ? 1 : 0;
+        $dt = dataserver::where([['product_code', 'DATA TRANSFER'], ['network', strtoupper($network)], ['server', $server], ['status', 1]])->count() > 0 ? 1 : 0;
+        $all = dataserver::where([['network', strtoupper($network)], ['server', $server], ['status', 1]])->count() > 0 ? 1 : 0;
 
-        return view('datacontrol', compact('data', 'sme', 'sme2', 'cg', 'dg', 'all', 'server'));
+        return view('datacontrol', compact('data', 'sme', 'sme2', 'cg', 'dg', 'dc', 'dt', 'all', 'server'));
     }
 
     public function dataserveedit($id)
@@ -192,15 +196,15 @@ class ServerController
     {
         if($type == "ALL"){
             if($server == 0) {
-                dataserver::where([['network', 'LIKE', strtoupper($network) . '%']])->update(['status' => $status]);
+                dataserver::where([['network', strtoupper($network)]])->update(['status' => $status]);
             }else{
-                dataserver::where([['network', 'LIKE', strtoupper($network) . '%'], ['server', $server]])->update(['status' => $status]);
+                dataserver::where([['network', strtoupper($network)], ['server', $server]])->update(['status' => $status]);
             }
         }else{
             if($server == 0) {
-                dataserver::where([['name', 'LIKE', '%' . $type . '%'], ['network', 'LIKE', strtoupper($network) . '%']])->update(['status' => $status]);
+                dataserver::where([['product_code', $type], ['network', strtoupper($network)]])->update(['status' => $status]);
             }else{
-                dataserver::where([['name', 'LIKE', '%' . $type . '%'], ['network', 'LIKE', strtoupper($network) . '%'], ['server', $server]])->update(['status' => $status]);
+                dataserver::where([['product_code', $type], ['network', strtoupper($network)], ['server', $server]])->update(['status' => $status]);
             }
         }
 

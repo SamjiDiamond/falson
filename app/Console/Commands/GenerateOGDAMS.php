@@ -148,11 +148,14 @@ class GenerateOGDAMS extends Command
     private function item($plans)
     {
         if (str_contains($plans['name'], "MB")) {
-            $allowance = (explode("MB", $plans['name'])[0] / 1000);
+//            $allowance = (explode("MB", $plans['name'])[0] / 1000);
+            $allowance = 0;
         } elseif (str_contains($plans['name'], "TB")) {
-            $allowance = (explode("TB", $plans['name'])[0] * 1000);
+//            $allowance = (explode("TB", $plans['name'])[0] * 1000);
+            $allowance = 0;
         } else {
-            $allowance = explode("GB", $plans['name'])[0];
+//            $allowance = explode("GB", $plans['name'])[0];
+            $allowance = 0;
         }
 
         $type = str_replace("]", "", explode(" [", $plans['name'])[0]);

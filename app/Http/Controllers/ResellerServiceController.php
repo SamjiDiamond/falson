@@ -91,28 +91,32 @@ class ResellerServiceController extends Controller
     public function dataPlans($network)
     {
 
-        $data = ResellerDataPlans::where('type', 'LIKE', strtoupper($network) . '%')->paginate(10);
-        $sme = ResellerDataPlans::where([['name', 'LIKE', '%SME%'], ['name', 'NOT LIKE', '%SME2%'], ['type', 'LIKE', strtoupper($network) . '%'], ['status', 1]])->count() > 0 ? 1 : 0;
-        $sme2 = ResellerDataPlans::where([['name', 'LIKE', '%SME2%'], ['type', 'LIKE', strtoupper($network) . '%'], ['status', 1]])->count() > 0 ? 1 : 0;
-        $cg = ResellerDataPlans::where([['name', 'LIKE', '%CG%'], ['type', 'LIKE', strtoupper($network) . '%'], ['status', 1]])->count() > 0 ? 1 : 0;
-        $dg = ResellerDataPlans::where([['name', 'LIKE', '%DG%'], ['type', 'LIKE', strtoupper($network) . '%'], ['status', 1]])->count() > 0 ? 1 : 0;
-        $all = ResellerDataPlans::where([['type', 'LIKE', strtoupper($network) . '%'], ['status', 1]])->count() > 0 ? 1 : 0;
+        $data = ResellerDataPlans::where('network', strtoupper($network))->paginate(10);
+        $sme = ResellerDataPlans::where([['product_code', 'SME'], ['network', strtoupper($network)], ['status', 1]])->count() > 0 ? 1 : 0;
+        $sme2 = ResellerDataPlans::where([['product_code', 'SME2'], ['network', strtoupper($network)], ['status', 1]])->count() > 0 ? 1 : 0;
+        $cg = ResellerDataPlans::where([['product_code', 'CG'], ['network', strtoupper($network)], ['status', 1]])->count() > 0 ? 1 : 0;
+        $dg = ResellerDataPlans::where([['product_code', 'DG'], ['network', strtoupper($network)], ['status', 1]])->count() > 0 ? 1 : 0;
+        $dt = ResellerDataPlans::where([['product_code', 'DATA TRANSFER'], ['network', strtoupper($network)], ['status', 1]])->count() > 0 ? 1 : 0;
+        $dc = ResellerDataPlans::where([['product_code', 'DATA COUPONS'], ['network', strtoupper($network)], ['status', 1]])->count() > 0 ? 1 : 0;
+        $all = ResellerDataPlans::where([['network', strtoupper($network)], ['status', 1]])->count() > 0 ? 1 : 0;
 
         $server = 0;
-        return view('reseller_control.datacontrol', compact('data', 'sme', 'sme2', 'cg', 'dg', 'all', 'server'));
+        return view('reseller_control.datacontrol', compact('data', 'sme', 'sme2', 'cg', 'dg', 'dt', 'dc', 'all', 'server'));
     }
 
     public function dataPlans2($network, $server)
     {
 
-        $data = ResellerDataPlans::where([['type', 'LIKE', strtoupper($network) . '%'], ['server', $server]])->paginate(10);
-        $sme = ResellerDataPlans::where([['name', 'LIKE', '%SME%'], ['name', 'NOT LIKE', '%SME2%'], ['type', 'LIKE', strtoupper($network) . '%'], ['server', $server], ['status', 1]])->count() > 0 ? 1 : 0;
-        $sme2 = ResellerDataPlans::where([['name', 'LIKE', '%SME2%'], ['type', 'LIKE', strtoupper($network) . '%'], ['server', $server], ['status', 1]])->count() > 0 ? 1 : 0;
-        $cg = ResellerDataPlans::where([['name', 'LIKE', '%CG%'], ['type', 'LIKE', strtoupper($network) . '%'], ['server', $server], ['status', 1]])->count() > 0 ? 1 : 0;
-        $dg = ResellerDataPlans::where([['name', 'LIKE', '%DG%'], ['type', 'LIKE', strtoupper($network) . '%'], ['server', $server], ['status', 1]])->count() > 0 ? 1 : 0;
-        $all = ResellerDataPlans::where([['type', 'LIKE', strtoupper($network) . '%'], ['status', 1]])->count() > 0 ? 1 : 0;
+        $data = ResellerDataPlans::where([['network', strtoupper($network)], ['server', $server]])->paginate(10);
+        $sme = ResellerDataPlans::where([['product_code', 'SME'], ['network', strtoupper($network)], ['server', $server], ['status', 1]])->count() > 0 ? 1 : 0;
+        $sme2 = ResellerDataPlans::where([['product_code', 'SME2'], ['network', strtoupper($network)], ['server', $server], ['status', 1]])->count() > 0 ? 1 : 0;
+        $cg = ResellerDataPlans::where([['product_code', 'CG'], ['network', strtoupper($network)], ['server', $server], ['status', 1]])->count() > 0 ? 1 : 0;
+        $dg = ResellerDataPlans::where([['product_code', 'DG'], ['network', strtoupper($network)], ['server', $server], ['status', 1]])->count() > 0 ? 1 : 0;
+        $dt = ResellerDataPlans::where([['product_code', 'DATA TRANSFER'], ['network', strtoupper($network)], ['server', $server], ['status', 1]])->count() > 0 ? 1 : 0;
+        $dc = ResellerDataPlans::where([['product_code', 'DATA COUPONS'], ['network', strtoupper($network)], ['server', $server], ['status', 1]])->count() > 0 ? 1 : 0;
+        $all = ResellerDataPlans::where([['network', strtoupper($network)], ['status', 1]])->count() > 0 ? 1 : 0;
 
-        return view('reseller_control.datacontrol', compact('data', 'sme', 'sme2', 'cg', 'dg', 'all', 'server'));
+        return view('reseller_control.datacontrol', compact('data', 'sme', 'sme2', 'cg', 'dg', 'dt', 'dc', 'all', 'server'));
     }
 
     public function datanew(Request $request)
@@ -156,15 +160,15 @@ class ResellerServiceController extends Controller
     {
         if($type == "ALL"){
             if($server == 0) {
-                ResellerDataPlans::where([['type', 'LIKE', strtoupper($network) . '%']])->update(['status' => $status]);
+                ResellerDataPlans::where([['network', strtoupper($network)]])->update(['status' => $status]);
             }else{
-                ResellerDataPlans::where([['type', 'LIKE', strtoupper($network) . '%'], ['server', $server]])->update(['status' => $status]);
+                ResellerDataPlans::where([['network', strtoupper($network)], ['server', $server]])->update(['status' => $status]);
             }
         }else{
             if($server == 0) {
-                ResellerDataPlans::where([['name', 'LIKE', '%' . $type . '%'], ['type', 'LIKE', strtoupper($network) . '%']])->update(['status' => $status]);
+                ResellerDataPlans::where([['product_code', $type], ['network', strtoupper($network)]])->update(['status' => $status]);
             }else{
-                ResellerDataPlans::where([['name', 'LIKE', '%' . $type . '%'], ['type', 'LIKE', strtoupper($network) . '%'], ['server', $server]])->update(['status' => $status]);
+                ResellerDataPlans::where([['product_code', $type], ['network', strtoupper($network)], ['server', $server]])->update(['status' => $status]);
             }
         }
 

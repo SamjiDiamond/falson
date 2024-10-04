@@ -278,14 +278,14 @@ class SellAirtimeController extends Controller
     "amount": "' . $amnt . '",
     "is_mtn_awuf": "false",
     "ported_no": "false",
-    "pin": "' . env('SERVER7_PIN') . '"
+    "pin": "' . env('AUTOSYNCNG_PIN') . '"
 }';
 
         if (env('FAKE_TRANSACTION', 1) == 0) {
             $curl = curl_init();
 
             curl_setopt_array($curl, array(
-                CURLOPT_URL => env('SERVER7') . "airtime",
+                CURLOPT_URL => env('AUTOSYNCNG_BASEURL') . "airtime",
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => '',
                 CURLOPT_MAXREDIRS => 10,
@@ -295,7 +295,7 @@ class SellAirtimeController extends Controller
                 CURLOPT_CUSTOMREQUEST => 'POST',
                 CURLOPT_POSTFIELDS => $payload,
                 CURLOPT_HTTPHEADER => array(
-                    'Authorization: Basic ' . env('SERVER7_AUTH'),
+                    'Authorization: Bearer ' . env('AUTOSYNCNG_AUTH'),
                     'Content-Type: application/json'
                 ),
             ));
@@ -305,7 +305,8 @@ class SellAirtimeController extends Controller
 
             curl_close($curl);
         } else {
-            $response = '{ "status": "ok", "message": "no gateway found for this service, kindly set it.", "data": { "transaction": { "reference": "9d0e278b-3eee-4efc-bdc8-4fa5742b4303", "request_ref": "5254215632562300", "type": "MTN VTU", "details": "no gateway found for this service, kindly set it.", "amount": 100, "status": "failed", "request_data": { "request_ref": "5254215632562300", "phone": "08166939205", "product_id": "1", "amount": "100", "is_mtn_awuf": "false", "webhook_url": "false", "ported_no": "false" }, "balance_before": null, "balance_after": null, "created_at": "2024-09-20T14:06:25.000000Z", "gateway_id": null } } }';
+            $response = '{ "status": "ok", "message": "MTN VTU Airtime #100 sent to 08166939205", "data": { "transaction": { "reference": "9d1ccb8f-78a0-430a-b1a8-7976b35bae94", "request_ref": "554215632562009983330", "type": "MTN VTU", "details": "MTN VTU Airtime #100 sent to 08166939205", "amount": 100, "status": "successful", "request_data": { "request_ref": "554215632562009983330", "phone": "08166939205", "product_id": "1", "amount": "100", "is_mtn_awuf": "false", "webhook_url": "false", "ported_no": "false" }, "balance_before": null, "balance_after": null, "created_at": "2024-09-27T20:46:38.000000Z", "gateway_id": 8931 } } }';
+//            $response = '{ "status": "ok", "message": "no gateway found for this service, kindly set it.", "data": { "transaction": { "reference": "9d0e278b-3eee-4efc-bdc8-4fa5742b4303", "request_ref": "5254215632562300", "type": "MTN VTU", "details": "no gateway found for this service, kindly set it.", "amount": 100, "status": "failed", "request_data": { "request_ref": "5254215632562300", "phone": "08166939205", "product_id": "1", "amount": "100", "is_mtn_awuf": "false", "webhook_url": "false", "ported_no": "false" }, "balance_before": null, "balance_after": null, "created_at": "2024-09-20T14:06:25.000000Z", "gateway_id": null } } }';
         }
 
         $rep = json_decode($response, true);
@@ -316,21 +317,18 @@ class SellAirtimeController extends Controller
 
         $dada['server_response'] = $response;
 
-        if ($rep['code'] == '000') {
-//            $dada['server_ref'] = $rep['content']['transactions']['transactionId'];
-            $dada['server_ref'] = $reqid;
+        if ($rep['data']['transaction']['status'] == "successful") {
+            $dada['server_ref'] = $rep['data']['transaction']['reference'];
             if ($requester == "reseller") {
                 return $rs->outputResponse($request, $transid, 1, $dada);
             } else {
                 return $ms->outputResp($request, $transid, 1, $dada);
-//                $tran->addtrans("server6", $response, $amnt, 1, $transid, $input);
             }
         } else {
             if ($requester == "reseller") {
                 return $rs->outputResponse($request, $transid, 0, $dada);
             } else {
                 return $ms->outputResp($request, $transid, 0, $dada);
-//                $tran->addtrans("server6",$response,$amnt,1,$transid,$input);
             }
         }
     }

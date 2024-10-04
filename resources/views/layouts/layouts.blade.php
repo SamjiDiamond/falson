@@ -288,6 +288,8 @@
                                     </li>
                                     <li><a href="{{route('server_dataplans', ['MTN', "5"])}}">UZOBEST MTN Data Plans</a>
                                     </li>
+                                    <li><a href="{{route('server_dataplans', ['MTN', "7"])}}">AUTOSYNCNG MTN Data
+                                            Plans</a></li>
 
                                     <li><a href="{{route('dataplans', 'AIRTEL')}}">All AIRTEL Data Plans</a></li>
                                     <li><a href="{{route('server_dataplans', ['AIRTEL', "0"])}}">No Server AIRTEL Data
@@ -300,6 +302,8 @@
                                             Plans</a></li>
                                     <li><a href="{{route('server_dataplans', ['AIRTEL', "5"])}}">UZOBEST AIRTEL Data
                                             Plans</a></li>
+                                    <li><a href="{{route('server_dataplans', ['AIRTEL', "7"])}}">AUTOSYNCNG AIRTEL Data
+                                            Plans</a></li>
 
                                     <li><a href="{{route('dataplans', 'GLO')}}">All GLO Data Plans</a></li>
                                     <li><a href="{{route('server_dataplans', ['GLO', "0"])}}">No Server GLO Data
@@ -311,6 +315,8 @@
                                     </li>
                                     <li><a href="{{route('server_dataplans', ['GLO', "5"])}}">UZOBEST GLO Data Plans</a>
                                     </li>
+                                    <li><a href="{{route('server_dataplans', ['GLO', "7"])}}">AUTOSYNCNG GLO Data
+                                            Plans</a></li>
 
                                     <li><a href="{{route('dataplans', '9MOBILE')}}">All 9MOBILE Data Plans</a></li>
                                     <li><a href="{{route('server_dataplans', ['9MOBILE', "0"])}}">No Server 9MOBILE Data
@@ -323,6 +329,8 @@
                                             Plans</a></li>
                                     <li><a href="{{route('server_dataplans', ['9MOBILE', "5"])}}">UZOBEST 9MOBILE Data
                                             Plans</a></li>
+                                    <li><a href="{{route('server_dataplans', ['9MOBILE', "7"])}}">AUTOSYNCNG 9MOBILE
+                                            Data Plans</a></li>
                                 @endcan
 
                                 @can('tv-plan-view')
@@ -362,6 +370,8 @@
                                             Plans</a></li>
                                     <li><a href="{{route('reseller.server_dataList', ['MTN', "5"])}}">UZOBEST MTN Data
                                             Plans</a></li>
+                                    <li><a href="{{route('reseller.server_dataList', ['MTN', "7"])}}">AUTOSYNCNG MTN
+                                            Data Plans</a></li>
 
                                     <li><a href="{{route('reseller.dataList', 'AIRTEL')}}">All AIRTEL Data Plans</a>
                                     </li>
@@ -375,6 +385,8 @@
                                             Data Plans</a></li>
                                     <li><a href="{{route('reseller.server_dataList', ['AIRTEL', "5"])}}">UZOBEST AIRTEL
                                             Data Plans</a></li>
+                                    <li><a href="{{route('reseller.server_dataList', ['AIRTEL', "7"])}}">AUTOSYNCNG
+                                            AIRTEL Data Plans</a></li>
 
                                     <li><a href="{{route('reseller.dataList', 'GLO')}}">All GLO Data Plans</a></li>
                                     <li><a href="{{route('reseller.server_dataList', ['GLO', "0"])}}">No Server GLO Data
@@ -387,6 +399,8 @@
                                             Plans</a></li>
                                     <li><a href="{{route('reseller.server_dataList', ['GLO', "5"])}}">UZOBEST GLO Data
                                             Plans</a></li>
+                                    <li><a href="{{route('reseller.server_dataList', ['GLO', "7"])}}">AUTOSYNCNG GLO
+                                            Data Plans</a></li>
 
                                     <li><a href="{{route('reseller.dataList', '9MOBILE')}}">All 9MOBILE Data Plans</a>
                                     </li>
@@ -396,21 +410,23 @@
                                             Data Plans</a></li>
                                     <li><a href="{{route('reseller.server_dataList', ['9MOBILE', "3"])}}">IYII 9MOBILE
                                             Data Plans</a></li>
-                                        <li><a href="{{route('reseller.server_dataList', ['9MOBILE', "4"])}}">OGDAMS
-                                                9MOBILE
-                                                Data Plans</a></li>
-                                        <li><a href="{{route('reseller.server_dataList', ['9MOBILE', "5"])}}">UZOBEST
-                                                9MOBILE Data Plans</a></li>
+                                    <li><a href="{{route('reseller.server_dataList', ['9MOBILE', "4"])}}">OGDAMS
+                                            9MOBILE
+                                            Data Plans</a></li>
+                                    <li><a href="{{route('reseller.server_dataList', ['9MOBILE', "5"])}}">UZOBEST
+                                            9MOBILE Data Plans</a></li>
+                                    <li><a href="{{route('reseller.server_dataList', ['9MOBILE', "7"])}}">AUTOSYNCNG
+                                            9MOBILE Data Plans</a></li>
 
-                                    @endcan
+                                @endcan
 
-                                    @can('reseller_tv-view')
-                                        <li><a href="{{route('reseller.tvcontrol')}}">TV Plans</a></li>
-                                    @endcan
+                                @can('reseller_tv-view')
+                                    <li><a href="{{route('reseller.tvcontrol')}}">TV Plans</a></li>
+                                @endcan
 
-                                    @can('reseller_tv-view')
-                                        <li><a href="{{route('reseller.electricitycontrol')}}">Electricity</a></li>
-                                    @endcan
+                                @can('reseller_tv-view')
+                                    <li><a href="{{route('reseller.electricitycontrol')}}">Electricity</a></li>
+                                @endcan
                             </ul>
                         </li>
                     @endcanany

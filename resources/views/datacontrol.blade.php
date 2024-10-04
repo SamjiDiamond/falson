@@ -49,23 +49,48 @@
                             @endcan
                             @can('data-plans-disable_sme')
                                 <a href="{{route('dataserveMultipleedit', [$data[0]->network, 'SME2', $sme2 == 1 ? 0 : 1, $server])}}"
-                                   class="btn btn-secondary mr-3">@if($sme2 == 1)Disable @else Enable @endif SME2
+                                   class="btn btn-secondary mr-3">@if($sme2 == 1)
+                                        Disable
+                                    @else
+                                        Enable
+                                    @endif SME2
                                     Data</a>
                             @endcan
                             @can('data-plans-disable_dg')
                                 <a href="{{route('dataserveMultipleedit', [$data[0]->network, 'DG', $dg == 1 ? 0 : 1, $server ])}}"
-                                   class="btn btn-secondary mr-3">@if($dg == 1)Disable @else Enable @endif DG Data</a>
+                                   class="btn btn-secondary mr-3">@if($dg == 1)
+                                        Disable
+                                    @else
+                                        Enable
+                                    @endif DG Data</a>
+                            @endcan
+                            @can('data-plans-disable_dg')
+                                <a href="{{route('dataserveMultipleedit', [$data[0]->network, 'DATA COUPONS', $dc == 1 ? 0 : 1, $server ])}}"
+                                   class="btn btn-secondary mr-3">@if($dc == 1)
+                                        Disable
+                                    @else
+                                        Enable
+                                    @endif DATA COUPONS Data</a>
+                            @endcan
+                            @can('data-plans-disable_dg')
+                                <a href="{{route('dataserveMultipleedit', [$data[0]->network, 'DATA TRANSFER', $dt == 1 ? 0 : 1, $server ])}}"
+                                   class="btn btn-secondary mr-3">@if($dt == 1)
+                                        Disable
+                                    @else
+                                        Enable
+                                    @endif DATA TRANSFER Data</a>
                             @endcan
                             @can('data-plans-create')
                                 <a href="{{route('datanew')}}" class="btn btn-gradient-success mr-3">Create New Data
                                     Plan</a>
                             @endcan
                         </div>
-                    @endif
+                        @endif
 
-                    <table class="table table-striped table-bordered table-hover dataTables-example table-responsive">
-                        <thead>
-                        <tr>
+                        <table
+                            class="table table-striped table-bordered table-hover dataTables-example table-responsive">
+                            <thead>
+                            <tr>
                             <th>id</th>
                             <th>Network</th>
                             <th>Product Name</th>

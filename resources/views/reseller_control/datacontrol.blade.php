@@ -26,71 +26,107 @@
                     @if(isset($data[0]))
                         <div class="row ml-3 mb-3">
                             @can('data-plans-disable_all')
-                                <a href="{{route('reseller.dataserveMultipleedit', [$data[0]->type, 'ALL', $all == 1 ? 0 : 1, $server ])}}"
-                                   class="btn btn-secondary mr-3">@if($all == 1)Disable @else Enable @endif All Data</a>
+                                <a href="{{route('reseller.dataserveMultipleedit', [$data[0]->network, 'ALL', $all == 1 ? 0 : 1, $server ])}}"
+                                   class="btn btn-secondary mr-3">@if($all == 1)
+                                        Disable
+                                    @else
+                                        Enable
+                                    @endif All Data</a>
                             @endcan
                             @can('data-plans-disable_cg')
-                                <a href="{{route('reseller.dataserveMultipleedit', [$data[0]->type, 'CG', $cg == 1 ? 0 : 1, $server ])}}"
-                                   class="btn btn-secondary mr-3">@if($cg == 1)Disable @else Enable @endif CG Data</a>
+                                <a href="{{route('reseller.dataserveMultipleedit', [$data[0]->network, 'CG', $cg == 1 ? 0 : 1, $server ])}}"
+                                   class="btn btn-secondary mr-3">@if($cg == 1)
+                                        Disable
+                                    @else
+                                        Enable
+                                    @endif CG Data</a>
                             @endcan
                             @can('data-plans-disable_sme')
-                                <a href="{{route('reseller.dataserveMultipleedit', [$data[0]->type, 'SME', $sme == 1 ? 0 : 1, $server])}}"
-                                   class="btn btn-secondary mr-3">@if($sme == 1)Disable @else Enable @endif SME Data</a>
+                                <a href="{{route('reseller.dataserveMultipleedit', [$data[0]->network, 'SME', $sme == 1 ? 0 : 1, $server])}}"
+                                   class="btn btn-secondary mr-3">@if($sme == 1)
+                                        Disable
+                                    @else
+                                        Enable
+                                    @endif SME Data</a>
                             @endcan
                             @can('data-plans-disable_sme')
-                                <a href="{{route('reseller.dataserveMultipleedit', [$data[0]->type, 'SME2', $sme2 == 1 ? 0 : 1, $server])}}"
-                                   class="btn btn-secondary mr-3">@if($sme2 == 1)Disable @else Enable @endif SME2
+                                <a href="{{route('reseller.dataserveMultipleedit', [$data[0]->network, 'SME2', $sme2 == 1 ? 0 : 1, $server])}}"
+                                   class="btn btn-secondary mr-3">@if($sme2 == 1)
+                                        Disable
+                                    @else
+                                        Enable
+                                    @endif SME2
                                     Data</a>
                             @endcan
                             @can('data-plans-disable_dg')
-                                <a href="{{route('reseller.dataserveMultipleedit', [$data[0]->type, 'DG', $dg == 1 ? 0 : 1, $server ])}}"
-                                   class="btn btn-secondary mr-3">@if($dg == 1)Disable @else Enable @endif DG Data</a>
+                                <a href="{{route('reseller.dataserveMultipleedit', [$data[0]->network, 'DG', $dg == 1 ? 0 : 1, $server ])}}"
+                                   class="btn btn-secondary mr-3">@if($dg == 1)
+                                        Disable
+                                    @else
+                                        Enable
+                                    @endif DG Data</a>
+                            @endcan
+                            @can('data-plans-disable_dg')
+                                <a href="{{route('reseller.dataserveMultipleedit', [$data[0]->network, 'DATA TRANSFER', $dt == 1 ? 0 : 1, $server ])}}"
+                                   class="btn btn-secondary mr-3">@if($dt == 1)
+                                        Disable
+                                    @else
+                                        Enable
+                                    @endif DATA TRANSFER Data</a>
+                            @endcan
+                            @can('data-plans-disable_dg')
+                                <a href="{{route('reseller.dataserveMultipleedit', [$data[0]->network, 'DATA COUPONS', $dc == 1 ? 0 : 1, $server ])}}"
+                                   class="btn btn-secondary mr-3">@if($dc == 1)
+                                        Disable
+                                    @else
+                                        Enable
+                                    @endif DATA COUPONS Data</a>
                             @endcan
                         </div>
                     @endif
 
 
-                        @can('data-plans-create')
-                            <a href="{{route('reseller.datanew')}}" class="btn btn-gradient-success mr-3 mb-4">Create
-                                New Data
-                                Plan</a>
-                        @endcan
+                    @can('data-plans-create')
+                        <a href="{{route('reseller.datanew')}}" class="btn btn-gradient-success mr-3 mb-4">Create
+                            New Data
+                            Plan</a>
+                    @endcan
 
                     <div class="table-responsive">
                         <table class="table table-striped table-bordered table-hover dataTables-example">
                             <thead>
                             <tr>
                                 <th>id</th>
-                                <th>Type</th>
+                                <th>Network</th>
                                 <th>Product Name</th>
                                 <th>Price</th>
                                 <th>Level1</th>
-                            <th>Level2</th>
-                            <th>Level3</th>
-                            <th>Level4</th>
-                            <th>Level5</th>
-                            <th>Server</th>
-                            <th>Status</th>
-                            <th>Date Modified</th>
-                            <th>Action</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr class="gradeX">
-                            @foreach($data as $da)
-                                <td>{{$da['id']}}</td>
-                                <td class="center">{{$da['type']}}</td>
+                                <th>Level2</th>
+                                <th>Level3</th>
+                                <th>Level4</th>
+                                <th>Level5</th>
+                                <th>Server</th>
+                                <th>Status</th>
+                                <th>Date Modified</th>
+                                <th>Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr class="gradeX">
+                                @foreach($data as $da)
+                                    <td>{{$da['id']}}</td>
+                                    <td class="center">{{$da['network']}}</td>
 
-                                <td>{{$da['name']}}</td>
-                                <td class="center">&#8358;{{number_format($da['price'])}}</td>
-                                <td class="center">&#8358;{{number_format($da['level1'])}}</td>
-                                <td class="center">&#8358;{{number_format($da['level2'])}}</td>
-                                <td class="center">&#8358;{{number_format($da['level3'])}}</td>
-                                <td class="center">&#8358;{{number_format($da['level4'])}}</td>
-                                <td class="center">&#8358;{{number_format($da['level5'])}}</td>
-                                <td>
+                                    <td>{{$da['name']}}</td>
+                                    <td class="center">&#8358;{{number_format($da['price'])}}</td>
+                                    <td class="center">&#8358;{{number_format($da['level1'])}}</td>
+                                    <td class="center">&#8358;{{number_format($da['level2'])}}</td>
+                                    <td class="center">&#8358;{{number_format($da['level3'])}}</td>
+                                    <td class="center">&#8358;{{number_format($da['level4'])}}</td>
+                                    <td class="center">&#8358;{{number_format($da['level5'])}}</td>
+                                    <td>
 
-                                    {{$da['server']}}</option>
+                                        {{$da['server']}}</option>
 
                                 </td>
                                 <td class="center">

@@ -265,4 +265,84 @@ class SellTVController extends Controller
         }
     }
 
+    public function server7($request, $code, $phone, $transid, $net, $input, $dada, $requester)
+    {
+
+        if ($requester == "reseller") {
+            $rac = ResellerCableTV::where("code", strtolower($input['coded']))->first();
+        } else {
+            $rac = AppCableTVControl::where("coded", strtolower($input['coded']))->first();
+        }
+
+
+        $pid = explode("_", $input['coded'])[1];
+
+        $reqid = Carbon::now()->format('YmdHi') . $transid;
+
+        $payload = '{
+    "request_ref": "' . $reqid . '",
+    "iuc_number": "' . $phone . '",
+    "product_id": "' . $pid . '",
+    "variation_code": "' . $rac->code . '",
+    "type": "change",
+    "webhook_url": "false",
+    "pin": "' . env('AUTOSYNCNG_PIN') . '"
+}';
+
+        if (env('FAKE_TRANSACTION', 1) == 0) {
+            $curl = curl_init();
+
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => env('AUTOSYNCNG_BASEURL') . "cable",
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'POST',
+                CURLOPT_POSTFIELDS => $payload,
+                CURLOPT_HTTPHEADER => array(
+                    'Authorization: Bearer ' . env('AUTOSYNCNG_AUTH'),
+                    'Content-Type: application/json'
+                ),
+            ));
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+
+            $response = curl_exec($curl);
+
+            curl_close($curl);
+        } else {
+            $response = '{ "status": "ok", "message": "GOTv IUC 08166939205 loaded with 1 Month of GOtv Max ", "data": { "transaction": { "reference": "9d2a2095-52ea-4370-bf2e-461938b37bfc", "request_ref": "554216325009933301", "type": "GOTv", "details": "GOTv IUC 08166939205 loaded with 1 Month of GOtv Max ", "amount": 7200, "status": "successful", "request_data": { "request_ref": "554216325009933301", "iuc_number": "08166939205", "product_id": "50", "variation_code": "GOTVMAX", "type": "change", "webhook_url": "false" }, "balance_before": null, "balance_after": null, "created_at": "2024-10-04T11:50:08.000000Z", "gateway_id": 8931 } } }';
+        }
+
+        Log::info("AutoSync Transaction. - " . $transid);
+        Log::info($payload);
+        Log::info($response);
+
+
+        $rep = json_decode($response, true);
+
+        $tran = new ServeRequestController();
+        $rs = new PayController();
+        $ms = new V2\PayController();
+
+        $dada['server_response'] = $response;
+
+        if ($rep['data']['transaction']['status'] == "successful") {
+            $dada['server_ref'] = $rep['data']['transaction']['reference'];
+            if ($requester == "reseller") {
+                return $rs->outputResponse($request, $transid, 1, $dada);
+            } else {
+                return $ms->outputResp($request, $transid, 1, $dada);
+            }
+        } else {
+            if ($requester == "reseller") {
+                return $rs->outputResponse($request, $transid, 0, $dada);
+            } else {
+                return $ms->outputResp($request, $transid, 0, $dada);
+            }
+        }
+    }
+
 }

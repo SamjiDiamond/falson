@@ -88,6 +88,7 @@ class GenerateAutosyncng extends Command
         foreach ($rep['data']['category']['products'] as $type) {
             $this->info("Inserting record for " . $type['name']);
             $inte = $type['name'];
+            $pid = $type['id'];
             foreach ($type['variations'] as $plans) {
                 ResellerCableTV::create([
                     'name' => $plans['name'],
@@ -105,7 +106,7 @@ class GenerateAutosyncng extends Command
 
                 AppCableTVControl::create([
                     'name' => $plans['name'],
-                    'coded' => "7_" . $plans['code'],
+                    'coded' => "7_" . $pid . "_" . $plans['code'],
                     'code' => $plans['code'],
                     'price' => $plans['amount'],
                     'type' => $inte,

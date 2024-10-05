@@ -174,12 +174,12 @@ class PayController extends Controller
 
         $input['device'] = $request->header('device') ?? $_SERVER['HTTP_USER_AGENT'];
 
-        $server="1";
-
         $sett=Settings::where('name', 'tv_server')->first();
 
-        if($sett->value == "RINGO"){
-            $server="2";
+        if ($sett->value == "RINGO") {
+            $server = "2";
+        } else {
+            $server = $sett->value;
         }
 
         $rac = AppCableTVControl::where([["coded", strtolower($input['coded'])], ["server", $server]])->first();
@@ -192,8 +192,10 @@ class PayController extends Controller
             return response()->json(['success' => 0, 'message' => $rac->name . ' currently unavailable']);
         }
 
-        $discount = 10;
         $debitAmount = $rac->price;
+
+        $dis = explode("%", $rac->discount);
+        $discount = $debitAmount * ($dis[0] / 100);
 
         $proceed['1'] = $rac->type;
         $proceed['2'] = $debitAmount * 1;
@@ -867,6 +869,10 @@ class PayController extends Controller
                 return $air->server1($request, $input['coded'], $input['number'], $ref, $net, $request, $dada, "mcd");
             case "2":
                 return $air->server2($request, $input['coded'], $input['number'], $ref, $net, $request, $dada, "mcd");
+            case "6":
+                return $air->server6($request, $input['coded'], $input['number'], $ref, $net, $request, $dada, "mcd");
+            case "7":
+                return $air->server7($request, $input['coded'], $input['number'], $ref, $net, $request, $dada, "mcd");
             case "0":
                 return response()->json(['success' => 1, 'message' => 'Transaction inprogress', 'ref' => $ref, 'debitAmount' => $dada['amount'], 'discountAmount' => $dada['discount']]);
             default:

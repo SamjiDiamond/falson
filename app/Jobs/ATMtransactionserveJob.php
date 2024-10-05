@@ -197,6 +197,10 @@ class ATMtransactionserveJob implements ShouldQueue
                     return $air->server1($r, $input['coded'], $input['phone'], $input['transid'], $rac->network, $input, $dada, "mcd");
                 case "2":
                     return $air->server2($r, $input['coded'], $input['phone'], $input['transid'], $rac->network, $input, $dada, "mcd");
+                case "6":
+                    return $air->server6($r, $input['coded'], $input['phone'], $input['transid'], $rac->network, $input, $dada, "mcd");
+                case "7":
+                    return $air->server7($r, $input['coded'], $input['phone'], $input['transid'], $rac->network, $input, $dada, "mcd");
                 default:
                     return response()->json(['success' => 0, 'message' => 'Kindly contact system admin']);
             }

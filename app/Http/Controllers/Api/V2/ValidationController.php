@@ -36,11 +36,11 @@ class ValidationController extends Controller
             case "electricity":
                 return $s->electricity_server2($input['number'], strtoupper($input['provider']), strtoupper($input['type']));
             case "tv":
-                $sett=Settings::where('name', 'tv_server')->first();
-                if($sett->value == "HW") {
-                    return $s->tv_server1($input['number'], strtolower($input['provider']));
-                }else{
+                $sett = Settings::where('name', 'tv_server')->first();
+                if ($sett->value == "RINGO" || $sett->value == "2") {
                     return $s->tv_server2($input['number'], strtolower($input['provider']));
+                } else {
+                    return $s->tv_server1($input['number'], strtolower($input['provider']));
                 }
             default:
                 return response()->json(['success' => 0, 'message' => 'Invalid service provided']);

@@ -56,14 +56,18 @@ class ListController extends Controller
 
     public function cabletv($network)
     {
-        $server=1;
 
-        if(strtolower($network) != "startimes"){
-            $sett=Settings::where('name', 'tv_server')->first();
 
-            if($sett->value == "RINGO"){
-                $server="2";
+        $sett = Settings::where('name', 'tv_server')->first();
+
+        if ($sett->value == "RINGO" || $sett->value == "2") {
+            if (strtolower($network) == "startimes") {
+                $server = 1;
+            } else {
+                $server = "2";
             }
+        } else {
+            $server = $sett->value;
         }
 
         if (strtolower($network) == "showmax") {

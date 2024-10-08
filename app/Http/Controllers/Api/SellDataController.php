@@ -649,6 +649,11 @@ class SellDataController extends Controller
         $rep = json_decode($response, true);
 
         $dada['server_response'] = $response;
+
+        if (!isset($rep['status'])) {
+            return $ms->outputResp($request, $transid, 0, $dada);
+        }
+
         $dada['message'] = $rep['response'];
 
         if ($rep['status'] == "successful" || $rep['status'] == "processing") {
@@ -758,7 +763,7 @@ class SellDataController extends Controller
 
         $dada['server_response'] = $response;
 
-        if ($rep['data']['transaction']['status'] == "successful") {
+        if ($rep['data']['transaction']['status'] == "successful" || $rep['data']['transaction']['status'] == "pending") {
             $dada['server_ref'] = $rep['data']['transaction']['reference'];
             if ($requester == "reseller") {
                 return $rs->outputResponse($request, $transid, 1, $dada);

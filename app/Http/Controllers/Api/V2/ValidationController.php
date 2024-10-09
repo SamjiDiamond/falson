@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V2;
 
 use App\Http\Controllers\Api\ValidateController;
 use App\Http\Controllers\Controller;
+use App\Jobs\CreateProvidusAccountJob;
 use App\Models\PndL;
 use App\Models\Settings;
 use App\Models\Transaction;
@@ -204,50 +205,83 @@ class ValidationController extends Controller
                     }
 
                     if ($username->wallet < $settM->value) {
-                        return response()->json(['success' => 0, 'message' => 'Error, insufficient balancer to complete request']);
+                        return response()->json(['success' => 0, 'message' => 'Error, insufficient balance to complete request']);
                     }
 
-                    $input['amount'] = $settM->value;
-                    $input['ref'] = time();
-                    $input['date'] = Carbon::now();
-                    $input['ip_address'] = $_SERVER['REMOTE_ADDR'];
-                    $input['description'] = "KYC verification";
-                    $input['extra'] = "";
-                    $input['name'] = "KYC Verification";
-                    $input['status'] = 'successful';
-                    $input['code'] = 'kycv';
-                    $input["user_name"] = $username->user_name;
-                    $input["i_wallet"] = $username->wallet;
-                    $input['f_wallet'] = $input["i_wallet"] - $input['amount'];
-
-                    // mysql inserting a new row
-                    Transaction::create($input);
-
-                    $username->wallet = $input['f_wallet'];
-                    $username->save();
-
-                    $input["type"] = "income";
-                    $input["gl"] = $input['name'];
-                    $input["amount"] = $input['amount'];
-                    $input['date'] = Carbon::now();
-                    $input["narration"] = "Being " . $input['name'] . " charges from " . $input['user_name'] . " on " . $input['ref'];
-
-                    PndL::create($input);
-
+                    $this->chargeCustomer4KYC($settM, $input, $username);
                 }
 
                 return response()->json(['success' => 1, 'message' => 'Verified Successfully', 'data' => $response['responseBody']['accountName']]);
-            }else{
+            }else {
+                if ($response['responseMessage'] == "Cannot find reserved account") {
+                    if (isset($input['bvn'])) {
+                        $username->bvn = $input['bvn'];
+                    }
+
+                    if (isset($input['nin'])) {
+                        $username->nin = $input['nin'];
+                    }
+                    $username->save();
+
+
+                    if ($settM->value > 0) {
+                        if ($username->wallet <= 0) {
+                            return response()->json(['success' => 0, 'message' => 'Error, wallet balance too low']);
+                        }
+
+                        if ($username->wallet < $settM->value) {
+                            return response()->json(['success' => 0, 'message' => 'Error, insufficient balance to complete request']);
+                        }
+
+                        $this->chargeCustomer4KYC($settM, $input, $username);
+                    }
+
+                    CreateProvidusAccountJob::dispatch($username->id);
+
+                    return response()->json(['success' => 1, 'message' => 'KYC Submitted Successfully', 'data' => ""]);
+
+                }
                 return response()->json(['success' => 0, 'message' => $response['responseMessage']]);
             }
 
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
 //            echo "Error encountered ";
-            Log::info("Error encountered on Monnify account update on ".json_encode($input));
+            Log::info("Error encountered on Monnify account update on " . json_encode($input));
             Log::info($e);
 
             return response()->json(['success' => 0, 'message' => 'Unable to verify try again later.']);
         }
 
+    }
+
+    private function chargeCustomer4KYC($settM, $input, $username)
+    {
+
+        $input['amount'] = $settM->value;
+        $input['ref'] = time();
+        $input['date'] = Carbon::now();
+        $input['ip_address'] = $_SERVER['REMOTE_ADDR'];
+        $input['description'] = "KYC verification";
+        $input['extra'] = "";
+        $input['name'] = "KYC Verification";
+        $input['status'] = 'successful';
+        $input['code'] = 'kycv';
+        $input["user_name"] = $username->user_name;
+        $input["i_wallet"] = $username->wallet;
+        $input['f_wallet'] = $input["i_wallet"] - $input['amount'];
+
+        // mysql inserting a new row
+        Transaction::create($input);
+
+        $username->wallet = $input['f_wallet'];
+        $username->save();
+
+        $input["type"] = "income";
+        $input["gl"] = $input['name'];
+        $input["amount"] = $input['amount'];
+        $input['date'] = Carbon::now();
+        $input["narration"] = "Being " . $input['name'] . " charges from " . $input['user_name'] . " on " . $input['ref'];
+
+        PndL::create($input);
     }
 }

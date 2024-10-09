@@ -100,6 +100,8 @@ class CreateProvidusAccountJob implements ShouldQueue
 	"currencyCode": "NGN",
 	"contractCode": "' . $settC->value . '",
 	"customerEmail": "' . $u->email . '",
+	"bvn": "' . $u->bvn . '",
+	"nin": "' . $u->nin . '",
 	"customerName": "' . $fname . '",
 	"getAllAvailableBanks": true
 }',

@@ -74,9 +74,9 @@ class ValidationController extends Controller
 
 
         if (isset($input['bvn'])) {
-            $bvne = User::where([['email', $input['email']], ['bvn', $input['bvn']]])->first();
+            $bvne = User::where([['email', '!=', $input['email']], ['bvn', $input['bvn']]])->first();
 
-            if (!$bvne) {
+            if ($bvne) {
                 return response()->json(['success' => 0, 'message' => 'BVN has already been used for another account']);
             }
 
@@ -87,9 +87,9 @@ class ValidationController extends Controller
         }
 
         if (isset($input['nin'])) {
-            $nine = User::where([['email', $input['email']], ['nin', $input['nin']]])->first();
+            $nine = User::where([['email', '!=', $input['email']], ['nin', $input['nin']]])->first();
 
-            if (!$nine) {
+            if ($nine) {
                 return response()->json(['success' => 0, 'message' => 'NIN has already been used for another account']);
             }
 

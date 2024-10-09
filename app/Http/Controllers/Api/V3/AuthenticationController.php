@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 use App\Jobs\BudpayVirtualAccountJob;
 use App\Jobs\CreateCGWalletsJob;
 use App\Jobs\CreatePaylonyVirtualAccountJob;
-use App\Jobs\CreateProvidusAccountJob;
 use App\Jobs\LoginAttemptApiFinderJob;
 use App\Jobs\ProcessUser2faJob;
 use App\Models\CodeRequest;
@@ -84,9 +83,9 @@ class AuthenticationController extends Controller
 
         if (User::create($create)) {
             // successfully inserted into database
-            $job = (new CreateProvidusAccountJob($create["user_name"]))
-                ->delay(Carbon::now()->addSeconds(10));
-            dispatch($job);
+//            $job = (new CreateProvidusAccountJob($create["user_name"]))
+//                ->delay(Carbon::now()->addSeconds(10));
+//            dispatch($job);
 
             return response()->json(['success' => 1, 'message' => 'Account created successfully']);
         } else {
@@ -171,7 +170,7 @@ class AuthenticationController extends Controller
             ->delay(Carbon::now()->addSecond());
         dispatch($job);
 
-        CreateProvidusAccountJob::dispatch($user->id);
+//        CreateProvidusAccountJob::dispatch($user->id);
         BudpayVirtualAccountJob::dispatch($user->id);
         CreatePaylonyVirtualAccountJob::dispatch($user->id);
 

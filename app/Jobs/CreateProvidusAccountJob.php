@@ -83,6 +83,18 @@ class CreateProvidusAccountJob implements ShouldQueue
 
                 $fname = $u->full_name == null ? $u->user_name : $u->full_name;
 
+                $payload = '{
+	"accountReference": "' . $u->user_name . '",
+	"accountName": "' . $fname . '",
+	"currencyCode": "NGN",
+	"contractCode": "' . $settC->value . '",
+	"customerEmail": "' . $u->email . '",
+	"bvn": "' . $u->bvn . '",
+	"nin": "' . $u->nin . '",
+	"customerName": "' . $fname . '",
+	"getAllAvailableBanks": true
+}';
+
                 $curl = curl_init();
                 curl_setopt_array($curl, array(
                     CURLOPT_URL => env("MONNIFY_URL") . "/v2/bank-transfer/reserved-accounts",
@@ -94,17 +106,7 @@ class CreateProvidusAccountJob implements ShouldQueue
                     CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                     CURLOPT_CUSTOMREQUEST => "POST",
                     CURLOPT_SSL_VERIFYPEER => false,
-                    CURLOPT_POSTFIELDS => '{
-	"accountReference": "' . $u->user_name . '",
-	"accountName": "' . $fname . '",
-	"currencyCode": "NGN",
-	"contractCode": "' . $settC->value . '",
-	"customerEmail": "' . $u->email . '",
-	"bvn": "' . $u->bvn . '",
-	"nin": "' . $u->nin . '",
-	"customerName": "' . $fname . '",
-	"getAllAvailableBanks": true
-}',
+                    CURLOPT_POSTFIELDS => $payload,
                     CURLOPT_HTTPHEADER => array(
                         "Content-Type: application/json",
                         "Authorization: Bearer " . $token
@@ -118,6 +120,7 @@ class CreateProvidusAccountJob implements ShouldQueue
                 echo $response;
 
                 Log::info("Monnify Account Generation");
+                Log::info($payload);
                 Log::info($response);
 
                 if ($response['requestSuccessful']) {

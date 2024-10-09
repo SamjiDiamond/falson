@@ -118,23 +118,25 @@ class CreateProvidusAccountJob implements ShouldQueue
                 Log::info("Monnify Account Generation");
                 Log::info($response);
 
-                $response = json_decode($response, true);
+                if ($response['requestSuccessful']) {
+                    $response = json_decode($response, true);
 
 
-                $customer_name = $response['responseBody']['customerName'];
-                $reservation_reference = $response['responseBody']['reservationReference'];
-                $extra = $respons;
+                    $customer_name = $response['responseBody']['customerName'];
+                    $reservation_reference = $response['responseBody']['reservationReference'];
+                    $extra = $respons;
 
-                foreach ($response['responseBody']['accounts'] as $accounts) {
-                    echo $accounts['accountNumber'] . "|| ";
-                    VirtualAccount::create([
-                        "user_id" => $u->id,
-                        "provider" => "monnify",
-                        "account_name" => $customer_name,
-                        "account_number" => $accounts['accountNumber'],
-                        "bank_name" => $accounts['bankName'],
-                        "reference" => $reservation_reference,
-                    ]);
+                    foreach ($response['responseBody']['accounts'] as $accounts) {
+                        echo $accounts['accountNumber'] . "|| ";
+                        VirtualAccount::create([
+                            "user_id" => $u->id,
+                            "provider" => "monnify",
+                            "account_name" => $customer_name,
+                            "account_number" => $accounts['accountNumber'],
+                            "bank_name" => $accounts['bankName'],
+                            "reference" => $reservation_reference,
+                        ]);
+                    }
                 }
 
             }catch (\Exception $e){

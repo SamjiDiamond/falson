@@ -131,22 +131,25 @@ class BudpayVirtualAccountJob implements ShouldQueue
 
                     $response = json_decode($response, true);
 
-                    $customer_name = $response['data']['account_name'];
-                    $account_number = $response['data']['account_number'];
-                    $bank_name = $response['data']['bank']['name'];
-                    $reservation_reference = $response['data']['reference'];
+                    if ($response['status']) {
+
+                        $customer_name = $response['data']['account_name'];
+                        $account_number = $response['data']['account_number'];
+                        $bank_name = $response['data']['bank']['name'];
+                        $reservation_reference = $response['data']['reference'];
 
 
-                    VirtualAccount::create([
-                        "user_id" => $u->id,
-                        "provider" => "budpay",
-                        "account_name" => $customer_name,
-                        "account_number" => $account_number,
-                        "bank_name" => $bank_name,
-                        "reference" => $reservation_reference,
-                    ]);
+                        VirtualAccount::create([
+                            "user_id" => $u->id,
+                            "provider" => "budpay",
+                            "account_name" => $customer_name,
+                            "account_number" => $account_number,
+                            "bank_name" => $bank_name,
+                            "reference" => $reservation_reference,
+                        ]);
 
-                    echo $account_number . "|| ";
+                        echo $account_number . "|| ";
+                    }
                 }
             } catch (\Exception $e) {
                 echo "Error encountered ";

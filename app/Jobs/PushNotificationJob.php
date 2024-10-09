@@ -7,7 +7,6 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\DB;
 
 class PushNotificationJob implements ShouldQueue
 {
@@ -61,9 +60,9 @@ class PushNotificationJob implements ShouldQueue
 
         $json = json_decode($uresponse, true);
 
-        DB::table('tbl_pushnotiflog')->insert(
-            ['user_name' => $user_name, 'message' => $message, 'response' => $json['message_id']]
-        );
+//        DB::table('tbl_pushnotiflog')->insert(
+//            ['user_name' => $user_name, 'message' => $message, 'response' => $json['message_id']]
+//        );
 
     }
 }

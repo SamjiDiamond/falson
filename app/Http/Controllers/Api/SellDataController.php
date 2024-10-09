@@ -525,6 +525,8 @@ class SellDataController extends Controller
 
         $rep = json_decode($response, true);
 
+        $dada['server_response'] = $response;
+
         if (isset($rep['error'])) {
             $dada['message'] = 'Transaction failed. Kindly buy another plan for now, this plan will be restored soon. Your money will be refund in a minute.';
             return $ms->outputResp($request, $transid, 2, $dada);
@@ -537,8 +539,6 @@ class SellDataController extends Controller
 
         $dada['server_ref'] = $rep['ident'];
         $dada['message'] = $rep['api_response'];
-
-        $dada['server_response'] = $response;
 
         if ($rep['Status'] == "successful" || $rep['Status'] == "processing") {
             if ($requester == "reseller") {

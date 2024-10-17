@@ -162,9 +162,8 @@ class ValidateController extends Controller
             Log::info($response);
 
 
-
-            if ($rep['code'] == 200) {
-                return response()->json(['success' => 1, 'message' => 'Validated successfully', 'data' => $rep['customerName'], 'details' => $rep]);
+            if ($rep['data']['status'] == 200) {
+                return response()->json(['success' => 1, 'message' => 'Validated successfully', 'data' => $rep['data']['customerName'], 'details' => $rep['data']]);
             } else {
                 return response()->json(['success' => 0, 'message' => 'Unable to validate number']);
             }

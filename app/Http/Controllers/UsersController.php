@@ -498,6 +498,7 @@ class UsersController extends Controller
         $user->full_name = $input['full_name'] ?? "";
         $user->company_name = $input['company_name'] ?? "";
         $user->bvn = $input['bvn'] ?? "";
+        $user->nin = $input['nin'] ?? "";
         $user->email = $input['email'] ?? "";
         $user->phoneno = $input['phoneno'] ?? "";
         $user->address = $input['address'] ?? "";

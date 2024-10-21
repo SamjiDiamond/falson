@@ -380,24 +380,26 @@ class UserController extends Controller
             return response()->json(['success' => 0, 'message' => 'You can only request once']);
         }
 
-        $key="key_".uniqid().rand().Carbon::now()->timestamp;
+        $key = "key_" . uniqid() . rand() . Carbon::now()->timestamp;
 
         $user->full_name = $input['full_name'];
         $user->company_name = $input['company_name'];
         $user->bvn = $input['bvn'];
         $user->dob = $input['dob'];
         $user->target = "";
-        $user->api_key=$key;
+        $user->api_key = $key;
         $user->target = "Reseller in Progress";
         $user->wallet -= $set->value;
-        $user->note = $user->note . " Reseller Website: " . $input['website'];
+        if (isset($website)) {
+            $user->note = $user->note . " Reseller Website: " . $input['website'];
+        }
         $user->save();
 
-        $inputa["type"]="income";
-        $inputa["gl"]="reseller_upgrade";
-        $inputa["amount"]=$charges;
-        $inputa["narration"]="Being amount charged for reseller upgrade from ".$user->user_name;
-        $inputa['date']=Carbon::now();
+        $inputa["type"] = "income";
+        $inputa["gl"] = "reseller_upgrade";
+        $inputa["amount"] = $charges;
+        $inputa["narration"] = "Being amount charged for reseller upgrade from " . $user->user_name;
+        $inputa['date'] = Carbon::now();
 
         PndL::create($inputa);
 

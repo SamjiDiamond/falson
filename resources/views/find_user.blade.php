@@ -91,6 +91,8 @@
                                     <th>Wallet Value</th>
                                     <th>User Group</th>
                                     <th>Reg Date</th>
+                                    <th>BVN</th>
+                                    <th>NIN</th>
                                     <th>Action</th>
                                 </tr>
                                 </thead>
@@ -99,9 +101,11 @@
                                     <tr>
                                         <td>
                                             @if($user->photo)
-                                                <img src="{{route('show.avatar', $user->photo)}}" alt="" class="rounded-circle thumb-sm mr-1"> {{$user->user_name}}
+                                                <img src="{{route('show.avatar', $user->photo)}}" alt=""
+                                                     class="rounded-circle thumb-sm mr-1"> {{$user->user_name}}
                                             @else
-                                                <img src="img/mcd_logo.png" alt="" class="rounded-circle thumb-sm mr-1"> {{$user->user_name}}
+                                                <img src="img/mcd_logo.png" alt=""
+                                                     class="rounded-circle thumb-sm mr-1"> {{$user->user_name}}
                                             @endif
                                         </td>
                                         <td>{{$user->email }}</td>
@@ -109,7 +113,10 @@
                                         <td>{{$user->wallet}}</td>
                                         <td>{{$user->status}}</td>
                                         <td>{{$user->reg_date}}</td>
-                                        <td><a href="profile/{{ $user->user_name }}" class="btn btn-sm btn-success"><i class="fas fa-edit"></i></a></td>
+                                        <td>{{$user->bvn}}</td>
+                                        <td>{{$user->nin}}</td>
+                                        <td><a href="profile/{{ $user->user_name }}" class="btn btn-sm btn-success"><i
+                                                    class="fas fa-edit"></i></a></td>
                                     </tr>
                                 @endforeach
                                 </tbody>

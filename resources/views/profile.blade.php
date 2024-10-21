@@ -866,14 +866,27 @@
                                                 </div>
 
                                                 <div class="input-group mt-2">
-                                                    <div class="input-group-prepend"><span class="input-group-text">Business Name</span></div>
-                                                    <input type="text" name="company_name" class="form-control" placeholder="Enter Business Name" value="{{$user->company_name}}">
+                                                    <div class="input-group-prepend"><span class="input-group-text">Business Name</span>
+                                                    </div>
+                                                    <input type="text" name="company_name" class="form-control"
+                                                           placeholder="Enter Business Name"
+                                                           value="{{$user->company_name}}">
                                                 </div>
 
 
                                                 <div class="input-group mt-2">
-                                                    <div class="input-group-prepend"><span class="input-group-text">BVN</span></div>
-                                                    <input type="text" name="bvn" class="form-control" placeholder="Enter BVN" value="{{$user->bvn}}">
+                                                    <div class="input-group-prepend"><span
+                                                            class="input-group-text">BVN</span></div>
+                                                    <input type="text" name="bvn" class="form-control"
+                                                           placeholder="Enter BVN" value="{{$user->bvn}}">
+                                                </div>
+
+
+                                                <div class="input-group mt-2">
+                                                    <div class="input-group-prepend"><span
+                                                            class="input-group-text">NIN</span></div>
+                                                    <input type="text" name="nin" class="form-control"
+                                                           placeholder="Enter NIN" value="{{$user->nin}}">
                                                 </div>
 
 

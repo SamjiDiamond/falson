@@ -203,7 +203,7 @@ Route::middleware(['auth'])->group(function () {
     Route::view('/profile', 'email_agent');
     Route::view('/cc', 'mail.passwordreset');
     Route::view('/finduser', 'find_user');
-    Route::POST('/finduser', 'UsersController@finduser')->name('finduser');
+    Route::POST('/finduser', [UsersController::class, 'finduser'])->name('finduser');
 
     Route::view('/findtransaction', 'find_transaction')->name('findtransaction');
     Route::post('/findtransaction', [TransactionController::class, 'finduser'])->name('findtransactionsubmit');

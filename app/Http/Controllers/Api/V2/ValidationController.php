@@ -73,6 +73,10 @@ class ValidationController extends Controller
             return response()->json(['success' => 0, 'message' => 'Kindly provide your BVN or NIN or both']);
         }
 
+        if ($username->bvn != null || $username->nin != null) {
+            return response()->json(['success' => 0, 'message' => 'KYC can only be done once']);
+        }
+
 
         if (isset($input['bvn'])) {
             $bvne = User::where([['email', '!=', $input['email']], ['bvn', $input['bvn']]])->first();

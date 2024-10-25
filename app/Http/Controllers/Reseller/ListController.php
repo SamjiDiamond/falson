@@ -66,7 +66,7 @@ class ListController extends Controller
 
     public function tv()
     {
-        $st = ResellerCableTV::get();
+        $st = ResellerCableTV::where('status', 1)->get();
         return response()->json(['success' => 1, 'message' => 'Fetched successfully', 'data' => $st]);
     }
 

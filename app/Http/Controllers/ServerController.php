@@ -326,8 +326,10 @@ class ServerController
     {
         $input = $request->all();
         $rules = array(
-            'amount' => 'required',
-            'type' => 'required'
+            'amount' => 'sometimes',
+            'type' => 'required',
+            'server' => 'required',
+            'status' => 'required'
         );
 
         $validator = Validator::make($input, $rules);
@@ -337,9 +339,15 @@ class ServerController
             return back()->with('error', 'Incomplete request. Kindly check and try again');
         }
 
-        AppCableTVControl::where('type', strtolower($request->type))->update(['discount' => $input['amount'] . '%']);
+        if (isset($input['amount'])) {
+            $up['discount'] = $input['amount'] . '%';
+        }
 
-        return redirect()->route('tvcontrol')->with('success', $request->type . ' discount has been updated successfully');
+        $up['status'] = $input['status'];
+
+        AppCableTVControl::where([['type', strtolower($request->type)], ['server', $input['server']]])->update($up);
+
+        return redirect()->route('tvcontrol')->with('success', $request->type . ' has been updated successfully');
     }
 
 

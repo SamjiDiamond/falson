@@ -270,12 +270,14 @@ class SellTVController extends Controller
 
         if ($requester == "reseller") {
             $rac = ResellerCableTV::where("code", strtolower($input['coded']))->first();
+            $pid = explode("_", $input['coded'])[0];
+            $vcode = explode("_", $input['coded'])[1];
         } else {
             $rac = AppCableTVControl::where("coded", strtolower($input['coded']))->first();
+            $pid = explode("_", $input['coded'])[1];
+            $vcode = $rac->code;
         }
 
-
-        $pid = explode("_", $input['coded'])[1];
 
         $reqid = Carbon::now()->format('YmdHi') . $transid;
 
@@ -283,7 +285,7 @@ class SellTVController extends Controller
     "request_ref": "' . $reqid . '",
     "iuc_number": "' . $phone . '",
     "product_id": "' . $pid . '",
-    "variation_code": "' . $rac->code . '",
+    "variation_code": "' . $vcode . '",
     "type": "change",
     "webhook_url": "false",
     "pin": "' . env('AUTOSYNCNG_PIN') . '"

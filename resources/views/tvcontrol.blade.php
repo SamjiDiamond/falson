@@ -46,13 +46,36 @@
                                         <option selected="selected">GOTV</option>
                                         <option>DSTV</option>
                                         <option>STARTIMES</option>
+                                        <option>SHOWMAX</option>
                                     </select>
                                 </div>
+
+
+                                <div class="input-group mt-2">
+                                    <select class="custom-select form-control" name="status">
+                                        <option value="1">Activate</option>
+                                        <option value="0">Deactivate</option>
+                                    </select>
+                                </div>
+
+                                <div class="input-group mt-2">
+                                    <select class="custom-select form-control" name="server">
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                    </select>
+                                </div>
+
 
                                 <div class="input-group mt-2" style="align-content: center">
                                     <button class="btn btn-gradient-primary btn-large" type="submit"
                                             style="align-self: center; align-content: center"><i
-                                            class="fa fa-money-bill-wave"></i> Update Discount
+                                            class="fa fa-money-bill-wave"></i> Mass Update
                                     </button>
                                 </div>
 
@@ -61,8 +84,8 @@
                         <!--end row-->
                     </form>
 
-                    <p class="text-muted mb-4 font-13">TV Plans</p>
-                    <div class="table-responsive">
+                        <p class="text-muted mb-4 font-13">TV Plans</p>
+                        <div class="table-responsive">
                         <table class="table table-striped table-bordered table-hover dataTables-example">
                             <thead>
                             <tr>

@@ -92,7 +92,7 @@ class GenerateAutosyncng extends Command
             foreach ($type['variations'] as $plans) {
                 ResellerCableTV::create([
                     'name' => $plans['name'],
-                    'code' => $plans['code'],
+                    'code' => $pid . "_" . $plans['code'],
                     'amount' => $plans['amount'],
                     'type' => $inte,
                     'level1' => '1%',
@@ -101,7 +101,7 @@ class GenerateAutosyncng extends Command
                     'level4' => '1%',
                     'level5' => '1.5%',
                     'status' => 1,
-                    'server' => 6,
+                    'server' => 7,
                 ]);
 
                 AppCableTVControl::create([

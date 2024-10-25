@@ -247,7 +247,7 @@ class ResellerServiceController extends Controller
 
     public function tvserver()
     {
-        $data = ResellerCableTV::paginate(10);
+        $data = ResellerCableTV::paginate(50);
 
         return view('reseller_control.tvcontrol', compact('data'));
     }
@@ -324,12 +324,14 @@ class ResellerServiceController extends Controller
     {
         $input = $request->all();
         $rules = array(
-            'level1' => 'required',
-            'level2' => 'required',
-            'level3' => 'required',
-            'level4' => 'required',
-            'level5' => 'required',
-            'type' => 'required'
+            'level1' => 'sometimes',
+            'level2' => 'sometimes',
+            'level3' => 'sometimes',
+            'level4' => 'sometimes',
+            'level5' => 'sometimes',
+            'type' => 'required',
+            'server' => 'required',
+            'status' => 'required'
         );
 
         $validator = Validator::make($input, $rules);
@@ -339,15 +341,31 @@ class ResellerServiceController extends Controller
             return back()->with('error', 'Incomplete request. Kindly check and try again');
         }
 
-        ResellerCableTV::where('type', strtolower($request->type))->update([
-            'level1' => $input['level1'] . '%',
-            'level2' => $input['level2'] . '%',
-            'level3' => $input['level3'] . '%',
-            'level4' => $input['level4'] . '%',
-            'level5' => $input['level5'] . '%',
-        ]);
+        if (isset($input['level1'])) {
+            $up['level1'] = $input['level1'] . '%';
+        }
 
-        return redirect()->route('reseller.tvcontrol')->with('success', $request->type . ' discount has been updated successfully');
+        if (isset($input['level2'])) {
+            $up['level2'] = $input['level2'] . '%';
+        }
+
+        if (isset($input['level3'])) {
+            $up['level3'] = $input['level3'] . '%';
+        }
+
+        if (isset($input['level4'])) {
+            $up['level4'] = $input['level4'] . '%';
+        }
+
+        if (isset($input['level5'])) {
+            $up['level5'] = $input['level5'] . '%';
+        }
+
+        $up['status'] = $input['status'];
+
+        ResellerCableTV::where([['type', strtolower($request->type)], ['server', $input['server']]])->update($up);
+
+        return redirect()->route('reseller.tvcontrol')->with('success', $request->type . ' has been updated successfully');
     }
 
     public function electricityserver()

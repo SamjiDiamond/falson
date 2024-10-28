@@ -5,6 +5,7 @@ use App\Http\Controllers\CGBundleController;
 use App\Http\Controllers\FAQsController;
 use App\Http\Controllers\GatewayControl;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\RechargeCardController;
 use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\Reseller\BlockReseller;
 use App\Http\Controllers\ResellerServiceController;
@@ -309,6 +310,14 @@ Route::middleware(['auth'])->group(function () {
 
             Route::view('/datanew', 'reseller_control.datacontrol_new')->name('datanew');
             Route::post('/datanew', [ResellerServiceController::class, 'datanew'])->name('datanew');
+        });
+
+        Route::prefix('rechargecard')->name('reseller.')->name('rechargecard.')->group(function () {
+            Route::get('/pricing', [RechargeCardController::class, 'pricing'])->name('pricing');
+            Route::get('/pricing/{id}', [RechargeCardController::class, 'pricingModify'])->name('pricingModify');
+            Route::post('/pricingUpdate', [RechargeCardController::class, 'pricingUpdate'])->name('pricingUpdate');
+            Route::get('/payments', [RechargeCardController::class, 'payments'])->name('payments');
+            Route::get('/transactions', [RechargeCardController::class, 'transactions'])->name('transactions');
         });
 
         Route::get('sliders', [SliderController::class, 'index'])->name('sliders.index');

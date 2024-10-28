@@ -193,26 +193,46 @@
                             <span class="float-right"><i class="mdi mdi-chevron-right"></i></span>
                             {{--                            <span class="float-right"><i class="mdi mdi-chevron-right"></i></span>--}}
                         </a>
-                        <ul class="list-unstyled">
-                            @can('airtime2cash-settings-view')
-                                <li><a href="{{route('transaction.airtime2cashSettings')}}">Settings</a></li>
-                            @endcan
-                            @can('airtime2cash-view')
-                                <li><a href="{{route('transaction.airtime2cash')}}">Airtime Converter</a></li>
-                            @endcan
-                        </ul>
-                    </li>
+                            <ul class="list-unstyled">
+                                @can('airtime2cash-settings-view')
+                                    <li><a href="{{route('transaction.airtime2cashSettings')}}">Settings</a></li>
+                                @endcan
+                                @can('airtime2cash-view')
+                                    <li><a href="{{route('transaction.airtime2cash')}}">Airtime Converter</a></li>
+                                @endcan
+                            </ul>
+                        </li>
+                    @endcanany
+
+                    @canany(['airtime2cash-settings-view','airtime2cash-view'])
+                        <li class="has_sub">
+                            <a href="javascript:void(0);" class="waves-effect"><i
+                                    class="dripicons-card"></i><span>Recharge Card</span>
+                                <span class="float-right"><i class="mdi mdi-chevron-right"></i></span>
+                            </a>
+                            <ul class="list-unstyled">
+                                @can('airtime2cash-settings-view')
+                                    <li><a href="{{route('rechargecard.pricing')}}">Pricing</a></li>
+                                @endcan
+                                @can('airtime2cash-view')
+                                    <li><a href="{{route('rechargecard.payments')}}">Payments</a></li>
+                                @endcan
+                                @can('airtime2cash-view')
+                                    <li><a href="{{route('rechargecard.transactions')}}">Transactions</a></li>
+                                @endcan
+                            </ul>
+                        </li>
                     @endcanany
 
                     @canany(['create-cg-bundle-view','cg-bundle-list-view','sell-cg-bundle-view','cg-bundle-transactions-view'])
-                    <li class="has_sub">
-                        <a href="javascript:void(0);" class="waves-effect"><i
-                                class="dripicons-wallet"></i><span>CG Bundle </span>
-                            <span class="float-right"><i class="mdi mdi-chevron-right"></i></span>
-                            {{--                            <span class="float-right"><i class="mdi mdi-chevron-right"></i></span>--}}
-                        </a>
-                        <ul class="list-unstyled">
-                            @can('create-cg-bundle-view')
+                        <li class="has_sub">
+                            <a href="javascript:void(0);" class="waves-effect"><i
+                                    class="dripicons-wallet"></i><span>CG Bundle </span>
+                                <span class="float-right"><i class="mdi mdi-chevron-right"></i></span>
+                                {{--                            <span class="float-right"><i class="mdi mdi-chevron-right"></i></span>--}}
+                            </a>
+                            <ul class="list-unstyled">
+                                @can('create-cg-bundle-view')
                                 <li><a href="{{route('cgbundle.index')}}">Create CG Bundle</a></li>
                             @endcan
 

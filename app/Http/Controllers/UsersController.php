@@ -34,14 +34,28 @@ class UsersController extends Controller
 
         $r_users = DB::table('tbl_agents')->where("referral","!=","")->count();
 
-        $a_users = DB::table('tbl_agents')->where("status","=","reseller")->count();
+        $a_users = DB::table('tbl_agents')->where("status", "=", "reseller")->count();
 
-        $u_wallet = DB::table('tbl_agents')->where("status","!=","admin")->sum('wallet');
-        $fu_wallet = DB::table('tbl_agents')->where([["status","!=","admin"], ["fraud","!=",""] ])->sum('wallet');
-        $au_wallet = DB::table('tbl_agents')->where([["status","!=","admin"], ["fraud","=",""], ["wallet",">=","50"] ])->sum('wallet');
-        $iau_wallet = DB::table('tbl_agents')->where([["status","!=","admin"], ["fraud","=",""], ["wallet","<","50"] ])->sum('wallet');
+        $u_wallet = DB::table('tbl_agents')->where("status", "!=", "admin")->sum('wallet');
+        $fu_wallet = DB::table('tbl_agents')->where([["status", "!=", "admin"], ["fraud", "!=", ""]])->sum('wallet');
+        $au_wallet = DB::table('tbl_agents')->where([["status", "!=", "admin"], ["fraud", "=", ""], ["wallet", ">=", "50"]])->sum('wallet');
+        $iau_wallet = DB::table('tbl_agents')->where([["status", "!=", "admin"], ["fraud", "=", ""], ["wallet", "<", "50"]])->sum('wallet');
 
-        return view('users', ['users' => $users, 't_users'=>$t_users, 'r_users'=>$r_users, 'u_wallet'=>$u_wallet, 'a_users'=>$a_users, 'fu_wallet'=>$fu_wallet, 'iau_wallet'=>$iau_wallet, 'au_wallet'=>$au_wallet]);
+        return view('users', ['users' => $users, 't_users' => $t_users, 'r_users' => $r_users, 'u_wallet' => $u_wallet, 'a_users' => $a_users, 'fu_wallet' => $fu_wallet, 'iau_wallet' => $iau_wallet, 'au_wallet' => $au_wallet]);
+
+    }
+
+    public function topusers(Request $request)
+    {
+
+        $topUsers = User::select('tbl_agents.id', 'tbl_agents.user_name', 'tbl_agents.wallet', 'tbl_agents.status', DB::raw('SUM(tbl_transactions.amount) as total_amount'))
+            ->join('tbl_transactions', 'tbl_agents.user_name', '=', 'tbl_transactions.user_name')
+            ->groupBy('tbl_agents.id', 'tbl_agents.user_name')
+            ->orderByDesc('total_amount')
+            ->take(10)
+            ->get();
+
+        return view('top_users', ['users' => $topUsers, 'i' => 1]);
 
     }
 
@@ -49,9 +63,9 @@ class UsersController extends Controller
     {
 
         $users = DB::table('tbl_agents')->where('status', 'agent')->orderBy('id', 'desc')->get();
-        $trans=Transaction::where('date', 'LIKE', '%'.date("Y-m-d").'%')->get();
+        $trans = Transaction::where('date', 'LIKE', '%' . date("Y-m-d") . '%')->get();
 
-        return view('agents', ['users' => $users, 'trans'=>$trans]);
+        return view('agents', ['users' => $users, 'trans' => $trans]);
 
     }
 

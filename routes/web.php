@@ -133,6 +133,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/users', [UsersController::class, 'index'])->name('users');
     Route::get('/agents', [UsersController::class, 'agents'])->name('agents');
     Route::get('/resellers', [UsersController::class, 'resellers'])->name('resellers');
+    Route::get('/topusers', [UsersController::class, 'topusers'])->name('topusers');
 
     Route::get('/regenerateKey/{id}', [UsersController::class, 'regenerateKey'])->name('regenerateKey');
 

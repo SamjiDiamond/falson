@@ -267,23 +267,23 @@
                             @can('users-search-view')
                                 <li><a href="/finduser">Search User(s)</a></li>
                             @endcan
-{{--                            <li><a href="/agentpayment">Agent Payment</a></li>--}}
+                            {{--                            <li><a href="/agentpayment">Agent Payment</a></li>--}}
                             @can('login-attempt-view')
                                 <li><a href="/loginattempts">Login Attempts</a></li>
                             @endcan
-{{--                            <li><a href="/agents">Agents</a></li>--}}
+                            {{--                            <li><a href="/agents">Agents</a></li>--}}
                             @can('resellers-view')
                                 <li><a href="/resellers">Resellers</a></li>
                             @endcan
-{{--                            <li><a href="/pending_request">Pending Request</a></li>--}}
-{{--                            <li><a href="/gmblocked">GM Blocked</a></li>--}}
+                            {{--                            <li><a href="/pending_request">Pending Request</a></li>--}}
+                            <li><a href="{{route('topusers')}}">Top Users</a></li>
                             @can('dormant-users-view')
                                 <li><a href="/dormantusers">Dormant Users</a></li>
                             @endcan
 
-{{--                            @if(\Illuminate\Support\Facades\Auth::user()->status == "superadmin")--}}
-{{--                                <li><a href="/referral_upgrade">Referral Upgrade</a></li>--}}
-{{--                            @endif--}}
+                            {{--                            @if(\Illuminate\Support\Facades\Auth::user()->status == "superadmin")--}}
+                            {{--                                <li><a href="/referral_upgrade">Referral Upgrade</a></li>--}}
+                            {{--                            @endif--}}
                         </ul>
                     </li>
                     @endcanany

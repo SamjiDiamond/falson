@@ -41,7 +41,7 @@ class AutosyncngWebhookController extends Controller
 //}
         $input = $request->all();
 
-        DB::table('tbl_webhook_hw')->insert(['code' => $input['hash'], 'message' => $input['transaction']['details'], 'reference' => $input['transaction']['request_ref'], 'type' => $input['transaction']['type'], 'ip' => $_SERVER['REMOTE_ADDR'], 'extra' => json_encode($input)]);
+        DB::table('tbl_webhook_autosyncng')->insert(['code' => $input['hash'], 'message' => $input['transaction']['details'], 'reference' => $input['transaction']['request_ref'], 'type' => $input['transaction']['type'], 'ip' => $_SERVER['REMOTE_ADDR'], 'extra' => json_encode($input)]);
 
 
         $rules = array(

@@ -891,6 +891,8 @@ class PayController extends Controller
                 return $air->server1($request, $input['provider'], $input['number'], $ref, $net, $request, $dada, "mcd");
             case "2":
                 return $air->server2($request, $input['provider'], $input['number'], $ref, $net, $request, $dada, "mcd");
+            case "7":
+                return $air->server7($request, $input['provider'], $input['number'], $ref, $net, $request, $dada, "mcd");
             case "0":
                 return response()->json(['success' => 1, 'message' => 'Transaction inprogress', 'ref' => $ref, 'debitAmount' => $dada['amount'], 'discountAmount' => $dada['discount']]);
             default:

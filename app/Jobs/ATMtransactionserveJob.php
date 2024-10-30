@@ -221,6 +221,8 @@ class ATMtransactionserveJob implements ShouldQueue
             $air = new SellElectricityController();
 
             switch (strtolower($rac->server)) {
+                case "7":
+                    return $air->server7($r, $input['network'], $input['phone'], $input['transid'], $input['network'], $input, $dada, "mcd");
                 case "2":
                     return $air->server2($r, $input['network'], $input['phone'], $input['transid'], $input['network'], $input, $dada, "mcd");
                 case "1":

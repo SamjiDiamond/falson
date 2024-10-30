@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Reseller\PayController;
+use App\Models\AppElectricityControl;
+use App\Models\ResellerElecticity;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -66,9 +68,9 @@ class SellElectricityController extends Controller
 
         if ($rep['code'] == '200') {
             $dada['token'] = $rep['token'];
+            $dada['server_ref'] = $reqid;
 
             if ($requester == "reseller") {
-                $dada['server_ref'] = $reqid;
                 return $rs->outputResponse($request, $transid, 1, $dada);
             } else {
                 return $ms->outputResp($request, $transid, 1, $dada);
@@ -137,14 +139,94 @@ class SellElectricityController extends Controller
 
         if ($rep['status'] == '200') {
 
-            if(isset($rep['token'])) {
+            if (isset($rep['token'])) {
                 $dada['token'] = $rep['token'];
-            }else{
+            } else {
                 $dada['token'] = "";
             }
 
+            $dada['server_ref'] = $rep['TransRef'];
+
             if ($requester == "reseller") {
-                $dada['server_ref'] = $rep['TransRef'];
+                return $rs->outputResponse($request, $transid, 1, $dada);
+            } else {
+                return $ms->outputResp($request, $transid, 1, $dada);
+            }
+        } else {
+            $dada['token'] = "Token: pending";
+            if ($requester == "reseller") {
+                return $rs->outputResponse($request, $transid, 0, $dada);
+            } else {
+                return $ms->outputResp($request, $transid, 0, $dada);
+            }
+        }
+    }
+
+    public function server7($request, $code, $phone, $transid, $net, $input, $dada, $requester)
+    {
+
+        if ($requester == "reseller") {
+            $rac = ResellerElecticity::where("code", strtolower($input['coded']))->first();
+        } else {
+            $rac = AppElectricityControl::where("code", strtolower($input['coded']))->first();
+        }
+
+
+        $reqid = Carbon::now()->format('YmdHi') . $transid;
+
+        $payload = '{
+    "request_ref": "' . $reqid . '",
+    "meter_number": "' . $phone . '",
+    "product_id": "' . $rac->autosync_plan_id . '",
+    "type": "' . strtolower($request->get('type')) . '",
+    "amount": "' . $request->get('amount') . '",
+    "pin": "' . env('AUTOSYNCNG_PIN') . '"
+}';
+
+        if (env('FAKE_TRANSACTION', 1) == 0) {
+            $curl = curl_init();
+
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => env('AUTOSYNCNG_BASEURL') . 'electricity',
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'POST',
+                CURLOPT_POSTFIELDS => $payload,
+                CURLOPT_HTTPHEADER => array(
+                    'Authorization: Bearer ' . env('AUTOSYNCNG_AUTH'),
+                    'Content-Type: application/json'
+                ),
+            ));
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+
+            $response = curl_exec($curl);
+
+            curl_close($curl);
+        } else {
+            $response = '{ "status": "ok", "message": "MTN Gifting Awoof 1GB Daily sent to 08166939205", "data": { "transaction": { "reference": "9d25a88b-0581-4a2a-8bcf-bc2841f75640", "request_ref": "55421632500993330", "type": "MTN Gifting", "details": "MTN Gifting Awoof 1GB Daily sent to 08166939205", "amount": 218, "status": "successful", "request_data": { "request_ref": "55421632500993330", "phone": "08166939205", "product_id": "2", "variation_code": "mtn-1gb-awoof", "webhook_url": "false", "ported_no": "false" }, "balance_before": null, "balance_after": null, "created_at": "2024-10-02T06:31:10.000000Z", "gateway_id": 3067 } } }';
+        }
+
+        Log::info("AutoSync Transaction. - " . $transid);
+        Log::info($payload);
+        Log::info($response);
+
+
+        $rep = json_decode($response, true);
+
+        $rs = new PayController();
+        $ms = new V2\PayController();
+
+        $dada['server_response'] = $response;
+        $dada['server_ref'] = $rep['data']['transaction']['reference'];
+
+        if ($rep['data']['transaction']['status'] == "successful" || $rep['data']['transaction']['status'] == "pending") {
+
+            $dada['token'] = "";
+            if ($requester == "reseller") {
                 return $rs->outputResponse($request, $transid, 1, $dada);
             } else {
                 return $ms->outputResp($request, $transid, 1, $dada);

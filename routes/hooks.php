@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\Api\MCDAssistantController;
-use App\Http\Controllers\Api\UltilityController;
 use App\Http\Controllers\HW_WebhookController;
 use App\Http\Controllers\IyiiWebhookController;
 use App\Http\Controllers\OGDAMSWebhookController;
@@ -36,5 +35,6 @@ Route::prefix('hook')->group(function () {
     Route::post('hw', [HW_WebhookController::class, 'index']);
     Route::post('iyii', [IyiiWebhookController::class, 'index']);
     Route::post('ogdams', [OGDAMSWebhookController::class, 'index']);
+    Route::post('autosyncng', [\App\Http\Controllers\AutosyncngWebhookController::class, 'index']);
 
 });

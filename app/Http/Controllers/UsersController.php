@@ -50,7 +50,7 @@ class UsersController extends Controller
 
         $topUsers = User::select('tbl_agents.id', 'tbl_agents.user_name', 'tbl_agents.wallet', 'tbl_agents.status', DB::raw('SUM(tbl_transactions.amount) as total_amount'))
             ->join('tbl_transactions', 'tbl_agents.user_name', '=', 'tbl_transactions.user_name')
-            ->groupBy('tbl_agents.id', 'tbl_agents.user_name')
+            ->groupBy('tbl_agents.id', 'tbl_agents.user_name', 'tbl_agents.wallet', 'tbl_agents.status')
             ->orderByDesc('total_amount')
             ->take(10)
             ->get();

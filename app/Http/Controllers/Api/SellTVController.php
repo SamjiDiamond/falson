@@ -278,11 +278,8 @@ class SellTVController extends Controller
             $vcode = $rac->code;
         }
 
-
-        $reqid = Carbon::now()->format('YmdHi') . $transid;
-
         $payload = '{
-    "request_ref": "' . $reqid . '",
+    "request_ref": "' . $transid . '",
     "iuc_number": "' . $phone . '",
     "product_id": "' . $pid . '",
     "variation_code": "' . $vcode . '",

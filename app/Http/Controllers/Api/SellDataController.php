@@ -711,10 +711,8 @@ class SellDataController extends Controller
 
         $pid = explode("_", $input['coded'])[1];
 
-        $reqid = Carbon::now()->format('YmdHi') . $transid;
-
         $payload = '{
-    "request_ref": "' . $reqid . '",
+    "request_ref": "' . $transid . '",
     "phone": "' . $phone . '",
     "product_id": "' . $pid . '",
     "variation_code": "' . $rac->plan_id . '",

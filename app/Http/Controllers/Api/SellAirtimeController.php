@@ -268,11 +268,8 @@ class SellAirtimeController extends Controller
                 $netcode = strtolower($net);
         }
 
-
-        $reqid = Carbon::now()->format('YmdHi') . $transid;
-
         $payload = '{
-    "request_ref": "' . $reqid . '",
+    "request_ref": "' . $transid . '",
     "phone": "' . $phone . '",
     "product_id": "' . $netcode . '",
     "amount": "' . $amnt . '",

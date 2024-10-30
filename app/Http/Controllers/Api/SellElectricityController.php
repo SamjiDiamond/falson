@@ -171,11 +171,8 @@ class SellElectricityController extends Controller
             $rac = AppElectricityControl::where("code", strtolower($input['coded']))->first();
         }
 
-
-        $reqid = Carbon::now()->format('YmdHi') . $transid;
-
         $payload = '{
-    "request_ref": "' . $reqid . '",
+    "request_ref": "' . $transid . '",
     "meter_number": "' . $phone . '",
     "product_id": "' . $rac->autosync_plan_id . '",
     "type": "' . strtolower($request->get('type')) . '",

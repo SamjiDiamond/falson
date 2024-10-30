@@ -112,7 +112,6 @@ class AutosyncngWebhookController extends Controller
                     $input["f_wallet"] = $nBalance;
                     $input["ref"] = "refund_" . $tran->ref;
                     $input["extra"] = 'Initiated by webhook';
-                    $input["server_response"] = $input['message'];
 
                     $user->update(["wallet" => $nBalance]);
                     Transaction::create($input);

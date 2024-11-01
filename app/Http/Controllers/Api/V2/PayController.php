@@ -18,10 +18,10 @@ use App\Models\Airtime2CashSettings;
 use App\Models\AppAirtimeControl;
 use App\Models\AppCableTVControl;
 use App\Models\AppDataControl;
+use App\Models\AppElectricityControl;
 use App\Models\CGWallets;
 use App\Models\PndL;
 use App\Models\ResellerBetting;
-use App\Models\ResellerElecticity;
 use App\Models\Serverlog;
 use App\Models\Settings;
 use App\Models\Transaction;
@@ -232,7 +232,7 @@ class PayController extends Controller
 
         $input['device'] = $request->header('device') ?? $_SERVER['HTTP_USER_AGENT'];
 
-        $rac = ResellerElecticity::where("code", strtolower($input['provider']))->first();
+        $rac = AppElectricityControl::where("code", strtolower($input['provider']))->first();
 
         if ($rac == "") {
             return response()->json(['success' => 0, 'message' => 'Invalid coded supplied']);

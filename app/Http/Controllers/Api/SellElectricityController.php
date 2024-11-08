@@ -92,7 +92,7 @@ class SellElectricityController extends Controller
     "serviceCode": "P-ELECT",
     "disco": "' . $code . '",
     "meterNo": "' . $phone . '",
-    "type": "' . strtoupper($request->get('type')) . '",
+    "type": "' . strtoupper($request->get('type') ?? 'prepaid') . '",
     "amount": "' . $request->get('amount') . '",
     "phonenumber": "' . $request->get('phone') . '",
     "request_id": "' . $transid . '"
@@ -166,16 +166,16 @@ class SellElectricityController extends Controller
     {
 
         if ($requester == "reseller") {
-            $rac = ResellerElecticity::where("code", strtolower($input['coded']))->first();
+            $rac = ResellerElecticity::where("code", strtoupper($input['coded']))->first();
         } else {
-            $rac = AppElectricityControl::where("code", strtolower($input['coded']))->first();
+            $rac = AppElectricityControl::where("code", strtoupper($input['provider']))->first();
         }
 
         $payload = '{
     "request_ref": "' . $transid . '",
     "meter_number": "' . $phone . '",
     "product_id": "' . $rac->autosync_plan_id . '",
-    "type": "' . strtolower($request->get('type')) . '",
+    "type": "' . strtolower($request->get('type') ?? 'prepaid') . '",
     "amount": "' . $request->get('amount') . '",
     "pin": "' . env('AUTOSYNCNG_PIN') . '"
 }';
@@ -204,7 +204,7 @@ class SellElectricityController extends Controller
 
             curl_close($curl);
         } else {
-            $response = '{ "status": "ok", "message": "MTN Gifting Awoof 1GB Daily sent to 08166939205", "data": { "transaction": { "reference": "9d25a88b-0581-4a2a-8bcf-bc2841f75640", "request_ref": "55421632500993330", "type": "MTN Gifting", "details": "MTN Gifting Awoof 1GB Daily sent to 08166939205", "amount": 218, "status": "successful", "request_data": { "request_ref": "55421632500993330", "phone": "08166939205", "product_id": "2", "variation_code": "mtn-1gb-awoof", "webhook_url": "false", "ported_no": "false" }, "balance_before": null, "balance_after": null, "created_at": "2024-10-02T06:31:10.000000Z", "gateway_id": 3067 } } }';
+            $response = '{ "status": "ok", "message": "Ikeja Electricity Distribution Company [IKEDC] Meter No 04289798300 loaded with 1,000.00", "data": { "transaction": { "reference": "9d7145be-c3cc-46ce-8497-29f31186dd87", "request_ref": "samjitest", "type": "Ikeja Electricity Distribution Company [IKEDC]", "details": "Ikeja Electricity Distribution Company [IKEDC] Meter No 04289798300 loaded with 1,000.00", "amount": 1000, "status": "pending", "request_data": { "request_ref": "samjitest", "meter_number": "04289798300", "product_id": "39", "amount": "1000", "type": "prepaid" }, "balance_before": "&#8358;175,533.00", "balance_after": "&#8358;174,533.00", "created_at": "2024-11-08T20:37:49.000000Z", "gateway_id": 8931 } } }';
         }
 
         Log::info("AutoSync Transaction. - " . $transid);
@@ -218,22 +218,36 @@ class SellElectricityController extends Controller
         $ms = new V2\PayController();
 
         $dada['server_response'] = $response;
+
+        if (isset($rep['error'])) {
+            if ($requester == "reseller") {
+                return $rs->outputResponse($request, $transid, 0, $dada);
+            } else {
+                return $ms->outputResp($request, $transid, 0, $dada);
+            }
+        }
+
         $dada['server_ref'] = $rep['data']['transaction']['reference'];
 
-        if ($rep['data']['transaction']['status'] == "successful" || $rep['data']['transaction']['status'] == "pending") {
-
+        if ($rep['data']['transaction']['status'] == "successful") {
             $dada['token'] = "";
             if ($requester == "reseller") {
                 return $rs->outputResponse($request, $transid, 1, $dada);
             } else {
                 return $ms->outputResp($request, $transid, 1, $dada);
             }
-        } else {
-            $dada['token'] = "Token: pending";
+        } elseif ($rep['data']['transaction']['status'] == "failed") {
+            $dada['token'] = "";
             if ($requester == "reseller") {
                 return $rs->outputResponse($request, $transid, 0, $dada);
             } else {
                 return $ms->outputResp($request, $transid, 0, $dada);
+            }
+        } else {
+            if ($requester == "reseller") {
+                return $rs->outputResponse($request, $transid, 4, $dada);
+            } else {
+                return $ms->outputResp($request, $transid, 4, $dada);
             }
         }
     }

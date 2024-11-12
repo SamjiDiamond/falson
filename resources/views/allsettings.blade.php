@@ -89,8 +89,14 @@
                         </div>
 
                         <div class="row mt-3">
-                            <a href="{{route('plansRefresh', "data_autosyncng")}}" class="btn btn-gradient-pink mr-3">Refresh
-                                Autosyncng Data Plans</a>
+                            <a href="{{route('plansRefresh', "data_autosyncng_mtn")}}"
+                               class="btn btn-gradient-pink mr-3">Refresh Autosyncng Data Plans (MTN)</a>
+                            <a href="{{route('plansRefresh', "data_autosyncng_glo")}}"
+                               class="btn btn-gradient-pink mr-3">Refresh Autosyncng Data Plans (GLO)</a>
+                            <a href="{{route('plansRefresh', "data_autosyncng_airtel")}}"
+                               class="btn btn-gradient-pink mr-3">Refresh Autosyncng Data Plans (AIRTEL)</a>
+                            <a href="{{route('plansRefresh', "data_autosyncng_9mobile")}}"
+                               class="btn btn-gradient-pink mr-3">Refresh Autosyncng Data Plans (9MOBILE)</a>
                             <a href="{{route('plansRefresh', "tv_autosyncng")}}" class="btn btn-gradient-pink mr-3">Refresh
                                 Autosyncng TV Plans</a>
                         </div>

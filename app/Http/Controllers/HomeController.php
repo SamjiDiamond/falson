@@ -189,8 +189,14 @@ class HomeController extends Controller
             Artisan::queue('samji:uzobest --command=data --type=AIRTEL');
         } elseif ($type == "data_uzobest_9mobile") {
             Artisan::queue('samji:uzobest --command=data --type=9MOBILE');
-        } elseif ($type == "data_autosyncng") {
-            Artisan::queue('samji:autosyncng --command=data');
+        } elseif ($type == "data_autosyncng_mtn") {
+            Artisan::queue('samji:autosyncng --command=data --type=MTN');
+        } elseif ($type == "data_autosyncng_glo") {
+            Artisan::queue('samji:autosyncng --command=data --type=GLO');
+        } elseif ($type == "data_autosyncng_airtel") {
+            Artisan::queue('samji:autosyncng --command=data --type=AIRTEL');
+        } elseif ($type == "data_autosyncng_9mobile") {
+            Artisan::queue('samji:autosyncng --command=data --type=9MOBILE');
         } elseif ($type == "tv") {
             Artisan::queue('samji:hw --command=tv');
             Artisan::queue('samji:ringo --command=tv');

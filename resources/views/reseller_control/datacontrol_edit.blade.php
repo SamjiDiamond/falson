@@ -28,24 +28,51 @@
                         <div class="form-group row">
                             <div class="col-md-12">
                                 <div class="input-group mt-2">
-                                    <div class="input-group-prepend"><span class="input-group-text">Product Name</span></div>
+                                    <div class="input-group-prepend"><span class="input-group-text">Product Name</span>
+                                    </div>
                                     <input type="hidden" name="id" class="form-control" value="{{$data->id}}">
-                                    <input type="text" name="product_name" placeholder="Enter product name" class="form-control" value="{{$data->name}}">
+                                    <input type="text" name="product_name" placeholder="Enter product name"
+                                           class="form-control" value="{{$data->name}}">
                                 </div>
 
                                 <div class="input-group mt-2">
-                                    <div class="input-group-prepend"><span class="input-group-text">Level1 Amount </span></div>
-                                    <input type="text" name="level1" class="form-control" placeholder="Enter Amount" value="{{$data->level1}}">
+                                    <div class="input-group-prepend"><span class="input-group-text">Code</span></div>
+                                    <input type="text" name="code" class="form-control" placeholder="Enter Code"
+                                           value="{{$data->code}}">
                                 </div>
 
                                 <div class="input-group mt-2">
-                                    <div class="input-group-prepend"><span class="input-group-text">Level2 Amount </span></div>
-                                    <input type="text" name="level2" class="form-control" placeholder="Enter Amount" value="{{$data->level2}}">
+                                    <div class="input-group-prepend"><span class="input-group-text">Plan ID</span></div>
+                                    <input type="text" name="plan_id" class="form-control" placeholder="Enter PlanID"
+                                           value="{{$data->plan_id}}">
                                 </div>
 
                                 <div class="input-group mt-2">
-                                    <div class="input-group-prepend"><span class="input-group-text">Level3 Amount </span></div>
-                                    <input type="number" name="level3" class="form-control" placeholder="Enter Amount" value="{{$data->level3}}">
+                                    <div class="input-group-prepend"><span class="input-group-text">Category</span>
+                                    </div>
+                                    <input type="text" name="product_code" class="form-control"
+                                           placeholder="Enter Category" value="{{$data->product_code}}">
+                                </div>
+
+                                <div class="input-group mt-2">
+                                    <div class="input-group-prepend"><span
+                                            class="input-group-text">Level1 Amount </span></div>
+                                    <input type="text" name="level1" class="form-control" placeholder="Enter Amount"
+                                           value="{{$data->level1}}">
+                                </div>
+
+                                <div class="input-group mt-2">
+                                    <div class="input-group-prepend"><span
+                                            class="input-group-text">Level2 Amount </span></div>
+                                    <input type="text" name="level2" class="form-control" placeholder="Enter Amount"
+                                           value="{{$data->level2}}">
+                                </div>
+
+                                <div class="input-group mt-2">
+                                    <div class="input-group-prepend"><span
+                                            class="input-group-text">Level3 Amount </span></div>
+                                    <input type="number" name="level3" class="form-control" placeholder="Enter Amount"
+                                           value="{{$data->level3}}">
                                 </div>
 
                                 <div class="input-group mt-2">

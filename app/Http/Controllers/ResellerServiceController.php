@@ -208,8 +208,11 @@ class ResellerServiceController extends Controller
     {
         $input = $request->all();
         $rules = array(
-            'id'      => 'required',
-            'product_name'      => 'required',
+            'id' => 'required',
+            'product_name' => 'required',
+            'plan_id' => 'required',
+            'code' => 'required',
+            'product_code' => 'required',
             'level1' => 'required',
             'level2' => 'required',
             'level3' => 'required',
@@ -228,10 +231,13 @@ class ResellerServiceController extends Controller
 
 
         $data = ResellerDataPlans::where('id', $request->id)->first();
-        if(!$data){
+        if (!$data) {
             return back()->with('error', 'Kindly choose correct plan. Kindly check and try again');
         }
         $data->name = $input['product_name'];
+        $data->code = $input['code'];
+        $data->plan_id = $input['plan_id'];
+        $data->product_code = $input['product_code'];
         $data->level1 = $input['level1'];
         $data->level2 = $input['level2'];
         $data->level3 = $input['level3'];
@@ -241,7 +247,7 @@ class ResellerServiceController extends Controller
 //        $data->note = $input['note'];
         $data->save();
 
-        return redirect()->route('reseller.dataList', $data->type)->with('success', $data->name . ' has been updated successfully');
+        return redirect()->route('reseller.dataList', $data->network)->with('success', $data->name . ' has been updated successfully');
     }
 
 

@@ -226,7 +226,9 @@ class ServerController
             'amount' => 'required',
             'status' => 'required',
             'server' => 'required',
-            'product_code' => 'sometimes',
+            'product_code' => 'required',
+            'coded' => 'required',
+            'plan_id' => 'required',
             'note' => 'nullable'
         );
 
@@ -239,7 +241,7 @@ class ServerController
 
 
         $data = AppDataControl::where('id', $request->id)->first();
-        if(!$data){
+        if (!$data) {
             return back()->with('error', 'Kindly choose correct plan. Kindly check and try again');
         }
         $data->name = $input['product_name'];
@@ -249,6 +251,8 @@ class ServerController
         $data->server = $input['server'];
         $data->note = $input['note'];
         $data->product_code = $input['product_code'];
+        $data->coded = $input['coded'];
+        $data->plan_id = $input['plan_id'];
         $data->save();
 
         return redirect()->route('dataplans', $data->network)->with('success', $data->name . ' has been updated successfully');

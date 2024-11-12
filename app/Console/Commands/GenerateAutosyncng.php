@@ -37,11 +37,7 @@ class GenerateAutosyncng extends Command
                 $this->tvPlans();
                 break;
             case 'data':
-                if ($this->option('type') == "") {
-                    $this->dataPlans();
-                } else {
-                    $this->sDataPlans($this->option('type'));
-                }
+                $this->dataPlans($this->option('type'));
                 break;
 
             default:
@@ -120,12 +116,17 @@ class GenerateAutosyncng extends Command
     }
 
 
-    private function dataPlans()
+    private function dataPlans($type)
     {
         $this->info("Truncating Reseller & App Data plans table");
 
-        ResellerDataPlans::where('server', '7')->delete();
-        AppDataControl::where('server', '7')->delete();
+        if ($type == "") {
+            ResellerDataPlans::where('server', '7')->delete();
+            AppDataControl::where('server', '7')->delete();
+        } else {
+            ResellerDataPlans::where([['server', '7'], ['type', $type]])->delete();
+            AppDataControl::where([['server', '7'], ['network', $type]])->delete();
+        }
 
         $this->info("Fetching data plans");
 
@@ -154,7 +155,7 @@ class GenerateAutosyncng extends Command
         curl_close($curl);
 
         $rep = json_decode($response, true);
-        $this->sitem($rep);
+        $this->sitem($rep, $type);
 
         $this->info("Fetching data plans");
 
@@ -184,7 +185,7 @@ class GenerateAutosyncng extends Command
         curl_close($curl);
 
         $rep = json_decode($response, true);
-        $this->sitem($rep);
+        $this->sitem($rep, $type);
 
         //transfer Data
         $curl = curl_init();
@@ -212,7 +213,7 @@ class GenerateAutosyncng extends Command
         curl_close($curl);
 
         $rep = json_decode($response, true);
-        $this->sitem($rep);
+        $this->sitem($rep, $type);
 
         //corporate Data
         $curl = curl_init();
@@ -240,11 +241,11 @@ class GenerateAutosyncng extends Command
         curl_close($curl);
 
         $rep = json_decode($response, true);
-        $this->sitem($rep);
+        $this->sitem($rep, $type);
 
     }
 
-    private function sitem($rep)
+    private function sitem($rep, $net)
     {
         foreach ($rep['data']['category']['products'] as $networks) {
             foreach ($networks['variations'] as $plans) {
@@ -263,7 +264,9 @@ class GenerateAutosyncng extends Command
                     $type = $dcn;
                 }
 
-                $this->item($plans, strtoupper($networks['code']), $type, $networks['id']);
+                if ($net == strtoupper($networks['code']) || $net == "") {
+                    $this->item($plans, strtoupper($networks['code']), $type, $networks['id']);
+                }
             }
         }
     }

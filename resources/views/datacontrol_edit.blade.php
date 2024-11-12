@@ -55,6 +55,20 @@
                                 </div>
 
                                 <div class="input-group mt-2">
+                                    <div class="input-group-prepend"><span class="input-group-text">Code </span>
+                                    </div>
+                                    <input name="coded" class="form-control" placeholder="Enter category"
+                                           value="{{$data->coded}}">
+                                </div>
+
+                                <div class="input-group mt-2">
+                                    <div class="input-group-prepend"><span class="input-group-text">Plan ID </span>
+                                    </div>
+                                    <input name="plan_id" class="form-control" placeholder="Enter PlanID"
+                                           value="{{$data->plan_id}}">
+                                </div>
+
+                                <div class="input-group mt-2">
                                     <select class="custom-select form-control" name="status">
                                         <option value="1" {{$data->status == '1' ? 'selected': ''}}>Activate</option>
                                         <option value="0" {{$data->status == '0' ? 'selected': ''}}>Deactivate</option>

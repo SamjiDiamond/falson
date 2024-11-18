@@ -335,6 +335,13 @@ class SellTVController extends Controller
             } else {
                 return $ms->outputResp($request, $transid, 1, $dada);
             }
+        } elseif ($rep['data']['transaction']['status'] == "pending") {
+            $dada['server_ref'] = $rep['data']['transaction']['reference'];
+            if ($requester == "reseller") {
+                return $rs->outputResponse($request, $transid, 4, $dada);
+            } else {
+                return $ms->outputResp($request, $transid, 4, $dada);
+            }
         } else {
             if ($requester == "reseller") {
                 return $rs->outputResponse($request, $transid, 0, $dada);

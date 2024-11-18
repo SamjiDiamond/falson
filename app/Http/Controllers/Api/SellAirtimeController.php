@@ -314,12 +314,19 @@ class SellAirtimeController extends Controller
 
         $dada['server_response'] = $response;
 
-        if ($rep['data']['transaction']['status'] == "successful" || $rep['data']['transaction']['status'] == "pending") {
+        if ($rep['data']['transaction']['status'] == "successful") {
             $dada['server_ref'] = $rep['data']['transaction']['reference'];
             if ($requester == "reseller") {
                 return $rs->outputResponse($request, $transid, 1, $dada);
             } else {
                 return $ms->outputResp($request, $transid, 1, $dada);
+            }
+        } elseif ($rep['data']['transaction']['status'] == "pending") {
+            $dada['server_ref'] = $rep['data']['transaction']['reference'];
+            if ($requester == "reseller") {
+                return $rs->outputResponse($request, $transid, 4, $dada);
+            } else {
+                return $ms->outputResp($request, $transid, 4, $dada);
             }
         } else {
             if ($requester == "reseller") {

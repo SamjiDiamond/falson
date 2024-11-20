@@ -230,7 +230,7 @@ class SellElectricityController extends Controller
         $dada['server_ref'] = $rep['data']['transaction']['reference'];
 
         if ($rep['data']['transaction']['status'] == "successful") {
-            $dada['token'] = "";
+            $dada['token'] = $rep['data']['transaction']['token'];
             if ($requester == "reseller") {
                 return $rs->outputResponse($request, $transid, 1, $dada);
             } else {

@@ -227,6 +227,16 @@ class SellElectricityController extends Controller
             }
         }
 
+        $dada['message'] = $rep['message'];
+
+        if ($rep['status'] == "error") {
+            if ($requester == "reseller") {
+                return $rs->outputResponse($request, $transid, 0, $dada);
+            } else {
+                return $ms->outputResp($request, $transid, 0, $dada);
+            }
+        }
+
         $dada['server_ref'] = $rep['data']['transaction']['reference'];
 
         if ($rep['data']['transaction']['status'] == "successful") {

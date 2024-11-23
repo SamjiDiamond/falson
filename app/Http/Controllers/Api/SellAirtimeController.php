@@ -306,6 +306,11 @@ class SellAirtimeController extends Controller
 //            $response = '{ "status": "ok", "message": "no gateway found for this service, kindly set it.", "data": { "transaction": { "reference": "9d0e278b-3eee-4efc-bdc8-4fa5742b4303", "request_ref": "5254215632562300", "type": "MTN VTU", "details": "no gateway found for this service, kindly set it.", "amount": 100, "status": "failed", "request_data": { "request_ref": "5254215632562300", "phone": "08166939205", "product_id": "1", "amount": "100", "is_mtn_awuf": "false", "webhook_url": "false", "ported_no": "false" }, "balance_before": null, "balance_after": null, "created_at": "2024-09-20T14:06:25.000000Z", "gateway_id": null } } }';
         }
 
+        Log::info("AutoSync Transaction. - " . $transid);
+        Log::info($payload);
+        Log::info($response);
+
+
         $rep = json_decode($response, true);
 
         $tran = new ServeRequestController();

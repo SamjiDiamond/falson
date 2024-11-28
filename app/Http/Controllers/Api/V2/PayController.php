@@ -1178,7 +1178,7 @@ class PayController extends Controller
                 $t->save();
                 return response()->json(['success' => 1, 'message' => 'Your transaction was successful', 'ref' => $ref, 'debitAmount' => $dada['amount'], 'discountAmount' => $dada['discount'], 'token' => $dada['token']]);
             }
-            return response()->json(['success' => 0, 'message' => 'Your transaction is in progress', 'ref' => $ref, 'debitAmount' => $dada['amount'], 'discountAmount' => $dada['discount']]);
+            return response()->json(['success' => 0, 'message' => 'Oops! Transaction is pending. Kindly check if you have been debited before retry.', 'ref' => $ref, 'debitAmount' => $dada['amount'], 'discountAmount' => $dada['discount']]);
         }
 
         $t = Transaction::find($dada['tid']);

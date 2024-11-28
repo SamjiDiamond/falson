@@ -75,6 +75,13 @@ class SellElectricityController extends Controller
             } else {
                 return $ms->outputResp($request, $transid, 1, $dada);
             }
+        } elseif ($rep['data']['code'] == 400) {
+            $dada['server_ref'] = $rep['data']['reference'];
+            if ($requester == "reseller") {
+                return $rs->outputResponse($request, $transid, 4, $dada);
+            } else {
+                return $ms->outputResp($request, $transid, 4, $dada);
+            }
         } else {
             $dada['token'] = "Token: pending";
             if ($requester == "reseller") {

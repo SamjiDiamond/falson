@@ -73,6 +73,7 @@ class WalletTransferController extends Controller
             return response()->json(['success' => 0, 'message' => 'Required field(s) is missing']);
         }
 
+        return response()->json(['success' => 0, 'message' => 'Currently under maintenance']);
 
         $user=User::find(Auth::id());
 

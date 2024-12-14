@@ -182,18 +182,26 @@
 {{--                                        @elseif(strpos($user->target, "Reseller in progress") !== false)--}}
 {{--                                            <div class="col-md-6">--}}
 {{--                                                <form method="POST" action="/request_approve">--}}
-{{--                                                    @csrf--}}
-{{--                                                    <input type="hidden" name="type" value="reseller" />--}}
-{{--                                                    <input type="hidden" name="user_name" value="{{$user->user_name}}" />--}}
-{{--                                                    <button type="button" class="btn btn-gradient-primary btn-sm">Approve Reseller</button>--}}
-{{--                                                </form>--}}
-{{--                                            </div>--}}
-{{--                                        @endif--}}
+                                        {{--                                                    @csrf--}}
+                                        {{--                                                    <input type="hidden" name="type" value="reseller" />--}}
+                                        {{--                                                    <input type="hidden" name="user_name" value="{{$user->user_name}}" />--}}
+                                        {{--                                                    <button type="button" class="btn btn-gradient-primary btn-sm">Approve Reseller</button>--}}
+                                        {{--                                                </form>--}}
+                                        {{--                                            </div>--}}
+                                        {{--                                        @endif--}}
 
-                                        <a href="{{route('adminBannUnbann', $user->id)}}" type="button" class="btn @if($user->fraud == "" || $user->fraud == null) btn-gradient-danger @else btn-gradient-success  @endif  btn-sm">@if($user->fraud == "" || $user->fraud == null)Bann User @else UnBann User  @endif</a>
+                                        <a href="{{route('adminBannUnbann', $user->id)}}" type="button"
+                                           class="btn @if($user->fraud == "" || $user->fraud == null) btn-gradient-danger @else btn-gradient-success  @endif  btn-sm">@if($user->fraud == "" || $user->fraud == null)
+                                                Bann User
+                                            @else
+                                                UnBann User
+                                            @endif</a>
+                                        <a href="{{route('adminDelUser', $user->id)}}" type="button"
+                                           class="btn btn-danger btn-sm">Delete Permanently</a>
 
                                         @if($user->status == "admin" || $user->status == "superadmin")
-                                            <a href="{{route('adminPasswordReset', $user->id)}}" class="btn btn-gradient-danger btn-sm">Reset Admin Password</a>
+                                            <a href="{{route('adminPasswordReset', $user->id)}}"
+                                               class="btn btn-gradient-danger btn-sm">Reset Admin Password</a>
                                         @endif
                                     </div>
                                 </div>

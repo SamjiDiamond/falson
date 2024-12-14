@@ -149,6 +149,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/user-pin-reset', [UsersController::class, 'pinReset'])->name('userPinReset');
     Route::get('/admin-password-reset/{id}', [UsersController::class, 'passwordResetAdmin'])->name('adminPasswordReset');
     Route::get('/admin-bann-user/{id}', [UsersController::class, 'bannUnbann'])->name('adminBannUnbann');
+    Route::get('/admin-del-user/{id}', [UsersController::class, 'delUser'])->name('adminDelUser');
     Route::any('/wallet', [WalletController::class, 'index'])->name('wallet');
 
     Route::get('/virtual-accounts', [UsersController::class, 'vaccounts'])->name('virtual-accounts');

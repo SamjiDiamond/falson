@@ -635,10 +635,28 @@ class UsersController extends Controller
                 $message->from(env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME'));
             });
 
-            $response="User has been unbanned successfully";
+            $response = "User has been unbanned successfully";
         }
 
         return redirect()->route('profile', $user->user_name)->with("success", $response);
+    }
+
+    public function delUser($id)
+    {
+
+        $user = User::find($id);
+
+        if (!$user) {
+            return back()->with("error", "User deleted successfully");
+        }
+
+        if ($user->status == "admin" || $user->status == "superadmin") {
+            return back()->with("error", "Am admin account cannot be deleted");
+        }
+
+        $user->delete();
+
+        return redirect()->route('profile', $user->user_name)->with("success", "User deleted successfully");
     }
 
     public function loginattempt()

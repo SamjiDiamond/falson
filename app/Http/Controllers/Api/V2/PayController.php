@@ -725,7 +725,7 @@ class PayController extends Controller
 
             $am2r = $input['amount'] - (($number->discount / 100) * $input['amount']);
 
-            $message = "User: " . $input['user_name'] . ", Network: " . $input['network'] . ", Amount: " . $input['amount'] . " Number: " . $input['number'];
+            $message = "User: " . $input['user_name'] . ", Network: " . $input['network'] . ", Amount: " . $input['amount'] . ", Number: " . $input['number'] . ", Reference: " . $input['ref'] . ", Receiver: " . $input['receiver'];
             PushNotificationJob::dispatch("Holarmie", $message, "Airtime2Cash Notice");
             $mm = "There is a new Airtime Converter request with the details below. <br />" . $message;
             Mail::send(new AdminNotificationMail($mm));

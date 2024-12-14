@@ -101,6 +101,9 @@ Route::prefix('v2')->group(function () {
             Route::post('bulk-sms', [PayController::class, 'bulkSMS']);
 
             Route::post('epins', [PayController::class, 'epins']);
+
+            Route::post('username/validate', [WalletTransferController::class, 'validateUsername']);
+            Route::post('w2w/transfer', [WalletTransferController::class, 'transfer'])->middleware('check_UDS_middleware:wallet_transfer');
         });
 
         Route::get('profile', [UserController::class, 'profile']);
@@ -133,9 +136,6 @@ Route::prefix('v2')->group(function () {
         Route::post('payment/flutterwave', [OtherController::class, 'flutterwavePayment']);
 
         Route::get('sliders', [OthersController::class, 'sliders']);
-
-        Route::post('username/validate', [WalletTransferController::class, 'validateUsername']);
-        Route::post('w2w/transfer', [WalletTransferController::class, 'transfer'])->middleware('check_UDS_middleware:wallet_transfer');
 
         Route::get('apikey/regenerate', [UserController::class, 'requestAPIkey']);
         Route::get('getfaqs', [OtherController::class, 'getFAQs']);

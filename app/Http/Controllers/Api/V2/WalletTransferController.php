@@ -73,7 +73,7 @@ class WalletTransferController extends Controller
             return response()->json(['success' => 0, 'message' => 'Required field(s) is missing']);
         }
 
-        return response()->json(['success' => 0, 'message' => 'Currently under maintenance']);
+//        return response()->json(['success' => 0, 'message' => 'Currently under maintenance']);
 
         $user=User::find(Auth::id());
 
@@ -112,7 +112,8 @@ class WalletTransferController extends Controller
         $user->wallet-=$amount;
         $user->save();
 
-        $input['name']="wallet transfer";
+        $input['device_details'] = $request->header('device') ?? $_SERVER['HTTP_USER_AGENT'];
+        $input['name'] = "wallet transfer";
         $input['amount']=$amount;
         $input['status']='successful';
         $input['description']='Wallet Transfer from '. $user->user_name .' to '.$r_user->user_name.' with the sum of #'.$amount;

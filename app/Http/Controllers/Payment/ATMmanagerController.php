@@ -65,7 +65,7 @@ class ATMmanagerController extends Controller
                 $input["date"] = Carbon::now();
                 $input["server"] = $payment_method;
 
-                Transaction::create($input);
+                $tr = Transaction::create($input);
 
                 $input["type"] = "income";
                 $input["gl"]="Personal Account";
@@ -111,6 +111,8 @@ class ATMmanagerController extends Controller
 
                 $noti = new PushNotificationController();
                 $noti->PushNoti($input['user_name'], $notimssg, "Account Transfer Successful");
+
+                Mail::to($u->email)->send(new TransactionNotificationMail($tr));
 
                 $data = Settings::where('name', 'enable_referral_bonus')->first();
 

@@ -74,7 +74,7 @@ class SellTVController extends Controller
 
         $dada['server_response'] = $response;
 
-        if ($rep['code'] == 200) {
+        if ($rep['data']['code'] == 200) {
 //            $dada['server_ref'] = $rep['content']['transactions']['transactionId'];
             $dada['server_ref'] = $reqid;
             if ($requester == "reseller") {
@@ -82,18 +82,18 @@ class SellTVController extends Controller
             } else {
                 return $ms->outputResp($request, $transid, 1, $dada);
             }
-        } elseif ($rep['data']['code'] == 400) {
+        } elseif ($rep['data']['code'] == 300) {
             $dada['server_ref'] = $rep['data']['reference'];
-            if ($requester == "reseller") {
-                return $rs->outputResponse($request, $transid, 4, $dada);
-            } else {
-                return $ms->outputResp($request, $transid, 4, $dada);
-            }
-        } else {
             if ($requester == "reseller") {
                 return $rs->outputResponse($request, $transid, 0, $dada);
             } else {
                 return $ms->outputResp($request, $transid, 0, $dada);
+            }
+        } else {
+            if ($requester == "reseller") {
+                return $rs->outputResponse($request, $transid, 4, $dada);
+            } else {
+                return $ms->outputResp($request, $transid, 1, $dada);
             }
         }
     }

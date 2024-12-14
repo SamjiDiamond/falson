@@ -82,12 +82,12 @@ class SellDataController extends Controller
                 } else {
                     return $ms->outputResp($request, $transid, 1, $dada);
                 }
-            } elseif ($rep['data']['code'] == 400) {
+            } elseif ($rep['data']['code'] == 300) {
                 $dada['server_ref'] = $rep['data']['reference'];
                 if ($requester == "reseller") {
-                    return $rs->outputResponse($request, $transid, 4, $dada);
+                    return $rs->outputResponse($request, $transid, 0, $dada);
                 } else {
-                    return $ms->outputResp($request, $transid, 4, $dada);
+                    return $ms->outputResp($request, $transid, 0, $dada);
                 }
             } else {
                 $dada['message'] = $rep['data']['message'];
@@ -104,9 +104,9 @@ class SellDataController extends Controller
                 }
 
                 if ($requester == "reseller") {
-                    return $rs->outputResponse($request, $transid, 0, $dada);
+                    return $rs->outputResponse($request, $transid, 4, $dada);
                 } else {
-                    return $ms->outputResp($request, $transid, 0, $dada);
+                    return $ms->outputResp($request, $transid, 4, $dada);
                 }
             }
         } catch (\Exception $e) {

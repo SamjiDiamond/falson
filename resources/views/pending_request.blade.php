@@ -60,10 +60,12 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-                    <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                    <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap"
+                           style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                         <thead>
                         <tr>
                             <th>User Name</th>
+                            <th>Request Type</th>
                             <th>Business Name</th>
                             <th>Full Name</th>
                             <th>DOB</th>
@@ -76,20 +78,16 @@
                         <tbody>
                         @foreach($users as $user)
                             <tr>
-                                <td>
-                                    @if($user->photo!=null)
-                                        <img alt="image" class="rounded-circle thumb-sm mr-1" src="{{route('show.avatar', $user->photo}}">
-                                    @else
-                                        <img alt="image" class="rounded-circle thumb-sm mr-1" src="/img/mcd_logo.png">
-                                    @endif
-                                    {{$user->user_name }}</td>
+                                <td>{{$user->user_name }}</td>
+                                <td>{{strpos($user->target, "Reseller in progress") !== false ? "Reseller" : "Agent" }}</td>
                                 <td>{{$user->company_name }}</td>
                                 <td>{{$user->full_name }}</td>
                                 <td>{{$user->dob }}</td>
                                 <td>{{$user->phoneno}}</td>
                                 <td>{{$user->address}}</td>
                                 <td>{{$user->note}}</td>
-                                <td><a href="profile/{{ $user->user_name }}" class="btn btn-sm btn-success"><i class="fas fa-edit"></i></a></td>
+                                <td><a href="profile/{{ $user->user_name }}" class="btn btn-sm btn-success"><i
+                                            class="fas fa-edit"></i></a></td>
                             </tr>
                         @endforeach
                         </tbody>

@@ -159,7 +159,12 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <a class="carousel-control-prev" href="#carousel_1" role="button" data-slide="prev"><span class="carousel-control-prev-icon" aria-hidden="true"></span> <span class="sr-only">Previous</span> </a><a class="carousel-control-next" href="#carousel_1" role="button" data-slide="next"><span class="carousel-control-next-icon" aria-hidden="true"></span> <span class="sr-only">Next</span></a>
+                                        <a class="carousel-control-prev" href="#carousel_1" role="button"
+                                           data-slide="prev"><span class="carousel-control-prev-icon"
+                                                                   aria-hidden="true"></span> <span class="sr-only">Previous</span>
+                                        </a><a class="carousel-control-next" href="#carousel_1" role="button"
+                                               data-slide="next"><span class="carousel-control-next-icon"
+                                                                       aria-hidden="true"></span> <span class="sr-only">Next</span></a>
                                     </div>
                                 </div>
                             </div>
@@ -169,26 +174,30 @@
                                 <div class="card-body dash-info-carousel">
 
                                     <div class="d-flex justify-content-between">
-{{--                                        @if(strpos($user->target, "Agent in progress") !== false)--}}
-{{--                                            <div class="col-md-6">--}}
+                                        @if(strpos($user->target, "Agent in progress") !== false)
+                                            <div class="col-md-6">
 
-{{--                                                <form method="POST" action="/request_approve">--}}
-{{--                                                    @csrf--}}
-{{--                                                    <input type="hidden" name="type" value="agent" />--}}
-{{--                                                    <input type="hidden" name="user_name" value="{{$user->user_name}}" />--}}
-{{--                                                    <button type="submit" class="btn btn-gradient-primary btn-sm">Approve Agent</button>--}}
-{{--                                                </form>--}}
-{{--                                            </div>--}}
-{{--                                        @elseif(strpos($user->target, "Reseller in progress") !== false)--}}
-{{--                                            <div class="col-md-6">--}}
-{{--                                                <form method="POST" action="/request_approve">--}}
-                                        {{--                                                    @csrf--}}
-                                        {{--                                                    <input type="hidden" name="type" value="reseller" />--}}
-                                        {{--                                                    <input type="hidden" name="user_name" value="{{$user->user_name}}" />--}}
-                                        {{--                                                    <button type="button" class="btn btn-gradient-primary btn-sm">Approve Reseller</button>--}}
-                                        {{--                                                </form>--}}
-                                        {{--                                            </div>--}}
-                                        {{--                                        @endif--}}
+                                                <form method="POST" action="/request_approve">
+                                                    @csrf
+                                                    <input type="hidden" name="type" value="agent"/>
+                                                    <input type="hidden" name="user_name" value="{{$user->user_name}}"/>
+                                                    <button type="submit" class="btn btn-gradient-primary btn-sm">
+                                                        Approve Agent
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        @elseif(strpos($user->target, "Reseller in progress") !== false)
+                                            <div class="col-md-6">
+                                                <form method="POST" action="/request_approve">
+                                                    @csrf
+                                                    <input type="hidden" name="type" value="reseller"/>
+                                                    <input type="hidden" name="user_name" value="{{$user->user_name}}"/>
+                                                    <button type="submit" class="btn btn-gradient-primary btn-sm">
+                                                        Approve Reseller
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        @endif
 
                                         <a href="{{route('adminBannUnbann', $user->id)}}" type="button"
                                            class="btn @if($user->fraud == "" || $user->fraud == null) btn-gradient-danger @else btn-gradient-success  @endif  btn-sm">@if($user->fraud == "" || $user->fraud == null)

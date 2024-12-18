@@ -372,12 +372,16 @@ class UserController extends Controller
 
         $charges = $set->value;
 
-        if($charges > $user->wallet){
+        if ($charges > $user->wallet) {
             return response()->json(['success' => 0, 'message' => 'Insufficient fund. Kindly fund wallet and try again']);
         }
 
         if ($user->status == "reseller") {
             return response()->json(['success' => 0, 'message' => 'You can only request once']);
+        }
+
+        if ($user->target == "Reseller in Progress") {
+            return response()->json(['success' => 0, 'message' => 'You have a pending request']);
         }
 
         $key = "key_" . uniqid() . rand() . Carbon::now()->timestamp;
@@ -386,7 +390,6 @@ class UserController extends Controller
         $user->company_name = $input['company_name'];
         $user->bvn = $input['bvn'];
         $user->dob = $input['dob'];
-        $user->target = "";
         $user->api_key = $key;
         $user->target = "Reseller in Progress";
         $user->wallet -= $set->value;
@@ -395,13 +398,29 @@ class UserController extends Controller
         }
         $user->save();
 
-        $inputa["type"] = "income";
-        $inputa["gl"] = "reseller_upgrade";
-        $inputa["amount"] = $charges;
-        $inputa["narration"] = "Being amount charged for reseller upgrade from " . $user->user_name;
-        $inputa['date'] = Carbon::now();
+        if ($charges > 0) {
+            $input['name'] = "Reseller Upgrade";
+            $input['amount'] = $charges;
+            $input['status'] = 'successful';
+            $input['description'] = "Being fee charged for Reseller upgrade";
+            $input['user_name'] = $user->user_name;
+            $input['code'] = 'ruf';
+            $input['i_wallet'] = $user->wallet;
+            $input['f_wallet'] = $input['i_wallet'] - $charges;
+            $input["ip_address"] = "127.0.0.1:A";
+            $input["date"] = date("y-m-d H:i:s");
+            $input["extra"] = 'Initiated by ' . Auth::user()->full_name;
 
-        PndL::create($inputa);
+            Transaction::create($input);
+
+            $inputa["type"] = "income";
+            $inputa["gl"] = "reseller_upgrade";
+            $inputa["amount"] = $charges;
+            $inputa["narration"] = "Being amount charged for reseller upgrade from " . $user->user_name;
+            $inputa['date'] = Carbon::now();
+
+            PndL::create($inputa);
+        }
 
         $message = "Reseller request from ".$user->user_name;
         PushNotificationJob::dispatch("Holarmie",$message,"Reseller Upgrade Notice");

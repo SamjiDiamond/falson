@@ -275,8 +275,8 @@
                             @can('resellers-view')
                                 <li><a href="/resellers">Resellers</a></li>
                             @endcan
-                            {{--                            <li><a href="/pending_request">Pending Request</a></li>--}}
-                            <li><a href="{{route('topusers')}}">Top Users</a></li>
+                                <li><a href="/pending_request">Pending Request</a></li>
+                                <li><a href="{{route('topusers')}}">Top Users</a></li>
                             @can('dormant-users-view')
                                 <li><a href="/dormantusers">Dormant Users</a></li>
                             @endcan

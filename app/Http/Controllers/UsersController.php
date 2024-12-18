@@ -120,7 +120,7 @@ class UsersController extends Controller
     public function pending(Request $request)
     {
 
-        $users = User::where([['target', 'like', '%in progress%'], ['document', 1]])->latest()->get();
+        $users = User::where([['target', 'LIKE', '%in progress%']])->latest()->get();
         $tp = User::where('target', 'like', '%in progress%')->orderBy('id', 'desc')->count();
         $rp = User::where('target', 'like', '%Reseller in progress%')->orderBy('id', 'desc')->count();
         $ap = User::where('target', 'like', '%Agent in progress%')->orderBy('id', 'desc')->count();
@@ -199,24 +199,24 @@ class UsersController extends Controller
         $input = $request->all();
 
         if ($input["type"] == "agent") {
-            DB::table('tbl_agents')->where('user_name', $input['user_name'])->update(["status" => "agent", "target" => "Target: Buy 20 data and 20 airtime this month to complete your level."]);
+            User::where('user_name', $input['user_name'])->update(["status" => "agent", "target" => "Target: Buy 20 data and 20 airtime this month to complete your level."]);
 
-            $ap = User::where('user_name', $input['user_name'])->first();
+//            $ap = User::where('user_name', $input['user_name'])->first();
 
 
-            $GLOBALS['email'] = $ap->email;
-
-            $data = array('name' => $ap->full_name, 'date' => date("D, d M Y"));
-            Mail::send('email_agent', $data, function ($message) {
-                $message->to($GLOBALS['email'], 'MCD Agent')->subject('MCD Agent Approval');
-                $message->from('info@5starcompany.com.ng', '5Star Company');
-            });
+//            $GLOBALS['email'] = $ap->email;
+//
+//            $data = array('name' => $ap->full_name, 'date' => date("D, d M Y"));
+//            Mail::send('email_agent', $data, function ($message) {
+//                $message->to($GLOBALS['email'], 'MCD Agent')->subject('MCD Agent Approval');
+//                $message->from('info@5starcompany.com.ng', '5Star Company');
+//            });
         } else if ($input["type"] == "reseller") {
-            DB::table('tbl_agents')->where('user_name', $input['user_name'])->update(["status" => "reseller", "target" => "Reseller Activated"]);
+            User::where('user_name', $input['user_name'])->update(["status" => "reseller", "target" => "Reseller Activated"]);
         }
 
 
-        return redirect('profile/' . $input['user_name']);
+        return redirect('profile/' . $input['user_name'])->with("success", "Approved successfully");
 
     }
 

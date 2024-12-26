@@ -28,23 +28,42 @@ class ATMmanagerController extends Controller
         if ($payment_method == "Monnify") {
             $data = Settings::where('name', 'monnify_funding_charges')->first();
             $charges = $data->value;
-
-            $crAmount = $amount - $charges - $cfee;
+            if ($charges == "-1") {
+                $crAmount = $amount;
+                $charges = 0;
+            } else {
+                $crAmount = $amount - $charges - $cfee;
+            }
         } else if ($payment_method == "Paylony") {
             $data = Settings::where('name', 'paylony_funding_charges')->first();
             $charges = $data->value;
 
-            $crAmount = $amount - $charges - $cfee;
+            if ($charges == "-1") {
+                $crAmount = $amount;
+                $charges = 0;
+            } else {
+                $crAmount = $amount - $charges - $cfee;
+            }
         } else if ($payment_method == "Budpay") {
             $data = Settings::where('name', 'budpay_funding_charges')->first();
             $charges = $data->value;
 
-            $crAmount = $amount - $charges;
+            if ($charges == "-1") {
+                $crAmount = $amount;
+                $charges = 0;
+            } else {
+                $crAmount = $amount - $charges;
+            }
         } else {
             $data = Settings::where('name', 'funding_charges')->first();
             $charges = $data->value;
 
-            $crAmount = $amount - $charges;
+            if ($charges == "-1") {
+                $crAmount = $amount;
+                $charges = 0;
+            } else {
+                $crAmount = $amount - $charges;
+            }
         }
 
         $wallet = $u->wallet + $crAmount;
@@ -67,13 +86,15 @@ class ATMmanagerController extends Controller
 
                 $tr = Transaction::create($input);
 
-                $input["type"] = "income";
-                $input["gl"]="Personal Account";
-                $input["amount"] = $charges;
-                $input['status'] = 'successful';
-                $input["narration"] = "Being amount charged for using automated funding from " . $input["user_name"];
+                if ($charges > 0) {
+                    $input["type"] = "income";
+                    $input["gl"] = "Personal Account";
+                    $input["amount"] = $charges;
+                    $input['status'] = 'successful';
+                    $input["narration"] = "Being amount charged for using automated funding from " . $input["user_name"];
 
-                PndL::create($input);
+                    PndL::create($input);
+                }
 
 //                $input["description"] = "Being amount charged for using automated funding";
 //                $input["name"] = "Auto Charge";
@@ -98,7 +119,7 @@ class ATMmanagerController extends Controller
                 $input['deviceid'] = $input['code'];
                 Wallet::create($input);
 
-                if ($cfee != 0) {
+                if ($cfee > 0) {
                     $input["type"] = "expenses";
                     $input["gl"] = $payment_method;
                     $input["amount"] = $cfee;

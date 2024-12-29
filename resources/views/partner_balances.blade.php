@@ -19,7 +19,8 @@
                                 <th>Bonus Balance</th>
                                 <th>Airtel CG</th>
                                 <th>GLO CG</th>
-                                <th>Action</th>
+                                <th>MTN CG</th>
+                                <th>9Mobile CG</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -31,19 +32,8 @@
                                 <td>₦0</td>
                                 <td>{{$ogdams['cgAirtel']}}</td>
                                 <td>{{$ogdams['cgGlo']}}</td>
-                                <td>
-                                    <div class="dropdown d-inline-block float-right">
-                                        <a class="nav-link dropdown-toggle arrow-none" id="dLabel4"
-                                           data-toggle="dropdown" href="#" role="button" aria-haspopup="false"
-                                           aria-expanded="false"><i
-                                                class="fas fa-ellipsis-v font-20 text-muted"></i></a>
-                                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dLabel4"><a
-                                                class="dropdown-item" href="#">Creat Project</a> <a
-                                                class="dropdown-item" href="#">Open Project</a> <a class="dropdown-item"
-                                                                                                   href="#">Tasks
-                                                Details</a></div>
-                                    </div>
-                                </td>
+                                <td>{{$ogdams['cgMtn']}}</td>
+                                <td>{{$ogdams['cg9mobile']}}</td>
                             </tr>
                             <tr>
                                 <td><img
@@ -54,19 +44,8 @@
                                 <td>₦{{$hw['bonus']}}</td>
                                 <td>0</td>
                                 <td>0</td>
-                                <td>
-                                    <div class="dropdown d-inline-block float-right">
-                                        <a class="nav-link dropdown-toggle arrow-none" id="dLabel5"
-                                           data-toggle="dropdown" href="#" role="button" aria-haspopup="false"
-                                           aria-expanded="false"><i
-                                                class="fas fa-ellipsis-v font-20 text-muted"></i></a>
-                                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dLabel5"><a
-                                                class="dropdown-item" href="#">Creat Project</a> <a
-                                                class="dropdown-item" href="#">Open Project</a> <a class="dropdown-item"
-                                                                                                   href="#">Tasks
-                                                Details</a></div>
-                                    </div>
-                                </td>
+                                <td>0</td>
+                                <td>0</td>
                             </tr>
                             <tr>
                                 <td><img src="https://uzobestgsm.com/static/styling/img/logo.png" alt=""
@@ -76,19 +55,8 @@
                                 <td>₦{{$uzobest['bonus_balance']}}</td>
                                 <td>0</td>
                                 <td>0</td>
-                                <td>
-                                    <div class="dropdown d-inline-block float-right">
-                                        <a class="nav-link dropdown-toggle arrow-none" id="dLabel5"
-                                           data-toggle="dropdown" href="#" role="button" aria-haspopup="false"
-                                           aria-expanded="false"><i
-                                                class="fas fa-ellipsis-v font-20 text-muted"></i></a>
-                                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dLabel5"><a
-                                                class="dropdown-item" href="#">Creat Project</a> <a
-                                                class="dropdown-item" href="#">Open Project</a> <a class="dropdown-item"
-                                                                                                   href="#">Tasks
-                                                Details</a></div>
-                                    </div>
-                                </td>
+                                <td>0</td>
+                                <td>0</td>
                             </tr>
                             <tr>
                                 <td><img src="https://iyiinstant.com/static/styling/images/tt.png" alt=""
@@ -98,19 +66,8 @@
                                 <td>₦{{$iyii['bonus_balance']}}</td>
                                 <td>0</td>
                                 <td>0</td>
-                                <td>
-                                    <div class="dropdown d-inline-block float-right">
-                                        <a class="nav-link dropdown-toggle arrow-none" id="dLabel5"
-                                           data-toggle="dropdown" href="#" role="button" aria-haspopup="false"
-                                           aria-expanded="false"><i
-                                                class="fas fa-ellipsis-v font-20 text-muted"></i></a>
-                                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dLabel5"><a
-                                                class="dropdown-item" href="#">Creat Project</a> <a
-                                                class="dropdown-item" href="#">Open Project</a> <a class="dropdown-item"
-                                                                                                   href="#">Tasks
-                                                Details</a></div>
-                                    </div>
-                                </td>
+                                <td>0</td>
+                                <td>0</td>
                             </tr>
                             <tr>
                                 <td><img
@@ -121,41 +78,19 @@
                                 <td>₦{{$autosync['commission_balance']}}</td>
                                 <td>0</td>
                                 <td>0</td>
-                                <td>
-                                    <div class="dropdown d-inline-block float-right">
-                                        <a class="nav-link dropdown-toggle arrow-none" id="dLabel5"
-                                           data-toggle="dropdown" href="#" role="button" aria-haspopup="false"
-                                           aria-expanded="false"><i
-                                                class="fas fa-ellipsis-v font-20 text-muted"></i></a>
-                                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dLabel5"><a
-                                                class="dropdown-item" href="#">Creat Project</a> <a
-                                                class="dropdown-item" href="#">Open Project</a> <a class="dropdown-item"
-                                                                                                   href="#">Tasks
-                                                Details</a></div>
-                                    </div>
-                                </td>
+                                <td>0</td>
+                                <td>0</td>
                             </tr>
                             <tr>
                                 <td><img src="https://ringo.ng/assets/logo-71fb7793.svg" alt=""
-                                         class="rounded-circle thumb-sm mr-1">AutoSyncNG
+                                         class="rounded-circle thumb-sm mr-1">Ringo
                                 </td>
-                                <td>₦{{number_format($autosync['wallet_balance'])}}</td>
-                                <td>₦{{$autosync['commission_balance']}}</td>
+                                <td>₦{{number_format($ringo['balance'])}}</td>
+                                <td>₦{{number_format($ringo['commission_balance'])}}</td>
                                 <td>0</td>
                                 <td>0</td>
-                                <td>
-                                    <div class="dropdown d-inline-block float-right">
-                                        <a class="nav-link dropdown-toggle arrow-none" id="dLabel5"
-                                           data-toggle="dropdown" href="#" role="button" aria-haspopup="false"
-                                           aria-expanded="false"><i
-                                                class="fas fa-ellipsis-v font-20 text-muted"></i></a>
-                                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dLabel5"><a
-                                                class="dropdown-item" href="#">Creat Project</a> <a
-                                                class="dropdown-item" href="#">Open Project</a> <a class="dropdown-item"
-                                                                                                   href="#">Tasks
-                                                Details</a></div>
-                                    </div>
-                                </td>
+                                <td>0</td>
+                                <td>0</td>
                             </tr>
                             </tbody>
                         </table>

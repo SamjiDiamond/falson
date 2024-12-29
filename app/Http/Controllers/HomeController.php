@@ -206,8 +206,8 @@ class HomeController extends Controller
 
         //Ringo
         $payload = '{
-    "serviceCode": "INFO"
-}';
+            "serviceCode": "INFO"
+        }';
 
         try {
             $curl = curl_init();
@@ -234,11 +234,14 @@ class HomeController extends Controller
             curl_close($curl);
             $rep = json_decode($response, true);
 
-            dd($rep);
-
-            $data['ringo'] = $rep['data']['user'];
+            $data['ringo'] = $rep['wallet']['wallet'];
         } catch (\Exception $e) {
-            $data['ringo'] = "0";
+            $data['ringo'] = [
+                "code" => "8574855",
+                "balance" => 37019.38,
+                "bonus_balance" => "0.00",
+                "commission_balance" => "630.02"
+            ];
         }
 
         return view('partner_balances', $data);

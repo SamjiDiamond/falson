@@ -39,10 +39,6 @@ Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
 
-
-Route::get('partner-balances', [HomeController::class, 'partnerBalances'])->name('partnerBalances');
-
-
 Route::get('/reringo/{id}', function ($id) {
 
     $curl = curl_init();
@@ -360,7 +356,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('allsettings-edit/{id}', [HomeController::class, 'allsettingsEdit'])->name('allsettingsEdit');
         Route::post('allsettings-update', [HomeController::class, 'allsettingsUpdate'])->name('allsettingsUpdate');
 
-//        Route::get('partner-balances', [HomeController::class, 'partnerBalances'])->name('partnerBalances');
+        Route::get('partner-balances', [HomeController::class, 'partnerBalances'])->name('partnerBalances');
 
         Route::post('/updateLevel', [UsersController::class, 'updateLevel'])->name('updateLevel');
         Route::post('/datacontrol1', [ServerController::class, 'updatedataserve'])->name('datacontrol1');

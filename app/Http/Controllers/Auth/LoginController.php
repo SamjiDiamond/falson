@@ -85,6 +85,7 @@ class LoginController extends Controller
                 }
 
                 $nl->status = 0;
+                $nl->attempt += 1;
                 $nl->save();
 
 

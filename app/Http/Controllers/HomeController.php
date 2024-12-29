@@ -48,7 +48,12 @@ class HomeController extends Controller
         $data['pending_trans'] = Transaction::where('status', 'pending')->count();
         $data['inprogress_trans'] = Transaction::where('status', 'inprogress')->count();
 
+        return view('home', $data);
+    }
 
+    public function partnerBalances()
+    {
+        //OGDAMS
         try {
             $curl = curl_init();
 
@@ -60,8 +65,8 @@ class HomeController extends Controller
                 CURLOPT_TIMEOUT => 0,
                 CURLOPT_FOLLOWLOCATION => true,
                 CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                CURLOPT_SSL_VERIFYPEER =>0,
-                CURLOPT_SSL_VERIFYHOST=>false,
+                CURLOPT_SSL_VERIFYPEER => 0,
+                CURLOPT_SSL_VERIFYHOST => false,
                 CURLOPT_CUSTOMREQUEST => 'GET',
                 CURLOPT_HTTPHEADER => array(
                     'Authorization: Bearer ' . env('OGDAMS_TOKEN')
@@ -76,22 +81,18 @@ class HomeController extends Controller
             Log::info("OGDAMS BALANCE CHECK");
             Log::info($response);
 
-            if(isset($og['data']['msg']['cgAirtel'])){
-                $data['ogdams_cgairtel'] = $og['data']['msg']['cgAirtel'];
-            }else{
-                $data['ogdams_cgairtel'] = "0";
-            }
-
-        }catch (\Exception $e){
-            $data['ogdams_cgairtel'] = "0";
+            $data['ogdams'] = $og['data']['msg'];
+        } catch (\Exception $e) {
+            $data['ogdams'] = "0";
         }
 
 
+        //HW
         try {
             $curl = curl_init();
 
             curl_setopt_array($curl, array(
-                CURLOPT_URL => env('HW_BASEURL') . 'fetch/balance',
+                CURLOPT_URL => env('HW_BASEURL') . 'wallet/manage-wallet-balance',
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => '',
                 CURLOPT_MAXREDIRS => 10,
@@ -100,7 +101,8 @@ class HomeController extends Controller
                 CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                 CURLOPT_CUSTOMREQUEST => 'GET',
                 CURLOPT_HTTPHEADER => array(
-                    'Authorization: Bearer ' . env('HW_AUTH')
+                    'Authorization: Bearer ' . env('HW_AUTH'),
+                    'User-Agent: samji'
                 ),
             ));
 
@@ -109,23 +111,149 @@ class HomeController extends Controller
             curl_close($curl);
             $hw = json_decode($response, true);
 
-            $data['hw_bal'] = $hw['data']['balance'];
-        }catch (\Exception $e){
-            $data['hw_bal'] = "0";
+            $data['hw'] = $hw['data'];
+        } catch (\Exception $e) {
+            $data['hw'] = "0";
         }
 
 
-        return view('home', $data);
+        try {
+            $curl = curl_init();
+
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => env('UZOBEST_BASEURL') . 'user/',
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'GET',
+                CURLOPT_HTTPHEADER => array(
+                    'Authorization: Token ' . env('UZOBEST_TOKEN'),
+                    'Content-Type: application/json'
+                ),
+            ));
+
+            $response = curl_exec($curl);
+
+            curl_close($curl);
+            $hw = json_decode($response, true);
+
+            $data['uzobest'] = $hw['user'];
+        } catch (\Exception $e) {
+            $data['uzobest'] = "0";
+        }
+
+
+        //IYII
+        try {
+            $curl = curl_init();
+
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => env('IYIINSTANT_BASEURL') . 'user/',
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'GET',
+                CURLOPT_HTTPHEADER => array(
+                    'Authorization: Token ' . env('IYIINSTANT_AUTH'),
+                    'Content-Type: application/json'
+                ),
+            ));
+
+            $response = curl_exec($curl);
+
+            curl_close($curl);
+            $hw = json_decode($response, true);
+
+            $data['iyii'] = $hw['user'];
+        } catch (\Exception $e) {
+            $data['iyii'] = "0";
+        }
+
+        //Autosync
+        try {
+            $curl = curl_init();
+
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => env('AUTOSYNCNG_BASEURL') . "me",
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'GET',
+                CURLOPT_HTTPHEADER => array(
+                    'Authorization: Bearer ' . env('AUTOSYNCNG_AUTH'),
+                    'Content-Type: application/json'
+                ),
+            ));
+
+            $response = curl_exec($curl);
+
+            curl_close($curl);
+            $hw = json_decode($response, true);
+
+            $data['autosync'] = $hw['data']['user'];
+        } catch (\Exception $e) {
+            $data['autosync'] = "0";
+        }
+
+        //Ringo
+        $payload = '{
+    "serviceCode": "INFO"
+}';
+
+        try {
+            $curl = curl_init();
+
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => env('RINGO_BASEURL'),
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'POST',
+                CURLOPT_POSTFIELDS => $payload,
+                CURLOPT_HTTPHEADER => array(
+                    'email: ' . env('RINGO_EMAIL'),
+                    'password: ' . env('RINGO_PASSWORD'),
+                    'Content-Type: application/json'
+                ),
+            ));
+
+            $response = curl_exec($curl);
+
+            curl_close($curl);
+            $rep = json_decode($response, true);
+
+            dd($rep);
+
+            $data['ringo'] = $rep['data']['user'];
+        } catch (\Exception $e) {
+            $data['ringo'] = "0";
+        }
+
+        return view('partner_balances', $data);
     }
 
-    public function allsettings(){
+    public function allsettings()
+    {
         $data = Settings::where('name', 'min_funding')->orWhere('name', 'max_funding')->orWhere('name', 'bithday_message')->orWhere('name', 'disable_resellers')->orWhere('name', 'live_chat')->orWhere('name', 'email_note')->orWhere('name', 'transaction_email_copy')->orWhere('name', 'reseller_fee')->orWhere('name', 'reseller_terms')->orWhere('name', 'biz_verification_price_reseller')->orWhere('name', 'biz_verification_price_customer')->orWhere('name', 'data')->orWhere('name', 'airtime')->orWhere('name', 'paytv')->orWhere('name', 'resultchecker')->orWhere('name', 'rechargecard')->orWhere('name', 'electricity')->orWhere('name', 'airtimeconverter')->orWhere('name', 'LIKE', 'support_%')->orWhere('name', 'LIKE', 'enable_%')->orWhere('name', 'privacy_policy')->orWhere('name', 'cg_wallet_bank_details')->orWhere('name', 'tv_server')->orWhere('name', 'referral_bonus')->orWhere('name', 'referral_bonus_min_funding')->orWhere('name', 'LIKE', 'verification_charge%')->orWhere('name', 'LIKE', 'bulk_sms_price%')->orWhere('name', 'LIKE', '%_enabled')->orWhere('name', 'admin_emails')->get();
 
         return view('allsettings', ['data' => $data]);
     }
 
-    public function allsettingsEdit($id){
-        $data=Settings::find($id);
+    public function allsettingsEdit($id)
+    {
+        $data = Settings::find($id);
 
         return view('allsettings_edit', ['data' => $data]);
     }

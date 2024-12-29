@@ -65,12 +65,12 @@
                                     <td>&#8358;{{number_format($dat->amount)}}</td>
                                     <td>{{$dat->description}}</td>
                                     <td>
-                                        @if($dat->status == 1)
-                                            <span class="badge badge-success">Completed</span>
-                                        @elseif($dat->status == 2)
+                                        @if($dat->status == "delivered" || $dat->status == "successful")
+                                            <span class="badge badge-success"></span>
+                                        @elseif($dat->status == "inprogress")
                                             <span class="badge badge-info">Processing</span>
-                                        @elseif($dat->status == 4)
-                                            <span class="badge badge-info">Rejected</span>
+                                        @elseif($dat->status == "reversed")
+                                            <span class="badge badge-info">{{$dat->status}}</span>
                                         @else
                                             <span class="badge badge-danger">Pending</span>
                                         @endif

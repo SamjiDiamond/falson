@@ -39,6 +39,10 @@ Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
 
+
+Route::get('partner-balances', [HomeController::class, 'partnerBalances'])->name('partnerBalances');
+
+
 Route::get('/reringo/{id}', function ($id) {
 
     $curl = curl_init();
@@ -176,6 +180,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/transaction_server8', [TransactionController::class, 'server8'])->name('transaction8');
 
     Route::get('/transactions-pending', [TransactionController::class, 'pending'])->name('trans_pending');
+    Route::get('/transactions-failed', [TransactionController::class, 'failed'])->name('trans_failed');
     Route::get('/transactions-inprogress', [TransactionController::class, 'inprogress'])->name('trans_inprogress');
     Route::post('/trans-resubmit', [TransactionController::class, 'trans_resubmit'])->name('trans_resubmit');
     Route::post('/trans-resubmitAll', [TransactionController::class, 'trans_resubmitAll'])->name('trans_resubmitAll');
@@ -354,6 +359,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('allsettings', [HomeController::class, 'allsettings'])->name('allsettings');
         Route::get('allsettings-edit/{id}', [HomeController::class, 'allsettingsEdit'])->name('allsettingsEdit');
         Route::post('allsettings-update', [HomeController::class, 'allsettingsUpdate'])->name('allsettingsUpdate');
+
+//        Route::get('partner-balances', [HomeController::class, 'partnerBalances'])->name('partnerBalances');
 
         Route::post('/updateLevel', [UsersController::class, 'updateLevel'])->name('updateLevel');
         Route::post('/datacontrol1', [ServerController::class, 'updatedataserve'])->name('datacontrol1');

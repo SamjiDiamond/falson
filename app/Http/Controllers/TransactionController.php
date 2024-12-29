@@ -173,6 +173,14 @@ class TransactionController extends Controller
     }
 
 
+    public function failed(Request $request)
+    {
+        $data = Transaction::where('status', 'reversed')->orderBy('id', 'desc')->paginate(25);
+
+        return view('transactions_failed', ['data' => $data, 'name' => 'Reversed']);
+    }
+
+
     public function inprogress(Request $request)
     {
         $data = Transaction::where('status', 'inprogress')->orderBy('id', 'desc')->paginate(25);

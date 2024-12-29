@@ -53,26 +53,34 @@
                 @endcan
                 <li class="list-inline-item"><a href="{{route('change_password')}}" class="" data-toggle="tooltip" data-placement="top" title="Change Password"><i class="dripicons-lock text-purple"></i></a></li>
                 @can('settings-view')
-                    <li class="list-inline-item"><a href="{{route('allsettings')}}" class="" data-toggle="tooltip" data-placement="top" title="Settings"><i class="dripicons-gear text-dark"></i></a></li>
+                    <li class="list-inline-item"><a href="{{route('allsettings')}}" class="" data-toggle="tooltip"
+                                                    data-placement="top" title="Settings"><i
+                                class="dripicons-gear text-dark"></i></a></li>
                 @endcan
-                <li class="list-inline-item"><a href="/logout" class="" data-toggle="tooltip" data-placement="top" title="Log out"><i class="dripicons-power text-danger"></i></a></li>
+                <li class="list-inline-item"><a href="/logout" class="" data-toggle="tooltip" data-placement="top"
+                                                title="Log out"><i class="dripicons-power text-danger"></i></a></li>
             </ul>
         </div>
         <div class="sidebar-inner slimscrollleft">
             <div id="sidebar-menu">
                 <ul>
                     <li class="menu-title">Main</li>
-                    <li><a href="/home" class="waves-effect"><i class="dripicons-device-desktop"></i> <span>Dashboard</span></a></li>
+                    <li><a href="/home" class="waves-effect"><i class="dripicons-device-desktop"></i>
+                            <span>Dashboard</span></a></li>
+                    <li><a href="{{route('partnerBalances')}}" class="waves-effect"><i
+                                class="dripicons-battery-full"></i> <span>Partner Balances</span></a></li>
                     @can('audit-view')
-                        <li><a href="{{route('audits')}}" class="waves-effect"><i class="dripicons-alarm"></i> <span>Audits</span></a></li>
+                        <li><a href="{{route('audits')}}" class="waves-effect"><i class="dripicons-alarm"></i> <span>Audits</span></a>
+                        </li>
                     @endcan
                     @can('announcement-create')
-                        <li><a href="{{route('addgnews')}}" class="waves-effect"><i class="dripicons-bell"></i> <span>Announcement</span></a></li>
+                        <li><a href="{{route('addgnews')}}" class="waves-effect"><i class="dripicons-bell"></i> <span>Announcement</span></a>
+                        </li>
                     @endcan
 
                     @canany(['all-transactions-view','data-transactions-view','airtime-transactions-view', 'tv-transactions-view', 'electricity-transactions-view','resultchecker-transactions-view', 'funding-transactions-view', 'pending-transactions-view', 'find-transactions-view', 'add-airtime-transaction-view', 'add-data-transaction-view', 'reverse-transaction-view' ])
-                    <li class="has_sub">
-                        <a href="javascript:void(0);" class="waves-effect"><i class="dripicons-blog"></i><span> Transactions </span>
+                        <li class="has_sub">
+                            <a href="javascript:void(0);" class="waves-effect"><i class="dripicons-blog"></i><span> Transactions </span>
                             {{--                            <span class="badge badge-pill badge-info float-right">8</span>--}}
                             <span class="float-right"><i class="mdi mdi-chevron-right"></i></span>
                         </a>
@@ -116,26 +124,30 @@
                                 @endcan
 
                                 @can('funding-transactions-view')
-                                    <li><a href="{{route('transaction_bonus_history')}}">Bonus History</a></li>
-                                @endcan
+                                <li><a href="{{route('transaction_bonus_history')}}">Bonus History</a></li>
+                            @endcan
 
-                                @can('pending-transactions-view')
-                                    <li><a href="{{route('trans_pending')}}">Pending Transactions</a></li>
-                                @endcan
+                            @can('pending-transactions-view')
+                                <li><a href="{{route('trans_pending')}}">Pending Transactions</a></li>
+                            @endcan
 
-                                @can('pending-transactions-view')
-                                    <li><a href="{{route('trans_inprogress')}}">Inprogress Transactions</a></li>
-                                @endcan
+                            @can('pending-transactions-view')
+                                <li><a href="{{route('trans_inprogress')}}">Inprogress Transactions</a></li>
+                            @endcan
 
-                                @can('find-transactions-view')
-                                    <li><a href="{{route('findtransaction')}}">Find Transaction</a></li>
-                                @endcan
+                            @can('pending-transactions-view')
+                                <li><a href="{{route('trans_failed')}}">Failed Transactions</a></li>
+                            @endcan
 
-                                @can('add-airtime-transaction-view')
-                                    <li><a href="/addtransaction">Add Airtime Transaction</a></li>
-                                @endcan
+                            @can('find-transactions-view')
+                                <li><a href="{{route('findtransaction')}}">Find Transaction</a></li>
+                            @endcan
 
-                                @can('add-data-transaction-view')
+                            @can('add-airtime-transaction-view')
+                                <li><a href="/addtransaction">Add Airtime Transaction</a></li>
+                            @endcan
+
+                            @can('add-data-transaction-view')
                                 <li><a href="/adddatatransaction">Add Data Transaction</a></li>
                             @endcan
 

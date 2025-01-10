@@ -110,7 +110,7 @@ class SellDataController extends Controller
                 }
             }
         } catch (\Exception $e) {
-            $dada['message'] = $rep['error'][0]['msg'];
+//            $dada['message'] = $rep['error'][0]['msg'];
             if ($requester == "reseller") {
                 return $rs->outputResponse($request, $transid, 0, $dada);
             } else {

@@ -70,53 +70,53 @@ class AutosyncngWebhookController extends Controller
             $tran->save();
         }
 
-        if ($input['transaction']['status'] == "failed") {
-            $desc = "Being reversal of " . $tran->description;
-            $user_name = $tran->user_name;
+        // if ($input['transaction']['status'] == "failed") {
+        //     $desc = "Being reversal of " . $tran->description;
+        //     $user_name = $tran->user_name;
 
-            $rtran = Transaction::where('ref', '=', $tran->ref)->get();
+        //     $rtran = Transaction::where('ref', '=', $tran->ref)->get();
 
-            foreach ($rtran as $tran) {
-                $tran->status = "reversed";
-                $tran->save();
+        //     foreach ($rtran as $tran) {
+        //         $tran->status = "reversed";
+        //         $tran->save();
 
-                $amount = $tran->amount;
+        //         $amount = $tran->amount;
 
-                $user = User::where("user_name", "=", $tran->user_name)->first();
+        //         $user = User::where("user_name", "=", $tran->user_name)->first();
 
-                if ($tran->code == "tcommission") {
-                    $nBalance = $user->agent_commision - $tran->amount;
+        //         if ($tran->code == "tcommission") {
+        //             $nBalance = $user->agent_commision - $tran->amount;
 
-                    $input["description"] = "Being reversal of " . $tran->description;
-                    $input["name"] = "Reversal";
-                    $input["status"] = "successful";
-                    $input["code"] = "reversal";
-                    $input["amount"] = $amount;
-                    $input["user_name"] = $tran->user_name;
-                    $input["i_wallet"] = $user->agent_commision;
-                    $input["f_wallet"] = $nBalance;
-                    $input["extra"] = 'Initiated by webhook';
+        //             $input["description"] = "Being reversal of " . $tran->description;
+        //             $input["name"] = "Reversal";
+        //             $input["status"] = "successful";
+        //             $input["code"] = "reversal";
+        //             $input["amount"] = $amount;
+        //             $input["user_name"] = $tran->user_name;
+        //             $input["i_wallet"] = $user->agent_commision;
+        //             $input["f_wallet"] = $nBalance;
+        //             $input["extra"] = 'Initiated by webhook';
 
-                    $user->update(["agent_commision" => $nBalance]);
-                    Transaction::create($input);
-                } else {
-                    $nBalance = $user->wallet + $tran->amount;
+        //             $user->update(["agent_commision" => $nBalance]);
+        //             Transaction::create($input);
+        //         } else {
+        //             $nBalance = $user->wallet + $tran->amount;
 
-                    $input["description"] = "Being reversal of " . $tran->description;
-                    $input["name"] = "Reversal";
-                    $input["status"] = "successful";
-                    $input["code"] = "reversal";
-                    $input["amount"] = $amount;
-                    $input["user_name"] = $tran->user_name;
-                    $input["i_wallet"] = $user->wallet;
-                    $input["f_wallet"] = $nBalance;
-                    $input["ref"] = "refund_" . $tran->ref;
-                    $input["extra"] = 'Initiated by webhook';
+        //             $input["description"] = "Being reversal of " . $tran->description;
+        //             $input["name"] = "Reversal";
+        //             $input["status"] = "successful";
+        //             $input["code"] = "reversal";
+        //             $input["amount"] = $amount;
+        //             $input["user_name"] = $tran->user_name;
+        //             $input["i_wallet"] = $user->wallet;
+        //             $input["f_wallet"] = $nBalance;
+        //             $input["ref"] = "refund_" . $tran->ref;
+        //             $input["extra"] = 'Initiated by webhook';
 
-                    $user->update(["wallet" => $nBalance]);
-                    Transaction::create($input);
-                }
-            }
+        //             $user->update(["wallet" => $nBalance]);
+        //             Transaction::create($input);
+        //         }
+        //     }
 
             try {
                 $at = new PushNotificationController();

@@ -81,6 +81,10 @@ class ValidationController extends Controller
             return response()->json(['success' => 0, 'message' => 'NIN KYC can only be done once']);
         }
 
+        if ($username->full_name == null) {
+            return response()->json(['success' => 0, 'message' => 'Kindly update your name on your profile to proceed']);
+        }
+
 
         if (isset($input['bvn'])) {
             $bvne = User::where([['email', '!=', $input['email']], ['bvn', $input['bvn']]])->first();
@@ -163,7 +167,131 @@ class ValidationController extends Controller
             $response = json_decode($response, true);
             $token = $response['responseBody']['accessToken'];
 
-            Log::info("Monnify Account Update Payload - " . $payload);
+            if (isset($input['bvn'])) {
+                $payload = '{
+                "bvn":"' . $input['bvn'] . '",
+                "name": "' . $username->full_name . '",
+                "dateOfBirth": "03-Oct-1993",
+                "mobileNo": "' . $username->phoneno . '"
+                }';
+
+                Log::info("Monnify Account BVN Verification Payload - " . $payload);
+
+                $curl = curl_init();
+                curl_setopt_array($curl, array(
+                    CURLOPT_URL => env("MONNIFY_URL") . "/v1/vas/bvn-details-match",
+                    CURLOPT_RETURNTRANSFER => true,
+                    CURLOPT_ENCODING => "",
+                    CURLOPT_MAXREDIRS => 10,
+                    CURLOPT_TIMEOUT => 0,
+                    CURLOPT_FOLLOWLOCATION => true,
+                    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                    CURLOPT_CUSTOMREQUEST => "POST",
+                    CURLOPT_SSL_VERIFYPEER => false,
+                    CURLOPT_POSTFIELDS => $payload,
+                    CURLOPT_HTTPHEADER => array(
+                        "Content-Type: application/json",
+                        "Authorization: Bearer " . $token
+                    ),
+                ));
+
+                $response = curl_exec($curl);
+
+                curl_close($curl);
+
+//            echo $response;
+
+                Log::info("Monnify Account BVN Verification");
+                Log::info("Monnify:- " . json_encode($response));
+                Log::info($response);
+
+                $response = json_decode($response, true);
+
+                if ($response['requestSuccessful']) {
+
+                    if ($settM->value > 0) {
+                        if ($username->wallet <= 0) {
+                            return response()->json(['success' => 0, 'message' => 'Error, wallet balance too low']);
+                        }
+
+                        if ($username->wallet < $settM->value) {
+                            return response()->json(['success' => 0, 'message' => 'Error, insufficient balance to complete request']);
+                        }
+
+                        $this->chargeCustomer4KYC($settM, $input, $username);
+                    }
+
+                    if ($response['responseBody']['name']['matchPercentage'] < 30) {
+                        return response()->json(['success' => 0, 'message' => 'BVN did not match your account name. Kindly contact customer care for help']);
+                    }
+
+                } else {
+                    return response()->json(['success' => 0, 'message' => 'Invalid BVN supplied. Check and try again']);
+                }
+
+            }
+
+            if (isset($input['nin'])) {
+                $payload = '{
+                "nin":"' . $input['nin'] . '"
+                }';
+
+                Log::info("Monnify Account NIN Verification Payload - " . $payload);
+
+                $curl = curl_init();
+                curl_setopt_array($curl, array(
+                    CURLOPT_URL => env("MONNIFY_URL") . "/v1/vas/nin-details",
+                    CURLOPT_RETURNTRANSFER => true,
+                    CURLOPT_ENCODING => "",
+                    CURLOPT_MAXREDIRS => 10,
+                    CURLOPT_TIMEOUT => 0,
+                    CURLOPT_FOLLOWLOCATION => true,
+                    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                    CURLOPT_CUSTOMREQUEST => "POST",
+                    CURLOPT_SSL_VERIFYPEER => false,
+                    CURLOPT_POSTFIELDS => $payload,
+                    CURLOPT_HTTPHEADER => array(
+                        "Content-Type: application/json",
+                        "Authorization: Bearer " . $token
+                    ),
+                ));
+
+                $response = curl_exec($curl);
+
+                curl_close($curl);
+
+//            echo $response;
+
+                Log::info("Monnify Account NIN Verification");
+                Log::info("Monnify:- " . json_encode($response));
+                Log::info($response);
+
+                $response = json_decode($response, true);
+
+                if ($response['requestSuccessful']) {
+
+                    if ($settM->value > 0) {
+                        if ($username->wallet <= 0) {
+                            return response()->json(['success' => 0, 'message' => 'Error, wallet balance too low']);
+                        }
+
+                        if ($username->wallet < $settM->value) {
+                            return response()->json(['success' => 0, 'message' => 'Error, insufficient balance to complete request']);
+                        }
+
+                        $this->chargeCustomer4KYC($settM, $input, $username);
+                    }
+
+                    if (str_contains($username->full_name, $response['responseBody']['lastName']) || str_contains($username->full_name, $response['responseBody']['firstName'])) {
+                        return response()->json(['success' => 0, 'message' => 'NIN did not match your account name. Kindly contact customer care for help']);
+                    }
+
+                } else {
+                    return response()->json(['success' => 0, 'message' => 'Invalid NIN supplied. Check and try again']);
+                }
+
+            }
+
 
             $curl = curl_init();
             curl_setopt_array($curl, array(
@@ -187,15 +315,13 @@ class ValidationController extends Controller
 
             curl_close($curl);
 
-//            echo $response;
-
             Log::info("Monnify Account Update");
-            Log::info("Monnify:- ".json_encode($response));
+            Log::info("Monnify:- " . json_encode($response));
             Log::info($response);
 
             $response = json_decode($response, true);
 
-            if($response['requestSuccessful']) {
+            if ($response['requestSuccessful']) {
                 if (isset($input['bvn'])) {
                     $username->bvn = $input['bvn'];
                 }
@@ -205,19 +331,6 @@ class ValidationController extends Controller
                 }
                 $username->full_name = $response['responseBody']['accountName'];
                 $username->save();
-
-
-                if ($settM->value > 0) {
-                    if ($username->wallet <= 0) {
-                        return response()->json(['success' => 0, 'message' => 'Error, wallet balance too low']);
-                    }
-
-                    if ($username->wallet < $settM->value) {
-                        return response()->json(['success' => 0, 'message' => 'Error, insufficient balance to complete request']);
-                    }
-
-                    $this->chargeCustomer4KYC($settM, $input, $username);
-                }
 
                 return response()->json(['success' => 1, 'message' => 'Verified Successfully', 'data' => $response['responseBody']['accountName']]);
             }else {
@@ -230,19 +343,6 @@ class ValidationController extends Controller
                         $username->nin = $input['nin'];
                     }
                     $username->save();
-
-
-                    if ($settM->value > 0) {
-                        if ($username->wallet <= 0) {
-                            return response()->json(['success' => 0, 'message' => 'Error, wallet balance too low']);
-                        }
-
-                        if ($username->wallet < $settM->value) {
-                            return response()->json(['success' => 0, 'message' => 'Error, insufficient balance to complete request']);
-                        }
-
-                        $this->chargeCustomer4KYC($settM, $input, $username);
-                    }
 
                     CreateProvidusAccountJob::dispatch($username->id);
 

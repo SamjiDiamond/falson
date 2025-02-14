@@ -7,6 +7,7 @@ use App\Models\AppDataControl;
 use App\Models\ResellerCableTV;
 use App\Models\ResellerDataPlans;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 
 class GenerateAutosyncng extends Command
 {
@@ -118,7 +119,7 @@ class GenerateAutosyncng extends Command
 
     private function dataPlans($type)
     {
-        $this->info("Truncating Reseller & App Data plans table");
+        Log::alert("Truncating Reseller & App Data plans table");
 
         if ($type == "") {
             ResellerDataPlans::where('server', '7')->delete();
@@ -128,7 +129,7 @@ class GenerateAutosyncng extends Command
             AppDataControl::where([['server', '7'], ['network', $type]])->delete();
         }
 
-        $this->info("Fetching data plans");
+        Log::alert("Fetching data plans data/sme");
 
         $curl = curl_init();
 
@@ -157,63 +158,75 @@ class GenerateAutosyncng extends Command
         $rep = json_decode($response, true);
         $this->sitem($rep, $type);
 
-        $this->info("Fetching data plans");
+        try {
+            Log::alert("Fetching data plans DG data");
 
-        //DG Data
-        $curl = curl_init();
+            //DG Data
+            $curl = curl_init();
 
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => env('AUTOSYNCNG_BASEURL') . "data",
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'GET',
-            CURLOPT_HTTPHEADER => array(
-                'Authorization: Bearer ' . env('AUTOSYNCNG_AUTH'),
-                'Content-Type: application/json'
-            ),
-        ));
-        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => env('AUTOSYNCNG_BASEURL') . "data",
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'GET',
+                CURLOPT_HTTPHEADER => array(
+                    'Authorization: Bearer ' . env('AUTOSYNCNG_AUTH'),
+                    'Content-Type: application/json'
+                ),
+            ));
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
 
-        $response = curl_exec($curl);
+            $response = curl_exec($curl);
 
-        echo $response;
+            echo $response;
 
-        curl_close($curl);
+            curl_close($curl);
 
-        $rep = json_decode($response, true);
-        $this->sitem($rep, $type);
+            $rep = json_decode($response, true);
+            $this->sitem($rep, $type);
+        } catch (\Exception $e) {
+            Log::alert("Fetching data plans DG data ==failed ==");
+        }
 
-        //transfer Data
-        $curl = curl_init();
 
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => env('AUTOSYNCNG_BASEURL') . "data/transfer",
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'GET',
-            CURLOPT_HTTPHEADER => array(
-                'Authorization: Bearer ' . env('AUTOSYNCNG_AUTH'),
-                'Content-Type: application/json'
-            ),
-        ));
-        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        try {
+            Log::alert("Fetching data plans data/transfer");
+            //transfer Data
+            $curl = curl_init();
 
-        $response = curl_exec($curl);
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => env('AUTOSYNCNG_BASEURL') . "data/transfer",
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'GET',
+                CURLOPT_HTTPHEADER => array(
+                    'Authorization: Bearer ' . env('AUTOSYNCNG_AUTH'),
+                    'Content-Type: application/json'
+                ),
+            ));
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
 
-        echo $response;
+            $response = curl_exec($curl);
 
-        curl_close($curl);
+            echo $response;
 
-        $rep = json_decode($response, true);
-        $this->sitem($rep, $type);
+            curl_close($curl);
+
+            $rep = json_decode($response, true);
+            $this->sitem($rep, $type);
+        } catch (\Exception $e) {
+            Log::alert("Fetching data plans data/transfer ==failed");
+        }
+
+        Log::alert("Fetching data plans data/corporate");
 
         //corporate Data
         $curl = curl_init();

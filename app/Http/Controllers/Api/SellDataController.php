@@ -85,9 +85,9 @@ class SellDataController extends Controller
             } elseif ($rep['data']['code'] == 300) {
                 $dada['server_ref'] = $rep['data']['reference'];
                 if ($requester == "reseller") {
-                    return $rs->outputResponse($request, $transid, 0, $dada);
+                    return $rs->outputResponse($request, $transid, 4, $dada);
                 } else {
-                    return $ms->outputResp($request, $transid, 0, $dada);
+                    return $ms->outputResp($request, $transid, 4, $dada);
                 }
             } else {
                 $dada['message'] = $rep['data']['message'];
@@ -212,9 +212,9 @@ class SellDataController extends Controller
             }
 
             if ($requester == "reseller") {
-                return $rs->outputResponse($request, $transid, 0, $dada);
+                return $rs->outputResponse($request, $transid, 4, $dada);
             } else {
-                return $ms->outputResp($request, $transid, 0, $dada);
+                return $ms->outputResp($request, $transid, 4, $dada);
             }
         }
     }
@@ -320,9 +320,9 @@ class SellDataController extends Controller
 
             if($rep['Status'] == "failed") {
                 if ($requester == "reseller") {
-                    return $rs->outputResponse($request, $transid, 0, $dada);
+                    return $rs->outputResponse($request, $transid, 4, $dada);
                 } else {
-                    return $ms->outputResp($request, $transid, 0, $dada);
+                    return $ms->outputResp($request, $transid, 4, $dada);
                 }
             }else{
                 $dada['server_ref'] = $rep['id'];
@@ -334,9 +334,9 @@ class SellDataController extends Controller
             }
         } else {
             if ($requester == "reseller") {
-                return $rs->outputResponse($request, $transid, 0, $dada);
+                return $rs->outputResponse($request, $transid, 4, $dada);
             } else {
-                return $ms->outputResp($request, $transid, 0, $dada);
+                return $ms->outputResp($request, $transid, 4, $dada);
             }
         }
     }
@@ -444,9 +444,9 @@ class SellDataController extends Controller
             $dada['message'] = explode("Your SME data", $rep['data']['msg'])[0];
 
             if ($requester == "reseller") {
-                return $rs->outputResponse($request, $transid, 0, $dada);
+                return $rs->outputResponse($request, $transid, 4, $dada);
             } else {
-                return $ms->outputResp($request, $transid, 0, $dada);
+                return $ms->outputResp($request, $transid, 4, $dada);
             }
         }
     }
@@ -540,7 +540,7 @@ class SellDataController extends Controller
 
         if (!isset($rep['ident'])) {
             $dada['message'] = 'Something went wrong. Try again later';
-            return $ms->outputResp($request, $transid, 0, $dada);
+            return $ms->outputResp($request, $transid, 4, $dada);
         }
 
         $dada['server_ref'] = $rep['ident'];
@@ -567,9 +567,9 @@ class SellDataController extends Controller
             $dada['message'] = explode("Sponsor", $rep['api_response'])[0];
 
             if ($requester == "reseller") {
-                return $rs->outputResponse($request, $transid, 0, $dada);
+                return $rs->outputResponse($request, $transid, 4, $dada);
             } else {
-                return $ms->outputResp($request, $transid, 0, $dada);
+                return $ms->outputResp($request, $transid, 4, $dada);
             }
         }
     }
@@ -769,9 +769,9 @@ class SellDataController extends Controller
 
         if (isset($rep['error'])) {
             if ($requester == "reseller") {
-                return $rs->outputResponse($request, $transid, 0, $dada);
+                return $rs->outputResponse($request, $transid, 4, $dada);
             } else {
-                return $ms->outputResp($request, $transid, 0, $dada);
+                return $ms->outputResp($request, $transid, 4, $dada);
             }
         }
 
@@ -779,9 +779,9 @@ class SellDataController extends Controller
 
         if ($rep['status'] == "error") {
             if ($requester == "reseller") {
-                return $rs->outputResponse($request, $transid, 0, $dada);
+                return $rs->outputResponse($request, $transid, 4, $dada);
             } else {
-                return $ms->outputResp($request, $transid, 0, $dada);
+                return $ms->outputResp($request, $transid, 4, $dada);
             }
         }
 
@@ -801,9 +801,9 @@ class SellDataController extends Controller
             }
         } else {
             if ($requester == "reseller") {
-                return $rs->outputResponse($request, $transid, 0, $dada);
+                return $rs->outputResponse($request, $transid, 4, $dada);
             } else {
-                return $ms->outputResp($request, $transid, 0, $dada);
+                return $ms->outputResp($request, $transid, 4, $dada);
             }
         }
     }

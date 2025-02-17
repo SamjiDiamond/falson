@@ -3,17 +3,13 @@
 namespace App\Jobs;
 
 use App\Models\CGWallets;
-use App\Models\PndL;
 use App\Models\Transaction;
 use App\Models\User;
-use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Auth;
 
 class ReverseTransactionJob implements ShouldQueue
 {
@@ -106,7 +102,7 @@ class ReverseTransactionJob implements ShouldQueue
 
                 $input["description"] = "Being reversal of " . $tran->description;
                 $input["name"] = "Reversal";
-                $input["status"] = "successful";
+                $input["status"] = "Refund";
                 $input["code"] = "reversal";
                 $input["amount"] = $amount;
                 $input["user_name"] = $tran->user_name;

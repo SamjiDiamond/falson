@@ -49,15 +49,19 @@ class GenerateUzobest extends Command
 
     private function dataPlans($type)
     {
-//        $this->info("Truncating Reseller & App Data plans table");
-//
-//        ResellerDataPlans::truncate();
+        $this->info("Truncating Reseller & App Data plans table");
+
+
+        AppDataControl::where('server', '5')->delete();
+
         if ($type == "all") {
             $this->info("Truncating All Data plans table for s5");
             AppDataControl::where("server", 5)->delete();
+            ResellerDataPlans::where('server', '5')->delete();
         } else {
             $this->info("Truncating $type Data plans table for s5");
             AppDataControl::where([["server", 5], ["network", strtoupper($type)]])->delete();
+            ResellerDataPlans::where([["server", 5], ["network", strtoupper($type)]])->delete();
         }
 
 
@@ -89,25 +93,25 @@ class GenerateUzobest extends Command
 
         $rep = json_decode($response, true);
 
-        if ($type == "all" || $type == "airtel") {
+        if ($type == "all" || $type == "AIRTEL") {
             $repi = $rep['AIRTEL_PLAN'];
             $this->item($repi);
         }
 
 
-        if ($type == "all" || $type == "9mobile") {
+        if ($type == "all" || $type == "9MOBILE") {
             $repi = $rep['9MOBILE_PLAN'];
             $this->item($repi);
         }
 
 
-        if ($type == "all" || $type == "glo") {
+        if ($type == "all" || $type == "GLO") {
             $repi = $rep['GLO_PLAN'];
             $this->item($repi);
         }
 
 
-        if ($type == "all" || $type == "mtn") {
+        if ($type == "all" || $type == "MTN") {
             $repi = $rep['MTN_PLAN'];
             $this->item($repi);
         }

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Transaction;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -118,13 +117,13 @@ class AutosyncngWebhookController extends Controller
         //         }
         //     }
 
-            try {
-                $at = new PushNotificationController();
-                $at->PushNoti($user_name, $desc, "Reversal");
-            } catch (\Exception $e) {
-                echo "error while sending notification";
-            }
-        }
+//            try {
+//                $at = new PushNotificationController();
+//                $at->PushNoti($user_name, $desc, "Reversal");
+//            } catch (\Exception $e) {
+//                echo "error while sending notification";
+//            }
+//        }
 
         return response()->json(['message' => 'ok'], 200);
     }

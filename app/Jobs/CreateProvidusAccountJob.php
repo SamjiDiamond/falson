@@ -123,9 +123,9 @@ class CreateProvidusAccountJob implements ShouldQueue
                 Log::info($payload);
                 Log::info($response);
 
-                if ($response['requestSuccessful']) {
-                    $response = json_decode($response, true);
+                $response = json_decode($response, true);
 
+                if ($response['requestSuccessful']) {
 
                     $customer_name = $response['responseBody']['customerName'];
                     $reservation_reference = $response['responseBody']['reservationReference'];

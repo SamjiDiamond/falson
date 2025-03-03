@@ -263,7 +263,7 @@ class GenerateAutosyncng extends Command
         foreach ($rep['data']['category']['products'] as $networks) {
             foreach ($networks['variations'] as $plans) {
                 $dcn = strtoupper($rep['data']['category']['name']);
-                if (str_contains($dcn, "GIFTING")) {
+                if (str_contains($dcn, "GIFTING") || str_contains($dcn, "Data Gifting")) {
                     $type = "DG";
                 } elseif (str_contains($dcn, "CORPORATE") || str_contains($dcn, "CDG")) {
                     $type = "CG";
@@ -302,7 +302,7 @@ class GenerateAutosyncng extends Command
         $plans['price'] = 0;
 
         ResellerDataPlans::create([
-            'name' => substr($plans['name'], 0, 60),
+            'name' => $type . " " . substr($plans['name'], 0, 55),
             'product_code' => $type,
             'code' => "7_" . $productId . "_" . substr($plans['code'], 0, 20),
             'level1' => $plans['amount'],
@@ -319,7 +319,7 @@ class GenerateAutosyncng extends Command
         ]);
 
         AppDataControl::create([
-            'name' => $plans['name'],
+            'name' => $type . " " . $plans['name'],
             'product_code' => $type,
             'dataplan' => $allowance,
             'network' => $network,

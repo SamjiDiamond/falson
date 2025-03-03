@@ -46,14 +46,13 @@ class ReferralBonusAfterFundingJob implements ShouldQueue
             $minFund = Settings::where('name', 'referral_bonus_min_funding')->first();
             $rfminamount = doubleval($minFund->value);
 
-            $t = Transaction::where([['user_name', $this->user_name], ['name', 'wallet funding'], ['amount', '>=', $rfminamount]])->count();
+            $t = Transaction::where([['user_name', $this->referral], ['name', 'wallet funding'], ['amount', '>=', $rfminamount]])->count();
 
             if ($t >= 1) {
                 //fund the person that referred him
                 $ruser = User::where('user_name', $user->referral)->first();
 
                 if ($ruser) {
-
 
                     //check if the user has been credited before for the user referred
                     $rbc = Transaction::where([['extra', "Referral Bonus|" . $this->user_name], ['user_name', $ruser->user_name]])->count();

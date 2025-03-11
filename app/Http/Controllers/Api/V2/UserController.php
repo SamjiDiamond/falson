@@ -42,7 +42,7 @@ class UserController extends Controller
         $me['phoneno'] = $user->phoneno;
         $me['target'] = $user->target ?? " ";
         $me['level'] = $user->level;
-        $me['referral_plan'] = $user->referral_plan;
+        $me['pin_enabled'] = $user->pin_enabled;
         $me['pin'] = $user->pin;
         $me['status'] = $user->status;
         $me['api_key'] = $user->api_key ?? " ";
@@ -213,6 +213,15 @@ class UserController extends Controller
         $user->save();
 
         return response()->json(['success' => 1, 'message' => 'Pin changed successfully']);
+    }
+
+    public function togglePin(Request $request)
+    {
+        $user = Auth::user();
+        $user->pin_enabled = $user->pin_enabled == 0 ? 1 : 0;
+        $user->save();
+
+        return response()->json(['success' => 1, 'message' => 'Transaction Pin Toggled successfully', 'data' => $user->pin_enabled]);
     }
 
     public function referrals()

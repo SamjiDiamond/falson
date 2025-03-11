@@ -91,7 +91,7 @@ class GenerateAutosyncng extends Command
                     'name' => $plans['name'],
                     'code' => $pid . "_" . $plans['code'],
                     'amount' => $plans['amount'],
-                    'type' => $inte,
+                    'type' => strtolower($inte),
                     'level1' => '1%',
                     'level2' => '1%',
                     'level3' => '1%',
@@ -102,11 +102,11 @@ class GenerateAutosyncng extends Command
                 ]);
 
                 AppCableTVControl::create([
-                    'name' => $plans['name'],
+                    'name' => strtolower($plans['name']),
                     'coded' => "7_" . $pid . "_" . $plans['code'],
                     'code' => $plans['code'],
                     'price' => $plans['amount'],
-                    'type' => $inte,
+                    'type' => strtolower($inte),
                     'discount' => '1%',
                     'status' => 0,
                     'server' => 7,

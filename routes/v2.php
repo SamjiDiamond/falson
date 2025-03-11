@@ -56,6 +56,7 @@ Route::prefix('v2')->group(function () {
         Route::get('biometriclogin', [AuthenticationController::class, 'biometricLogin']);
         Route::get('dashboard', [UserController::class, 'dashboard']);
         Route::post('changepin', [UserController::class, 'change_pin']);
+        Route::get('toggle-pin', [UserController::class, 'togglePin']);
 
         Route::get('referrals', [UserController::class, 'referrals']);
         Route::post('addreferral', [UserController::class, 'add_referral']);

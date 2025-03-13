@@ -44,6 +44,8 @@ class ProcessUser2faJob implements ShouldQueue
 
         $code = substr(rand(), 0, 6);
 
+        echo $code;
+
         CodeRequest::create([
             'mobile' => trim($this->user->email),
             'code' => $code,

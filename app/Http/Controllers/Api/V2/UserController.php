@@ -89,6 +89,7 @@ class UserController extends Controller
         $others['budpay_funding_message'] = $sett['budpay_funding_message'];
         $others['paylony_funding_message'] = $sett['paylony_funding_message'];
         $others['enable_cg_wallet'] = $sett['enable_cg_wallet'];
+        $others['force_kyc_update'] = $sett['force_kyc_update'];
 
         $pay['fund_rave'] = $sett['fund_rave'];
         $pay['fund_paystack'] = $sett['fund_paystack'];

@@ -51,9 +51,6 @@ class GenerateUzobest extends Command
     {
         $this->info("Truncating Reseller & App Data plans table");
 
-
-        AppDataControl::where('server', '5')->delete();
-
         if ($type == "all") {
             $this->info("Truncating All Data plans table for s5");
             AppDataControl::where("server", 5)->delete();

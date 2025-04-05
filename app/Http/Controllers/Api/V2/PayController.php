@@ -545,13 +545,14 @@ class PayController extends Controller
 
             curl_close($curl);
 
+
+            Log::info("5Star RC Transaction. - " . $input['ref']);
+            Log::info($payload);
+            Log::info($response);
+
         } else {
             $response = '{"success":true,"message":"Epins generated successfully!","data":{"reference":"12312b802e031F","epins":[{"pin":"7938855782","serial":"0891319068","amount":"100","expiry":"21\/09\/2035","id":113575,"network":"MTN"}]}}';
         }
-
-        Log::info("5Star RC Transaction. - " . $input['ref']);
-        Log::info($payload);
-        Log::info($response);
 
         $rep = json_decode($response, true);
 

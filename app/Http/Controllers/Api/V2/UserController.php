@@ -191,6 +191,36 @@ class UserController extends Controller
 
     }
 
+    public function set_pin(Request $request)
+    {
+        $input = $request->all();
+        $rules = array(
+            'email' => 'required',
+            'pin' => 'required',
+        );
+
+        $validator = Validator::make($input, $rules);
+
+        if (!$validator->passes()) {
+            return response()->json(['success' => 0, 'message' => 'Required field(s) is missing. ' . implode(",", $validator->errors()->all())]);
+        }
+
+        $user = User::where('email', $input['email'])->first();
+
+        if (!$user) {
+            return response()->json(['success' => 0, 'message' => 'User not found']);
+        }
+
+        if ($user->pin != "1234") {
+            return response()->json(['success' => 0, 'message' => 'You have set your pin already']);
+        }
+
+        $user->pin = $input['pin'];
+        $user->save();
+
+        return response()->json(['success' => 1, 'message' => 'Pin set successfully']);
+    }
+
     public function change_pin(Request $request)
     {
         $input = $request->all();

@@ -51,6 +51,7 @@ Route::prefix('v2')->group(function () {
     Route::post('email-verification', [AuthenticationController::class, 'email_verify']);
     Route::post('email-verification-continue', [AuthenticationController::class, 'email_verify_continue']);
 
+    Route::post('set-pin', [UserController::class, 'set_pin']);
 
     Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('biometriclogin', [AuthenticationController::class, 'biometricLogin']);

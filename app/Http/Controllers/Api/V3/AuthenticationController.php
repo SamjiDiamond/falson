@@ -9,12 +9,14 @@ use App\Jobs\CreateCGWalletsJob;
 use App\Jobs\CreatePaylonyVirtualAccountJob;
 use App\Jobs\LoginAttemptApiFinderJob;
 use App\Jobs\ProcessUser2faJob;
+use App\Mail\EmailVerificationMail;
 use App\Models\CodeRequest;
 use App\Models\LoginAttempt;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class AuthenticationController extends Controller
@@ -82,10 +84,23 @@ class AuthenticationController extends Controller
         $create["reg_date"] = Carbon::now();
 
         if (User::create($create)) {
-            // successfully inserted into database
-//            $job = (new CreateProvidusAccountJob($create["user_name"]))
-//                ->delay(Carbon::now()->addSeconds(10));
-//            dispatch($job);
+
+            $type = "email_verify";
+
+            $code = substr(rand(), 0, 8);
+
+            CodeRequest::create([
+                'mobile' => trim($input['email']),
+                'code' => $code,
+                'status' => 0,
+                'type' => $type
+            ]);
+
+            $edata['code'] = $code;
+            $edata['email'] = $input['email'];
+            $edata['ip'] = $request->ip();
+
+            Mail::to($input['email'])->later(now()->addSeconds(2), new EmailVerificationMail($edata));
 
             return response()->json(['success' => 1, 'message' => 'Account created successfully']);
         } else {

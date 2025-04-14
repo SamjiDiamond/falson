@@ -46,6 +46,9 @@ class EmailPasswordVerificationMail extends Mailable
     {
         return new Content(
             view: 'mail.password_verification',
+            with: [
+                'data' => $this->edata
+            ]
         );
     }
 

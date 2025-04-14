@@ -301,7 +301,7 @@ class AuthenticationController extends Controller
 
         Mail::to($input['email'])->later(now()->addSeconds(2), new EmailPasswordVerificationMail($edata));
 
-        return response()->json(['success' => 1, 'message' => 'A new password has been sent to your mail successfully']);
+        return response()->json(['success' => 1, 'message' => 'A verification code has been sent to your mail.']);
     }
 
     public function checkresetpassword(Request $request)

@@ -62,7 +62,7 @@ class ReverseTransactionJob implements ShouldQueue
             $user = User::where("user_name", "=", $tran->user_name)->first();
 
             if ($tran->code == "tcommission") {
-                $nBalance = $user->agent_commision - $tran->amount;
+                $nBalance = doubleval($user->agent_commision) - doubleval($tran->amount);
 
                 $input["description"] = "Being reversal of " . $tran->description;
                 $input["name"] = "Reversal";
@@ -74,7 +74,9 @@ class ReverseTransactionJob implements ShouldQueue
                 $input["f_wallet"] = $nBalance;
                 $input["extra"] = 'Initiated by ' . $initiator;
 
-                $user->update(["agent_commision" => $nBalance]);
+                $user->agent_commision = $nBalance;
+                $user->save();
+
                 Transaction::create($input);
             } else {
                 if ($tran->name == "data") {
@@ -110,7 +112,9 @@ class ReverseTransactionJob implements ShouldQueue
                 $input["f_wallet"] = $nBalance;
                 $input["extra"] = 'Initiated by ' . $initiator;
 
-                $user->update(["wallet" => $nBalance]);
+                $user->wallet = $nBalance;
+                $user->save();
+
                 Transaction::create($input);
 
             }

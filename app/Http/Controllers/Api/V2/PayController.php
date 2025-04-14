@@ -91,7 +91,7 @@ class PayController extends Controller
             $discount = 0;
         }
 
-        $debitAmount = $input['amount'] - $discount;
+        $debitAmount = $input['amount'];
 
         $proceed['1'] = $input['provider'];
         $proceed['2'] = $debitAmount;

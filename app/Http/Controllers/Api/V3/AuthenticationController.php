@@ -294,6 +294,7 @@ class AuthenticationController extends Controller
             'type' => $type
         ]);
 
+        $edata['device'] = $_SERVER['HTTP_USER_AGENT'];
         $edata['user_name'] = $user->user_name;
         $edata['code'] = $code;
         $edata['email'] = $input['email'];

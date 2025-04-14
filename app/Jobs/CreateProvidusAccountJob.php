@@ -40,14 +40,18 @@ class CreateProvidusAccountJob implements ShouldQueue
             echo "invalid account";
         }
 
-        $w=VirtualAccount::where(["user_id" =>$u->id, "provider" =>"monnify", "status" => 1])->exists();
+        if ($u->bvn == null) {
+            echo "The user did not have bvn";
+        }
 
-        if (!$w){
+        $w = VirtualAccount::where(["user_id" => $u->id, "provider" => "monnify", "status" => 1])->exists();
+
+        if (!$w) {
 
             try {
-                $settA=Settings::where('name', 'fund_monnify_apikey')->first();
-                $settS=Settings::where('name', 'fund_monnify_secretkey')->first();
-                $settC=Settings::where('name', 'fund_monnify_contractcode')->first();
+                $settA = Settings::where('name', 'fund_monnify_apikey')->first();
+                $settS = Settings::where('name', 'fund_monnify_secretkey')->first();
+                $settC = Settings::where('name', 'fund_monnify_contractcode')->first();
 
                 $curl = curl_init();
 

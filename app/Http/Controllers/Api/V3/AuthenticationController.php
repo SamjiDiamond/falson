@@ -9,6 +9,7 @@ use App\Jobs\CreateCGWalletsJob;
 use App\Jobs\CreatePaylonyVirtualAccountJob;
 use App\Jobs\LoginAttemptApiFinderJob;
 use App\Jobs\ProcessUser2faJob;
+use App\Mail\EmailPasswordVerificationMail;
 use App\Mail\EmailVerificationMail;
 use App\Models\CodeRequest;
 use App\Models\LoginAttempt;
@@ -259,4 +260,141 @@ class AuthenticationController extends Controller
 
         return response()->json(['success' => 1, 'message' => '2FA Verified Successfully', 'data' => $token, 'balance' => $user->wallet]);
     }
+
+    public function resetpassword(Request $request)
+    {
+
+        $input = $request->all();
+        $rules = array(
+            'email' => 'required',
+        );
+
+        $validator = Validator::make($input, $rules);
+
+        $input = $request->all();
+
+        if (!$validator->passes()) {
+            return response()->json(['success' => 0, 'message' => 'Required field(s) is missing']);
+        }
+
+        $user = User::where('user_name', $input['email'])->orWhere('email', $input['email'])->first();
+
+        if (!$user) {
+            return response()->json(['success' => 0, 'message' => 'User does not exist']);
+        }
+
+        $type = "recover";
+
+        $code = substr(rand(), 0, 6);
+
+        CodeRequest::create([
+            'mobile' => trim($input['email']),
+            'code' => $code,
+            'status' => 0,
+            'type' => $type
+        ]);
+
+        $edata['user_name'] = $user->user_name;
+        $edata['code'] = $code;
+        $edata['email'] = $input['email'];
+        $edata['ip'] = $request->ip();
+
+        Mail::to($input['email'])->later(now()->addSeconds(2), new EmailPasswordVerificationMail($edata));
+
+        return response()->json(['success' => 1, 'message' => 'A new password has been sent to your mail successfully']);
+    }
+
+    public function checkresetpassword(Request $request)
+    {
+
+        $input = $request->all();
+        $rules = array(
+            'email' => 'required',
+            'code' => 'required'
+        );
+
+        $validator = Validator::make($input, $rules);
+
+        $input = $request->all();
+
+        if (!$validator->passes()) {
+            return response()->json(['success' => 0, 'message' => 'Required field(s) is missing']);
+        }
+
+        $user = User::where('user_name', $input['email'])->orWhere('email', $input['email'])->first();
+
+        if (!$user) {
+            return response()->json(['success' => 0, 'message' => 'User does not exist']);
+        }
+
+        $type = "recover";
+
+        $code = $input['code'];
+
+        $code = CodeRequest::where([
+            'mobile' => trim($input['email']),
+            'code' => $code,
+            'status' => 0,
+            'type' => $type
+        ])->latest()->first();
+
+        if (!$code) {
+            return response()->json(['success' => 0, 'message' => 'Invalid code supplied']);
+        }
+
+        return response()->json(['success' => 1, 'message' => 'Code is valid']);
+    }
+
+    public function completeresetpassword(Request $request)
+    {
+
+        $input = $request->all();
+        $rules = array(
+            'email' => 'required',
+            'code' => 'required',
+            'password' => 'required'
+        );
+
+        $validator = Validator::make($input, $rules);
+
+        $input = $request->all();
+
+        if (!$validator->passes()) {
+            return response()->json(['success' => 0, 'message' => 'Required field(s) is missing']);
+        }
+
+        $input['version'] = $request->header('version');
+
+        $user = User::where('user_name', $input['email'])->orWhere('email', $input['email'])->first();
+
+        if (!$user) {
+            return response()->json(['success' => 0, 'message' => 'User does not exist']);
+        }
+
+        $type = "recover";
+
+
+        $code = $input['code'];
+
+        $code = CodeRequest::where([
+            'mobile' => trim($input['email']),
+            'code' => $code,
+            'status' => 0,
+            'type' => $type
+        ])->latest()->first();
+
+        if (!$code) {
+            return response()->json(['success' => 0, 'message' => 'Invalid code supplied']);
+        }
+
+        $user->mcdpassword = Hash::make($input['password']);
+        $user->save();
+
+        $code->status = 1;
+        $code->save();
+
+        return response()->json(['success' => 1, 'message' => 'Password changed successfully']);
+    }
+
+
 }

@@ -30,6 +30,10 @@ Route::prefix('v3')->group(function () {
 
     Route::post('changepassword', [UserController::class, 'change_passwordv3']);
 
+    Route::post('resetpassword', [AuthenticationController::class, 'resetpassword']);
+    Route::post('confirm-resetpassword', [AuthenticationController::class, 'checkresetpassword']);
+    Route::put('resetpassword', [AuthenticationController::class, 'completeresetpassword']);
+
     Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('securitySettings', [ProfileController::class, 'securitySettings']);
     });

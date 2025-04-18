@@ -57,6 +57,25 @@ class OtherController extends Controller
         return response()->json(['success' => 1, 'message' => 'Fetched successful', 'data' => $data]);
     }
 
+    public function allforu()
+    {
+        $data[] = [
+            "name" => "MTN Awoof Promo",
+            "image" => "https://upload.wikimedia.org/wikipedia/commons/9/93/New-mtn-logo.jpg"
+        ];
+        $data[] = [
+            "name" => "How to spot scams",
+            "image" => "https://www.firstflorida.org/images/default-source/interior-page-images/it's-a-money-thing-images/how-to-spot-scams-2.jpg?sfvrsn=42efbbf0_4&MaxWidth=350&MaxHeight=350&ScaleUp=false&Quality=High&Method=ResizeFitToAreaArguments&Signature=59FE7BD5CC2075F64FDA82D22AC3490C88548E50"
+        ];
+
+        $data[] = [
+            "name" => "How to avoid scams",
+            "image" => "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT3cSxtXXIAzmJBk9-CXrI8t2o7X6lJMrctEg&s"
+        ];
+
+        return response()->json(['success' => 1, 'message' => 'Fetched successfully', 'data' => $data]);
+    }
+
     public function fundWallet(Request $request)
     {
         $input = $request->all();

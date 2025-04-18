@@ -173,6 +173,47 @@ class AuthenticationController extends Controller
         return response()->json(['success' => 1, 'message' => 'Login successfully', 'token' => $token, 'balance' => $user->wallet, 'bvn' => $user->bvn != ""]);
     }
 
+    public function loginpin(Request $request)
+    {
+        $input = $request->all();
+        $rules = array(
+            'pin' => 'required',
+        );
+
+        $validator = Validator::make($input, $rules);
+
+        $input = $request->all();
+
+        if (!$validator->passes()) {
+            return response()->json(['success' => 0, 'message' => 'Required field(s) is missing']);
+        }
+
+        $input['version'] = $request->header('version');
+
+        $device = $request->header('device') ?? $_SERVER['HTTP_USER_AGENT'];
+
+        $user = Auth::user();
+
+//        if(!Hash::check($input['pin'],$user->pin)){
+        if ($input['pin'] != $user->pin) {
+            return response()->json(['success' => 0, 'message' => 'Incorrect pin. Kindly try again']);
+        }
+
+        if ($user->fraud != "" || $user->fraud != null) {
+            return response()->json(['success' => 0, 'message' => $user->fraud]);
+        }
+
+        $user->last_login = Carbon::now();
+        $user->save();
+
+        // Revoke all tokens...
+        $user->tokens()->delete();
+
+        $token = $user->createToken($device)->plainTextToken;
+
+        return response()->json(['success' => 1, 'message' => 'Login successfully', 'token' => $token, 'balance' => $user->wallet, 'bvn' => $user->bvn != ""]);
+    }
+
     public function newdeviceLogin(Request $request)
     {
         $input = $request->all();

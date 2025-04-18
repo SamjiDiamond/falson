@@ -55,6 +55,8 @@ Route::prefix('v2')->group(function () {
 
     Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('biometriclogin', [AuthenticationController::class, 'biometricLogin']);
+        Route::post('login-pin', [AuthenticationController::class, 'loginpin']);
+
         Route::get('dashboard', [UserController::class, 'dashboard']);
         Route::post('changepin', [UserController::class, 'change_pin']);
         Route::get('toggle-pin', [UserController::class, 'togglePin']);
@@ -63,6 +65,8 @@ Route::prefix('v2')->group(function () {
         Route::post('addreferral', [UserController::class, 'add_referral']);
 
         Route::get('transactions', [TransactionsController::class, 'transactions']);
+        Route::get('transactions-summary', [TransactionsController::class, 'transactionsSummary']);
+        Route::get('transactions-recent', [TransactionsController::class, 'transactionsRecent']);
         Route::get('transactions-pending', [TransactionsController::class, 'transactionsPending']);
         Route::get('transactions-success', [TransactionsController::class, 'transactionsSuccess']);
         Route::get('transactions-reversed', [TransactionsController::class, 'transactionsReversed']);
@@ -141,6 +145,7 @@ Route::prefix('v2')->group(function () {
 
         Route::get('apikey/regenerate', [UserController::class, 'requestAPIkey']);
         Route::get('getfaqs', [OtherController::class, 'getFAQs']);
+        Route::get('allforu', [OtherController::class, 'allforu']);
 
         Route::get('cg-wallets', [CGWalletController::class, 'cgWallets']);
         Route::get('cg-bundles', [CGWalletController::class, 'cgBundles']);

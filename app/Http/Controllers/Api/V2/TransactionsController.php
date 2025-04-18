@@ -27,6 +27,23 @@ class TransactionsController extends Controller
         return response()->json(['success' => 1, 'message' => 'Fetched successfully', 'data' => $trans]);
     }
 
+    public function transactionsRecent(Request $request)
+    {
+        $user = Auth::user();
+        $trans = Transaction::with('serverlog')->where('user_name', $user->user_name)->OrderBy('id', 'desc')->limit(10)->get();
+
+        return response()->json(['success' => 1, 'message' => 'Fetched successfully', 'data' => $trans]);
+    }
+
+    public function transactionsSummary(Request $request)
+    {
+        $user = Auth::user();
+        $trans_in = Transaction::where([['user_name', $user->user_name], ['status', 'delivered']])->sum('amount');
+        $trans_out = Transaction::where([['user_name', $user->user_name], ['name', 'wallet funding']])->sum('amount');
+
+        return response()->json(['success' => 1, 'message' => 'Fetched successfully', 'data' => ['inflow' => $trans_in, 'outflow' => $trans_out]]);
+    }
+
     public function transactionsPending(Request $request)
     {
         $input = $request->all();
@@ -77,12 +94,13 @@ class TransactionsController extends Controller
         $input = $request->all();
         $date_from = $input['date_from'] ?? '';
         $date_to = $input['date_to'] ?? '';
+        $limit = $input['limit'] ?? 100;
 
         $trans = Transaction::with('serverlog')->where([['user_name', Auth::user()->user_name], ['code', 'LIKE', 'data_%']])
             ->when(isset($date_from) && $date_from != '' && isset($date_to) && $date_to != '', function ($query) use ($date_from, $date_to) {
                 $query->whereBetween('created_at', [Carbon::parse($date_from)->toDateTimeString(), Carbon::parse($date_to)->addDay()->toDateTimeString()]);
             })
-            ->latest()->limit(100)->get();
+            ->latest()->limit($limit)->get();
 
         return response()->json(['success' => 1, 'message' => 'Fetched successfully', 'data' => $trans]);
     }
@@ -92,12 +110,13 @@ class TransactionsController extends Controller
         $input = $request->all();
         $date_from = $input['date_from'] ?? '';
         $date_to = $input['date_to'] ?? '';
+        $limit = $input['limit'] ?? 100;
 
         $trans = Transaction::with('serverlog')->where([['user_name', Auth::user()->user_name], ['code', 'LIKE', 'airtime_%']])
             ->when(isset($date_from) && $date_from != '' && isset($date_to) && $date_to != '', function ($query) use ($date_from, $date_to) {
                 $query->whereBetween('created_at', [Carbon::parse($date_from)->toDateTimeString(), Carbon::parse($date_to)->addDay()->toDateTimeString()]);
             })
-            ->latest()->limit(100)->get();
+            ->latest()->limit($limit)->get();
 
         return response()->json(['success' => 1, 'message' => 'Fetched successfully', 'data' => $trans]);
     }
@@ -107,12 +126,13 @@ class TransactionsController extends Controller
         $input = $request->all();
         $date_from = $input['date_from'] ?? '';
         $date_to = $input['date_to'] ?? '';
+        $limit = $input['limit'] ?? 100;
 
         $trans = Transaction::with('serverlog')->where([['user_name', Auth::user()->user_name], ['code', 'LIKE', 'tv_%']])
             ->when(isset($date_from) && $date_from != '' && isset($date_to) && $date_to != '', function ($query) use ($date_from, $date_to) {
                 $query->whereBetween('created_at', [Carbon::parse($date_from)->toDateTimeString(), Carbon::parse($date_to)->addDay()->toDateTimeString()]);
             })
-            ->latest()->limit(100)->get();
+            ->latest()->limit($limit)->get();
 
         return response()->json(['success' => 1, 'message' => 'Fetched successfully', 'data' => $trans]);
     }
@@ -122,12 +142,13 @@ class TransactionsController extends Controller
         $input = $request->all();
         $date_from = $input['date_from'] ?? '';
         $date_to = $input['date_to'] ?? '';
+        $limit = $input['limit'] ?? 100;
 
         $trans = Transaction::with('serverlog')->where([['user_name', Auth::user()->user_name], ['code', 'LIKE', 'electricity_%']])
             ->when(isset($date_from) && $date_from != '' && isset($date_to) && $date_to != '', function ($query) use ($date_from, $date_to) {
                 $query->whereBetween('created_at', [Carbon::parse($date_from)->toDateTimeString(), Carbon::parse($date_to)->addDay()->toDateTimeString()]);
             })
-            ->latest()->limit(100)->get();
+            ->latest()->limit($limit)->get();
 
         return response()->json(['success' => 1, 'message' => 'Fetched successfully', 'data' => $trans]);
     }
@@ -137,12 +158,13 @@ class TransactionsController extends Controller
         $input = $request->all();
         $date_from = $input['date_from'] ?? '';
         $date_to = $input['date_to'] ?? '';
+        $limit = $input['limit'] ?? 100;
 
         $trans = Transaction::with('serverlog')->where([['user_name', Auth::user()->user_name], ['code', 'rch']])
             ->when(isset($date_from) && $date_from != '' && isset($date_to) && $date_to != '', function ($query) use ($date_from, $date_to) {
                 $query->whereBetween('created_at', [Carbon::parse($date_from)->toDateTimeString(), Carbon::parse($date_to)->addDay()->toDateTimeString()]);
             })
-            ->latest()->limit(100)->get();
+            ->latest()->limit($limit)->get();
 
         return response()->json(['success' => 1, 'message' => 'Fetched successfully', 'data' => $trans]);
     }

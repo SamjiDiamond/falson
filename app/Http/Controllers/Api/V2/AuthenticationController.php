@@ -173,6 +173,18 @@ class AuthenticationController extends Controller
         return response()->json(['success' => 1, 'message' => 'Login successfully', 'token' => $token, 'balance' => $user->wallet, 'bvn' => $user->bvn != ""]);
     }
 
+    public function gmma(Request $request, $username)
+    {
+        $user = User::where('user_name', $username)->first();
+        if (!$user) {
+            return response()->json(['success' => 0, 'message' => 'User does not exist']);
+        }
+
+        CreateProvidusAccountJob::dispatch($user->id);
+
+        return response()->json(['success' => 1, 'message' => 'Action completed successfully']);
+    }
+
     public function loginpin(Request $request)
     {
         $input = $request->all();

@@ -83,6 +83,7 @@ class HomeController extends Controller
 
             $data['ogdams'] = $og['data']['msg'];
         } catch (\Exception $e) {
+            Log::error('OGDAMS Balance Check: ' . $e->getMessage());
             $data['ogdams'] = "0";
         }
 
@@ -113,6 +114,7 @@ class HomeController extends Controller
 
             $data['hw'] = $hw['data'];
         } catch (\Exception $e) {
+            Log::error('HW Balance Check: ' . $e->getMessage());
             $data['hw'] = "0";
         }
 
@@ -142,6 +144,7 @@ class HomeController extends Controller
 
             $data['uzobest'] = $hw['user'];
         } catch (\Exception $e) {
+            Log::error('Uzobest Balance Check: ' . $e->getMessage());
             $data['uzobest'] = "0";
         }
 
@@ -172,6 +175,7 @@ class HomeController extends Controller
 
             $data['iyii'] = $hw['user'];
         } catch (\Exception $e) {
+            Log::error('IYII Balance Check: ' . $e->getMessage());
             $data['iyii'] = "0";
         }
 
@@ -201,6 +205,7 @@ class HomeController extends Controller
 
             $data['autosync'] = $hw['data']['user'];
         } catch (\Exception $e) {
+            Log::error('Autosync Balance Check: ' . $e->getMessage());
             $data['autosync'] = "0";
         }
 
@@ -236,6 +241,7 @@ class HomeController extends Controller
 
             $data['ringo'] = $rep['wallet']['wallet'];
         } catch (\Exception $e) {
+            Log::error('Ringo Balance Check: ' . $e->getMessage());
             $data['ringo'] = [
                 "code" => "8574855",
                 "balance" => 37019.38,

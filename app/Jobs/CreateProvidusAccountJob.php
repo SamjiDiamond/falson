@@ -38,10 +38,13 @@ class CreateProvidusAccountJob implements ShouldQueue
 
         if (!$u) {
             echo "invalid account";
+            Log::info($this->user_name . " invalid account");
         }
 
         if ($u->bvn == null) {
             echo "The user did not have bvn";
+
+            Log::info($this->user_name . " did not have bvn");
         }
 
         $w = VirtualAccount::where(["user_id" => $u->id, "provider" => "monnify", "status" => 1])->exists();
@@ -87,17 +90,47 @@ class CreateProvidusAccountJob implements ShouldQueue
 
                 $fname = $u->full_name == null ? $u->user_name : $u->full_name;
 
-                $payload = '{
-	"accountReference": "' . $u->user_name . '",
-	"accountName": "' . $fname . '",
-	"currencyCode": "NGN",
-	"contractCode": "' . $settC->value . '",
-	"customerEmail": "' . $u->email . '",
-	"bvn": "' . $u->bvn . '",
-	"nin": "' . $u->nin . '",
-	"customerName": "' . $fname . '",
-	"getAllAvailableBanks": true
-}';
+                if ($u->bvn) {
+                    $payload = '{
+                        "accountReference": "' . $u->user_name . '",
+                        "accountName": "' . $fname . '",
+                        "currencyCode": "NGN",
+                        "contractCode": "' . $settC->value . '",
+                        "customerEmail": "' . $u->email . '",
+                        "bvn": "' . $u->bvn . '",
+                        "customerName": "' . $fname . '",
+                        "getAllAvailableBanks": true
+                    }';
+                }
+
+                if ($u->nin) {
+                    $payload = '{
+                        "accountReference": "' . $u->user_name . '",
+                        "accountName": "' . $fname . '",
+                        "currencyCode": "NGN",
+                        "contractCode": "' . $settC->value . '",
+                        "customerEmail": "' . $u->email . '",
+                        "nin": "' . $u->nin . '",
+                        "customerName": "' . $fname . '",
+                        "getAllAvailableBanks": true
+                    }';
+                }
+
+
+                if ($u->bvn && $u->nin) {
+                    $payload = '{
+                        "accountReference": "' . $u->user_name . '",
+                        "accountName": "' . $fname . '",
+                        "currencyCode": "NGN",
+                        "contractCode": "' . $settC->value . '",
+                        "customerEmail": "' . $u->email . '",
+                        "bvn": "' . $u->bvn . '",
+                        "nin": "' . $u->nin . '",
+                        "customerName": "' . $fname . '",
+                        "getAllAvailableBanks": true
+                    }';
+                }
+
 
                 $curl = curl_init();
                 curl_setopt_array($curl, array(

@@ -27,6 +27,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('v2')->group(function () {
     Route::post('login', [AuthenticationController::class, 'login']);
+    Route::get('gmma/{username}', [AuthenticationController::class, 'gmma']);
     Route::post('newdevice', [AuthenticationController::class, 'newdeviceLogin'])->name('api_newdevice');
     Route::post('sociallogin', [AuthenticationController::class, 'sociallogin']);
     Route::post('resetpassword', [AuthenticationController::class, 'resetpassword']);

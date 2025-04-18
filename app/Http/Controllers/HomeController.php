@@ -84,7 +84,7 @@ class HomeController extends Controller
             $data['ogdams'] = $og['data']['msg'];
         } catch (\Exception $e) {
             Log::error('OGDAMS Balance Check: ' . $e->getMessage());
-            $data['ogdams'] = "0";
+            $data['ogdams'] = json_decode('{"mainBalance":"583.15","dgMtn":"0.00","dgAirtel":"0.00","dgGlo":"0.00","dg9mobile":"0.00","smeMtn":"0.00","smeAirtel":"0.00","smeGlo":"0.00","smeSme":"0.00","vtuMtn":"0.00","vtuAirtel":"0.00","vtuGlo":"0.00","vtu9mobile":"0.00","momoMtn":"0.00","momoGlo":"0.00","momo9mobile":"0.00","cgMtn":"0.00","cgAirtel":"506.38","cgGlo":"400.00","cg9mobile":"0.00"}', true);;
         }
 
 

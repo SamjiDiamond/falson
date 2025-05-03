@@ -45,6 +45,7 @@ class CreateProvidusAccountJob implements ShouldQueue
             echo "The user did not have bvn";
 
             Log::info($this->user_name . " did not have bvn");
+            return;
         }
 
         $w = VirtualAccount::where(["user_id" => $u->id, "provider" => "monnify", "status" => 1])->exists();

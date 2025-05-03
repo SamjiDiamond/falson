@@ -112,7 +112,7 @@ class TransactionsController extends Controller
         $date_to = $input['date_to'] ?? '';
         $limit = $input['limit'] ?? 100;
 
-        $trans = Transaction::with('serverlog')->where([['user_name', Auth::user()->user_name], ['code', 'LIKE', 'airtime_%']])
+        $trans = Transaction::with('serverlog')->where([['user_name', Auth::user()->user_name], ['code', 'airtime']])
             ->when(isset($date_from) && $date_from != '' && isset($date_to) && $date_to != '', function ($query) use ($date_from, $date_to) {
                 $query->whereBetween('created_at', [Carbon::parse($date_from)->toDateTimeString(), Carbon::parse($date_to)->addDay()->toDateTimeString()]);
             })

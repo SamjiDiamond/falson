@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
 
@@ -46,5 +47,17 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
+    }
+
+    protected function unauthenticated($request, AuthenticationException $exception)
+    {
+        if ($request->header('Authorization')) {
+            return response()->json(['success' => 0, 'message' => "Kindly login afresh"], 401);
+        } else {
+            // This is the default
+            return $request->expectsJson()
+                ? response()->json(['success' => 0, 'message' => "Kindly provide a valid token"], 401)
+                : redirect()->guest($exception->redirectTo() ?? route('index'));
+        }
     }
 }

@@ -23,7 +23,7 @@ class Transaction extends Model implements Auditable
 
     function serverlog()
     {
-        return $this->hasOne(Serverlog::class, 'transid', 'ref')->select(['transid', 'payment_method']);
+        return $this->hasOne(Serverlog::class, 'transid', 'ref')->select(['transid', 'payment_method', 'network', 'phone']);
     }
 
     public function paylonyFunding($ref)

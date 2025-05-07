@@ -5,23 +5,28 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\PushNotificationController;
 use App\Http\Controllers\Reseller\PayController;
+use Illuminate\Support\Facades\Log;
 
 class SellBettingTopup extends Controller
 {
-    public function server7($request, $provider, $number, $transid, $amount, $input, $dada, $requester)
+    public function server8($request, $provider, $number, $transid, $amount, $input, $dada, $requester)
     {
 
         if (env('FAKE_TRANSACTION', 1) == 0) {
-            $json = '{"amount": "' . $amount . '","customerId": "' . $number . '","provider": "' . $provider . '","reference": "' . $transid . '"}';
-            $code = json_decode($json, true);
-            ksort($code);
-            $sorted = json_encode($code);
-            $sec_key = hash_hmac('SHA512', $sorted, trim(env('GIFTBILLS_ENCRYPTION')));
+
+            $payload = '{
+    "provider": "' . $provider . '",
+    "amount": "' . $amount . '",
+    "number": "' . $number . '",
+    "payment" : "wallet",
+    "promo" : "0",
+    "ref":"' . $transid . '"
+}';
 
             $curl = curl_init();
 
             curl_setopt_array($curl, array(
-                CURLOPT_URL => env('GIFTBILLS_URL') . "betting/topup",
+                CURLOPT_URL => env('MCD_BASEURL') . '/betting',
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => '',
                 CURLOPT_MAXREDIRS => 10,
@@ -29,12 +34,10 @@ class SellBettingTopup extends Controller
                 CURLOPT_FOLLOWLOCATION => true,
                 CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                 CURLOPT_CUSTOMREQUEST => 'POST',
-                CURLOPT_POSTFIELDS => $json,
+                CURLOPT_POSTFIELDS => $payload,
                 CURLOPT_HTTPHEADER => array(
                     'Content-Type: application/json',
-                    'MerchantId: ' . env('GIFTBILLS_MERCHANTID'),
-                    'Authorization: Bearer ' . env('GIFTBILLS_API_KEY'),
-                    'Encryption: ' . $sec_key,
+                    'Authorization: Bearer ' . env('MCD_KEY')
                 ),
             ));
             curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
@@ -43,8 +46,12 @@ class SellBettingTopup extends Controller
 
             curl_close($curl);
 
+            Log::info("MCD Purchase BETTING");
+            Log::info("Payload : " . $payload);
+            Log::info($response);
+
         } else {
-            $response = '{ "success": true, "code": "00000", "message": "SUCCESSFUL", "data": { "orderNo": "211104130931335009", "reference": "25696593r9622", "status": "PENDING", "errorMsg": null } }';
+            $response = '{"success":1,"message":"Your transaction is successful","ref":"mcd_i8875478492007","debitAmount":"100","discountAmount":0,"prevBalance":"4260.5","currentBalance":4160.5}';
         }
 
         $rep = json_decode($response, true);
@@ -54,7 +61,7 @@ class SellBettingTopup extends Controller
 
         $dada['server_response'] = $response;
 
-        if ($rep['success']) {
+        if ($rep['success'] == 1) {
 
             if ($requester == "reseller") {
                 return $rs->outputResponse($request, $transid, 1, $dada);

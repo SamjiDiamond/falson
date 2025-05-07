@@ -47,6 +47,7 @@ Route::prefix('v2')->group(function () {
     Route::get('tv/{network}', [ListController::class, 'cabletv']);
     Route::get('jamb', [ListController::class, 'jamb']);
     Route::get('education', [ListController::class, 'education']);
+    Route::get('betting', [ListController::class, 'betting']);
     Route::get('availableCommissions', [ListController::class, 'availableCommissions']);
 
     Route::post('email-verification', [AuthenticationController::class, 'email_verify']);

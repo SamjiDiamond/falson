@@ -908,8 +908,8 @@ class PayController extends Controller
         $air = new SellBettingTopup();
 
         switch (strtolower($server)) {
-            case "7":
-                return $air->server7($request, $input['provider'], $input['number'], $ref, $input['amount'], $request, $dada, "mcd");
+            case "8":
+                return $air->server8($request, $input['provider'], $input['number'], $ref, $input['amount'], $request, $dada, "mcd");
             case "0":
                 return $air->server0($request, $input['provider'], $input['number'], $ref, $input['amount'], $request, $dada, "mcd");
             default:

@@ -11,6 +11,7 @@ use App\Models\AppDataControl;
 use App\Models\AppEducationControl;
 use App\Models\AppElectricityControl;
 use App\Models\ResellerAirtimeControl;
+use App\Models\ResellerBetting;
 use App\Models\ResellerCableTV;
 use App\Models\ResellerElecticity;
 use App\Models\Settings;
@@ -41,7 +42,14 @@ class ListController extends Controller
 
     public function education()
     {
-        $airsets = AppEducationControl::where('status',1)->select('id', 'name', 'price', 'code', 'status')->get();
+        $airsets = AppEducationControl::where('status', 1)->select('id', 'name', 'price', 'code', 'status')->get();
+
+        return response()->json(['success' => 1, 'message' => 'Fetch successfully', 'data' => $airsets]);
+    }
+
+    public function betting()
+    {
+        $airsets = ResellerBetting::where('status', 1)->select('id', 'name', 'code', 'discount', 'status')->get();
 
         return response()->json(['success' => 1, 'message' => 'Fetch successfully', 'data' => $airsets]);
     }

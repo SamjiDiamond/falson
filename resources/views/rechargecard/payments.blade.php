@@ -38,7 +38,7 @@
                                 @foreach($data as $da)
                                     <td>{{$i++}}</td>
                                     <td class="center">{{$da->user_name}}</td>
-                                    <td>{{$da->code}}</td>
+                                    <td>{{strtoupper($da->extra)}}</td>
                                     <td>{{$da->amount}}</td>
                                     <td>
                                         {{$da['created_at']}}

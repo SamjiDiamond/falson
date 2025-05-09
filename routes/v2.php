@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\V2\ListController;
 use App\Http\Controllers\Api\V2\NotificationController;
 use App\Http\Controllers\Api\V2\OtherController;
 use App\Http\Controllers\Api\V2\PayController;
+use App\Http\Controllers\Api\V2\RechargeCardController;
 use App\Http\Controllers\Api\V2\ReportController;
 use App\Http\Controllers\Api\V2\TransactionsController;
 use App\Http\Controllers\Api\V2\UserController;
@@ -90,6 +91,9 @@ Route::prefix('v2')->group(function () {
         Route::put('read-all-notifications', [NotificationController::class, 'markAsRead']);
         Route::post('generate-notifications', [NotificationController::class, 'generate']);
         Route::post('account-statement', [NotificationController::class, 'generateAccountStatement']);
+
+        Route::get('rc-plans', [RechargeCardController::class, 'rcplans']);
+        Route::post('rc-plan-purchase', [RechargeCardController::class, 'rcpurchase']);
 
 
         Route::middleware(['general_middleware'])->group(function () {

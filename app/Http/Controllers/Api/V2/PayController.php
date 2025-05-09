@@ -21,6 +21,7 @@ use App\Models\AppDataControl;
 use App\Models\AppElectricityControl;
 use App\Models\CGWallets;
 use App\Models\PndL;
+use App\Models\RCPricing;
 use App\Models\ResellerBetting;
 use App\Models\Serverlog;
 use App\Models\Settings;
@@ -482,7 +483,31 @@ class PayController extends Controller
         $input["user_name"] = Auth::user()->user_name;
         $input['name'] = $input['network'] . " Airtime Pin";
 
-        $input['amount'] = $input['amount'] * $input['quantity'];
+        if (Auth::user()->rc_price_plan_id == 0) {
+            $input['amount'] = $input['amount'] * $input['quantity'];
+        } else {
+
+            $pricing = RCPricing::where([['id', Auth::user()->rc_price_plan_id], ['status', 1]])->first();
+
+            if ($pricing) {
+                switch ($input['network']) {
+                    case 'MTN':
+                        $input['amount'] = $pricing->mtn * $input['quantity'] * ($input['amount'] / 100);
+                        break;
+                    case 'GLO':
+                        $input['amount'] = $pricing->glo * $input['quantity'] * ($input['amount'] / 100);
+                        break;
+                    case 'AIRTEL':
+                        $input['amount'] = $pricing->airtel * $input['quantity'] * ($input['amount'] / 100);
+                        break;
+                    case '9MOBILE':
+                        $input['amount'] = $pricing->ninemobile * $input['quantity'] * ($input['amount'] / 100);
+                        break;
+                }
+            } else {
+                $input['amount'] = $input['amount'] * $input['quantity'];
+            }
+        }
 
         $user = User::where('user_name', $input["user_name"])->first();
 
@@ -513,7 +538,7 @@ class PayController extends Controller
 
         $payload = '{
     "network": "' . strtoupper($input['network']) . '",
-    "amount" : "' . $input['amount'] . '",
+    "amount" : "' . $price . '",
     "quantity" : "' . $input['quantity'] . '",
     "order" : "instant"
 }';

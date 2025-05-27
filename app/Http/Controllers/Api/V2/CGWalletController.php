@@ -52,6 +52,10 @@ class CGWalletController extends Controller
             $input['charge'] = "yes";
         } else {
             $input['charge'] = "no";
+
+            if (!isset($input['receipt'])) {
+                return response()->json(['success' => 0, 'message' => 'Receipt is required']);
+            }
         }
 
         $data = CGBundle::find($input['bundle_id']);
@@ -114,10 +118,10 @@ class CGWalletController extends Controller
             $cgwallet->save();
         } else {
             $image = $input["receipt"];
-            $photo = $cgtrans->id . ".jpg";
+            $photo = "cgtransaction_" . $cgtrans->id . ".jpg";
 
             $decodedImage = base64_decode("$image");
-            file_put_contents(storage_path("app/public/cgtransaction/" . $photo), $decodedImage);
+            file_put_contents(storage_path("app/public/" . $photo), $decodedImage);
 
             $input["image"] = "cgtransaction/" . $photo;
         }

@@ -610,10 +610,10 @@ class UserController extends Controller
             return response()->json(['success' => 0, 'message' => 'User not found']);
         }
 
-        $name = Auth::user()->user_name . "_" . time() . ".jpg";
+        $name = "avatar" . "_" . Auth::user()->user_name . "_" . time() . ".jpg";
 
-        $image=$input['dp'];
-        $localfolder = storage_path('app/public/avatar') . '/';
+        $image = $input['dp'];
+        $localfolder = storage_path('app/public/');
         $base64 = base64_decode($image);
 
         if (file_put_contents($localfolder . $name, $base64)) {

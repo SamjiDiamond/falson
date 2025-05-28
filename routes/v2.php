@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\OthersController;
 use App\Http\Controllers\Api\V2\AuthenticationController;
+use App\Http\Controllers\Api\V2\AutobuyController;
 use App\Http\Controllers\Api\V2\CGWalletController;
 use App\Http\Controllers\Api\V2\ListController;
 use App\Http\Controllers\Api\V2\NotificationController;
@@ -168,6 +169,17 @@ Route::prefix('v2')->group(function () {
         Route::get('getPromoCode', [OtherController::class, 'getPromoCode']);
 
         Route::post('moveFunds', [OtherController::class, 'moveFunds']);
+
+        Route::prefix('autobuy')->group(function () {
+            Route::post('/', [AutobuyController::class, 'store']); // Add Autobuy
+            Route::get('/', [AutobuyController::class, 'index']); // View all Autobuys
+            Route::get('/past', [AutobuyController::class, 'pastAutobuys']); // View past Autobuys
+            Route::get('/recent', [AutobuyController::class, 'recentAutobuys']); // View recent Autobuys
+
+            Route::patch('/cancel/{id}', [AutobuyController::class, 'cancel']); // Cancel Autobuy
+            Route::put('/update/{id}', [AutobuyController::class, 'update']); // Update Autobuy
+        });
+
     });
 
 });

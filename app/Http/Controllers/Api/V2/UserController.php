@@ -258,9 +258,23 @@ class UserController extends Controller
     public function referrals()
     {
         $user = Auth::user();
-        $referrals = User::where('referral', $user->user_name)->select('user_name', 'photo', 'referral_plan', 'reg_date')->get();
 
-        return response()->json(['success' => 1, 'message' => 'Fetched successfully', 'data' => $referrals]);
+        // Fetch referrals and check if each has completed KYC
+        $referrals = User::where('referral', $user->user_name)
+            ->select('user_name', 'photo', 'referral_plan', 'reg_date', 'bvn', 'nin')
+            ->get()
+            ->map(function ($referral) {
+                $referral->kyc_completed = !empty($referral->bvn) || !empty($referral->nin);
+                $referral->bvn = "*****";
+                $referral->nin = "*****";
+                return $referral;
+            });
+
+        return response()->json([
+            'success' => 1,
+            'message' => 'Fetched successfully',
+            'data' => $referrals
+        ]);
     }
 
     public function profile()

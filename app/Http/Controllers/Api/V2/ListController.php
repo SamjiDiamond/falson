@@ -15,6 +15,7 @@ use App\Models\ResellerBetting;
 use App\Models\ResellerCableTV;
 use App\Models\ResellerElecticity;
 use App\Models\Settings;
+use Illuminate\Support\Facades\Log;
 
 class ListController extends Controller
 {
@@ -31,6 +32,50 @@ class ListController extends Controller
         $airsets = AirtimeCountry::where('status', 1)->get();
 
         return response()->json(['success' => 1, 'message' => 'Fetch successfully', 'data' => $airsets]);
+    }
+
+    public function airtimeCountry($country)
+    {
+        try {
+            $curl = curl_init();
+
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => env('MCD_BASEURL') . '/foreign_airtime/' . $country,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'GET',
+                CURLOPT_HTTPHEADER => array(
+                    'Content-Type: application/json',
+                    'Authorization: Bearer ' . env('MCD_KEY')
+                ),
+            ));
+
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+
+            $response = curl_exec($curl);
+            curl_close($curl);
+
+            Log::info("MCD Foreign Airtime. - " . $country);
+            Log::info($response);
+
+            $rep = json_decode($response, true);
+
+            try {
+                return response()->json(['success' => 1, 'message' => 'Fetched successfully', 'data' => $rep['data']]);
+            } catch (\Exception $e) {
+                return response()->json([
+                    'success' => 0,
+                    'message' => 'Unable to validate'
+                ]);
+            }
+        } catch (\Exception $e) {
+            return response()->json(['success' => 0, 'message' => 'Unable to fetch at this time']);
+        }
+
     }
 
     public function electricity()

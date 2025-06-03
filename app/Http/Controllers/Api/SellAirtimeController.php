@@ -367,4 +367,83 @@ class SellAirtimeController extends Controller
         }
     }
 
+    public function server9($request, $amnt, $phone, $transid, $net, $input, $dada, $requester)
+    {
+
+        $payload = '{
+    "ref": "' . $transid . '",
+    "number": "' . $phone . '",
+    "provider": "' . $net . '",
+    "operatorID": "' . $input['operatorID'] . '",
+    "amount": "' . $amnt . '",
+    "country": "' . $input['country'] . '",
+    "payment": "wallet"
+}';
+
+        if (env('FAKE_TRANSACTION', 1) == 0) {
+            $curl = curl_init();
+
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => env('MCD_BASEURL') . "/airtime",
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'POST',
+                CURLOPT_POSTFIELDS => $payload,
+                CURLOPT_HTTPHEADER => array(
+                    'Authorization: Bearer ' . env('MCD_KEY'),
+                    'Content-Type: application/json'
+                ),
+            ));
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+
+            $response = curl_exec($curl);
+
+            curl_close($curl);
+        } else {
+            $response = '{"success":1,"message":"Your transaction is successful","ref":"plafff3175876591018","debitAmount":"100","discountAmount":0,"prevBalance":"3260.5","currentBalance":3160.5}';
+        }
+
+        Log::info("MCD Transaction. - " . $transid . " " . env('MCD_BASEURL') . "/airtime");
+        Log::info($payload);
+        Log::info($response);
+
+
+        $rep = json_decode($response, true);
+
+        $tran = new ServeRequestController();
+        $rs = new PayController();
+        $ms = new V2\PayController();
+
+        $dada['server_response'] = $response;
+
+        if (isset($rep['error'])) {
+            if ($requester == "reseller") {
+                return $rs->outputResponse($request, $transid, 0, $dada);
+            } else {
+                return $ms->outputResp($request, $transid, 0, $dada);
+            }
+        }
+
+        $dada['message'] = $rep['message'];
+        $dada['server_ref'] = $rep['ref'];
+
+        if ($rep['success'] == 1) {
+            if ($requester == "reseller") {
+                return $rs->outputResponse($request, $transid, 1, $dada);
+            } else {
+                return $ms->outputResp($request, $transid, 1, $dada);
+            }
+        } else {
+            if ($requester == "reseller") {
+                return $rs->outputResponse($request, $transid, 0, $dada);
+            } else {
+                return $ms->outputResp($request, $transid, 0, $dada);
+            }
+        }
+    }
+
 }

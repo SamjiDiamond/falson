@@ -97,6 +97,8 @@ Route::prefix('v2')->group(function () {
         Route::post('rc-plan-purchase', [RechargeCardController::class, 'rcpurchase']);
 
 
+        Route::get('airtime/operators/{country}', [ListController::class, 'airtimeCountry']);
+
         Route::middleware(['general_middleware'])->group(function () {
             Route::post('airtime', [PayController::class, 'buyairtime'])->middleware('check_UDS_middleware:airtime');
             Route::post('data', [PayController::class, 'buydata'])->middleware('check_UDS_middleware:data');

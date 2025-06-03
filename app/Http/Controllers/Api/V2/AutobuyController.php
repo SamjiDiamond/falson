@@ -62,7 +62,7 @@ class AutobuyController extends Controller
     // View all Autobuys
     public function index()
     {
-        $autobuys = Autobuy::where('user_id', Auth::id())->get();
+        $autobuys = Autobuy::where([['user_id', Auth::id()], ['status', 1]])->get();
         return response()->json(['success' => 1, 'data' => $autobuys]);
     }
 

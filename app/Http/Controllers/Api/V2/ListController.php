@@ -28,7 +28,7 @@ class ListController extends Controller
 
     public function airtimeInt()
     {
-        $airsets = AirtimeCountry::get();
+        $airsets = AirtimeCountry::where('status', 1)->get();
 
         return response()->json(['success' => 1, 'message' => 'Fetch successfully', 'data' => $airsets]);
     }

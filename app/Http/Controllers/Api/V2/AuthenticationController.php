@@ -477,7 +477,7 @@ class AuthenticationController extends Controller
 
         if($cr){
             if(Carbon::parse($cr->created_at)->diffInMinutes() < 10){
-                return response()->json(['success' => 0, 'message' => 'Code has been sent to your mail. Kindly check your inbox, promotions or spam']);
+                return response()->json(['success' => 1, 'message' => 'Code has been sent to your mail. Kindly check your inbox, promotions or spam']);
             }
         }
 
@@ -532,7 +532,7 @@ class AuthenticationController extends Controller
 
         if ($cr) {
             if (Carbon::parse($cr->created_at)->diffInMinutes() < 10) {
-                return response()->json(['success' => 0, 'message' => 'Code has been sent to your mail. Kindly check your inbox, promotions or spam']);
+                return response()->json(['success' => 1, 'message' => 'Code has been sent to your mail. Kindly check your inbox, promotions or spam']);
             }
         }
 

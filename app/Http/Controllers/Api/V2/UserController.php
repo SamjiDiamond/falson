@@ -627,12 +627,12 @@ class UserController extends Controller
         $name = "avatar" . "_" . Auth::user()->user_name . "_" . time() . ".jpg";
 
         $image = $input['dp'];
-        $localfolder = storage_path('app/public/');
+        $localfolder = storage_path('app/public/avatar') . '/';
         $base64 = base64_decode($image);
 
         if (file_put_contents($localfolder . $name, $base64)) {
-            $user=User::find(Auth::id());
-            $user->photo=$name;
+            $user = User::find(Auth::id());
+            $user->photo = $name;
             $user->save();
             return response()->json(['success' => 1, 'message' => 'Image uploaded successfully', 'data' => $name]);
         } else {

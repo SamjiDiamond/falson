@@ -107,6 +107,7 @@ Route::prefix('v2')->group(function () {
             Route::post('betting', [PayController::class, 'buybetting']);
             Route::post('jamb', [PayController::class, 'buyJamb']);
             Route::post('bizverification', [PayController::class, 'bizverification']);
+            Route::post('ninvalidation', [PayController::class, 'ninvalidation']);
 
             Route::post('bulkairtime', [UserController::class, 'bulkAirtime']);
 

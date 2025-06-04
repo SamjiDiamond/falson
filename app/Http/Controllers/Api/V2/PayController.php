@@ -708,6 +708,115 @@ class PayController extends Controller
 
     }
 
+    public function ninvalidation(Request $request)
+    {
+        $input = $request->all();
+        $rules = array(
+            'number' => 'required',
+            'ref' => 'required'
+        );
+
+        $validator = Validator::make($input, $rules);
+
+        $input = $request->all();
+
+        if (!$validator->passes()) {
+
+            return response()->json(['success' => 0, 'message' => implode(",", $validator->errors()->all())]);
+        }
+
+        $input["user_name"] = Auth::user()->user_name;
+        $net = "NINVERIFICATION";
+
+        $set = Settings::where('name', 'biz_verification_price_customer')->first();
+
+        $input['amount'] = $set->value;
+
+        $user = User::where('user_name', $input["user_name"])->first();
+
+        if (!$user) {
+            return response()->json(['success' => 0, 'message' => 'User not found']);
+        }
+
+        $uid = $input['user_name'];
+        $input["i_wallet"] = $user->wallet;
+        $input['f_wallet'] = $input["i_wallet"] - $input['amount'];
+
+        if ($input['amount'] > $user->wallet) {
+            return response()->json(['success' => 0, 'message' => 'Insufficient Balance']);
+        }
+
+        $trans_exist = Transaction::where('ref', $input['ref'])->exists();
+
+        if ($trans_exist) {
+            return response()->json(['success' => 0, 'message' => 'Transaction reference already exist']);
+        }
+
+        $input['date'] = Carbon::now();
+        $input['ip_address'] = $_SERVER['REMOTE_ADDR'];
+        $input['description'] = "NIN verification on " . $input['number'];
+        $input['extra'] = "";
+        $input['name'] = $net;
+        $input['status'] = 'delivered';
+        $input['code'] = 'ninv';
+
+        $curl = curl_init();
+
+        $payload = array('ref' => $input['ref'], 'number' => $input['number']);
+
+
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => env('MCD_BASEURL') . '/ninvalidation',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_SSL_VERIFYHOST => false,
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_POSTFIELDS => $payload,
+            CURLOPT_HTTPHEADER => array(
+                'Authorization: Bearer ' . env('MCD_KEY')
+            ),
+        ));
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+
+        $response = curl_exec($curl);
+
+        curl_close($curl);
+
+        Log::info("NIN Verification - ");
+        Log::info(json_encode($payload));
+        Log::info($response);
+
+
+        $rep = json_decode($response, true);
+
+        if ($rep['success'] != 1) {
+            return response()->json(['success' => 0, 'message' => $rep['message']]);
+        }
+
+        // mysql inserting a new row
+        Transaction::create($input);
+
+        $user->wallet = $input['f_wallet'];
+        $user->save();
+
+
+        $input["type"] = "income";
+        $input["gl"] = $net;
+        $input["amount"] = $input['amount'];
+        $input['date'] = Carbon::now();
+        $input["narration"] = "Being $net charges from " . $input['user_name'] . " on " . $input['ref'];
+
+        PndL::create($input);
+
+        return response()->json(['success' => 1, 'message' => 'NIN validated successfully', 'data' => $rep['data']]);
+
+    }
+
     public function a2ca2b(Request $request)
     {
 

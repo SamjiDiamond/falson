@@ -538,7 +538,7 @@ class AuthenticationController extends Controller
 
         $type="email_verify";
 
-        $code = substr(rand(), 0, 8);
+        $code = substr(rand(), 0, 6);
 
         CodeRequest::create([
             'mobile' => trim($input['email']),

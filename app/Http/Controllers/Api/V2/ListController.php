@@ -139,7 +139,7 @@ class ListController extends Controller
             $curl = curl_init();
 
             curl_setopt_array($curl, array(
-                CURLOPT_URL => env('SERVER6') . "service-variations?serviceID=jamb",
+                CURLOPT_URL => env('MCD_BASEURL') . "/jamb",
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => '',
                 CURLOPT_MAXREDIRS => 10,
@@ -148,7 +148,7 @@ class ListController extends Controller
                 CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                 CURLOPT_CUSTOMREQUEST => 'GET',
                 CURLOPT_HTTPHEADER => array(
-                    'Authorization: Basic ' . env('SERVER6_AUTH'),
+                    'Authorization: Bearer ' . env('MCD_KEY'),
                     'Content-Type: application/json'
                 ),
             ));
@@ -164,8 +164,12 @@ class ListController extends Controller
 
         $rep = json_decode($response, true);
 
+        if ($rep['success'] != 1) {
+            return response()->json(['success' => 0, 'message' => 'Service currently not available']);
+        }
 
-        return response()->json(['success' => 1, 'message' => 'Fetch successfully', 'data' => $rep['content']['varations']]);
+
+        return response()->json(['success' => 1, 'message' => 'Fetch successfully', 'data' => $rep['data']]);
     }
 
     public function airtimeConverter()

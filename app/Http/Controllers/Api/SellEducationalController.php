@@ -4,9 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Reseller\PayController;
-use App\Jobs\SendEducationtoEmailJob;
-use App\Models\Educational;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class SellEducationalController extends Controller
 {
@@ -80,15 +79,24 @@ class SellEducationalController extends Controller
         return null;
     }
 
-    public function server6_utme($request, $code, $phone, $transid, $input, $dada, $requester)
+    public function server9($request, $code, $phone, $transid, $input, $dada, $requester)
     {
         $reqid = Carbon::now()->format('YmdHi') . $transid;
 
         if (env('FAKE_TRANSACTION', 1) == 0) {
+            $payload = '{
+    "provider": "jamb",
+    "amount": "' . $input['amount'] . '",
+    "number": "' . $input['number'] . '",
+    "payment" : "wallet",
+    "promo" : "0",
+    "ref":"' . $transid . '",
+    "coded": "' . $code . '"
+}';
             $curl = curl_init();
 
             curl_setopt_array($curl, array(
-                CURLOPT_URL => env('SERVER6') . "pay",
+                CURLOPT_URL => env('MCD_BASEURL') . "/jamb",
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => '',
                 CURLOPT_MAXREDIRS => 10,
@@ -96,9 +104,9 @@ class SellEducationalController extends Controller
                 CURLOPT_FOLLOWLOCATION => true,
                 CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                 CURLOPT_CUSTOMREQUEST => 'POST',
-                CURLOPT_POSTFIELDS => '{"request_id": "' . $reqid . '", "serviceID": "jamb","variation_code": "' . $code . '","phone": "08166939205","billersCode": "' . $phone . '","amount": "' . $request->get('amount') . '"}',
+                CURLOPT_POSTFIELDS => $payload,
                 CURLOPT_HTTPHEADER => array(
-                    'Authorization: Basic ' . env('SERVER6_AUTH'),
+                    'Authorization: Bearer ' . env('MCD_KEY'),
                     'Content-Type: application/json'
                 ),
             ));
@@ -107,6 +115,11 @@ class SellEducationalController extends Controller
             $response = curl_exec($curl);
 
             curl_close($curl);
+
+            Log::info("MCD Buy Jamb. - ");
+            Log::info("Payload : " . $payload);
+            Log::info($response);
+
 
         } else {
             $response = '{ "code": "000", "content": { "transactions": { "status": "delivered", "product_name": "Jamb", "unique_element": "0123456789", "unit_price": 4700, "quantity": 1, "service_verification": null, "channel": "api", "commission": 0, "total_amount": 4700, "discount": null, "type": "Education", "email": "sandbox@vtpass.com", "phone": "07061933309", "name": null, "convinience_fee": 0, "amount": 4700, "platform": "api", "method": "api", "transactionId": "16457951913329637534894519" } }, "response_description": "TRANSACTION SUCCESSFUL", "requestId": "20220225kseeoqytisffmfkd45jkfdjdjjeodlkuwowjswiwoqidkpwfiokl", "amount": "4700.00", "transaction_date": { "date": "2022-02-25 14:19:51.000000", "timezone_type": 3, "timezone": "Africa/Lagos" }, "purchased_code": "Pin : 367574683050773", "Pin": "Pin : 367574683050773" }';
@@ -118,11 +131,11 @@ class SellEducationalController extends Controller
         $ms = new V2\PayController();
 
         $dada['server_response'] = $response;
+        $dada['message'] = $rep['message'];
 
-        if ($rep['code'] == '000') {
-            $dada['token'] = $rep['purchased_code'];
-//            $dada['server_ref'] = $rep['content']['transactions']['transactionId'];
-            $dada['server_ref'] = $reqid;
+        if ($rep['success'] == 1) {
+            $dada['server_ref'] = $rep['ref'];
+            $dada['token'] = $rep['token'];
 
             if ($requester == "reseller") {
                 $dada['server_ref'] = $rep['content']['transactions']['transactionId'];

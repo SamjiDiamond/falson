@@ -344,7 +344,7 @@ class PayController extends Controller
         $input['device'] = $request->header('device') ?? $_SERVER['HTTP_USER_AGENT'];
 
         $debitAmount = $input['amount'];
-        $server = 6;
+        $server = 9;
         $discount = 0;
 
         $proceed['1'] = $input['provider'];
@@ -1061,7 +1061,7 @@ class PayController extends Controller
 
         $air = new SellEducationalController();
 
-        return $air->server6_utme($request, $input['coded'], $input['number'], $ref, $request, $dada, "mcd");
+        return $air->server9($request, $input['coded'], $input['number'], $ref, $request, $dada, "mcd");
 
     }
 

@@ -221,40 +221,6 @@ class UserController extends Controller
         return response()->json(['success' => 1, 'message' => 'Pin set successfully']);
     }
 
-    public function change_pin(Request $request)
-    {
-        $input = $request->all();
-        $rules = array(
-            'o_pin' => 'required',
-            'n_pin' => 'required',
-        );
-
-        $validator = Validator::make($input, $rules);
-
-        if (!$validator->passes()) {
-            return response()->json(['success' => 0, 'message' => 'Required field(s) is missing']);
-        }
-
-        $user = Auth::user();
-        if ($user->pin != $input['o_pin']) {
-            return response()->json(['success' => 0, 'message' => 'Wrong Old Pin']);
-        }
-
-        $user->pin = $input['n_pin'];
-        $user->save();
-
-        return response()->json(['success' => 1, 'message' => 'Pin changed successfully']);
-    }
-
-    public function togglePin(Request $request)
-    {
-        $user = Auth::user();
-        $user->pin_enabled = $user->pin_enabled == 0 ? 1 : 0;
-        $user->save();
-
-        return response()->json(['success' => 1, 'message' => 'Transaction Pin Toggled successfully', 'data' => $user->pin_enabled]);
-    }
-
     public function referrals()
     {
         $user = Auth::user();

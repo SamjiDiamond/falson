@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\V2\ListController;
 use App\Http\Controllers\Api\V2\NotificationController;
 use App\Http\Controllers\Api\V2\OtherController;
 use App\Http\Controllers\Api\V2\PayController;
+use App\Http\Controllers\Api\V2\PinManagementController;
 use App\Http\Controllers\Api\V2\RechargeCardController;
 use App\Http\Controllers\Api\V2\ReportController;
 use App\Http\Controllers\Api\V2\TransactionsController;
@@ -57,13 +58,16 @@ Route::prefix('v2')->group(function () {
 
     Route::post('set-pin', [UserController::class, 'set_pin']);
 
+    Route::post('reset-pin', [PinManagementController::class, 'resetPin']);
+    Route::put('reset-pin', [PinManagementController::class, 'completeResetPin']);
+
     Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('biometriclogin', [AuthenticationController::class, 'biometricLogin']);
         Route::post('login-pin', [AuthenticationController::class, 'loginpin']);
 
         Route::get('dashboard', [UserController::class, 'dashboard']);
-        Route::post('changepin', [UserController::class, 'change_pin']);
-        Route::get('toggle-pin', [UserController::class, 'togglePin']);
+        Route::post('changepin', [PinManagementController::class, 'change_pin']);
+        Route::get('toggle-pin', [PinManagementController::class, 'togglePin']);
 
         Route::get('referrals', [UserController::class, 'referrals']);
         Route::post('addreferral', [UserController::class, 'add_referral']);

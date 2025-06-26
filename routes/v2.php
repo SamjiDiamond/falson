@@ -177,6 +177,9 @@ Route::prefix('v2')->group(function () {
 
         Route::post('moveFunds', [OtherController::class, 'moveFunds']);
 
+        Route::get('beneficiary/{type}', [OtherController::class, 'beneficiary']);
+
+
         Route::prefix('autobuy')->group(function () {
             Route::post('/', [AutobuyController::class, 'store']); // Add Autobuy
             Route::get('/', [AutobuyController::class, 'index']); // View all Autobuys

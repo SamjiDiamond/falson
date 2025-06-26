@@ -10,6 +10,7 @@ use App\Models\FAQs;
 use App\Models\GeneralMarket;
 use App\Models\PromoCode;
 use App\Models\ReferralPlans;
+use App\Models\Serverlog;
 use App\Models\Settings;
 use App\Models\Transaction;
 use App\Models\User;
@@ -570,5 +571,15 @@ class OtherController extends Controller
         return response()->json(['success' => 1, 'message' => 'Funds moved to your wallet successfully']);
 
     }
+
+    public function beneficiary($type)
+    {
+        $userName = Auth::user()->user_name;
+
+        $data = Serverlog::where(["user_name" => $userName, "service" => $type])->select('user_name', 'network', 'phone', 'service')->latest()->limit(10)->get();
+
+        return response()->json(['success' => 1, 'message' => "Fetched successfully for $type", 'data' => $data]);
+    }
+
 
 }

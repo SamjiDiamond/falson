@@ -29,8 +29,8 @@
                                 <tr>
                                     <td>
                                         <div>
-                                            {{--                                            <p>Device--}}
-                                            {{--                                                Details: {{explode("|", $data['device'])[3] ?? ""}} {{explode("|", $data['device'])[2] ?? ""}}</p>--}}
+                                            <p>Device
+                                                Details: {{explode("|", $data['device'])[3] ?? ""}} {{explode("|", $data['device'])[2] ?? ""}}</p>
                                             <p>IP address: {{$data['ip']}}</p>
                                             <p>Date &
                                                 Time: {{\Carbon\Carbon::now()->format('D, M d, Y  H:i:s a T')}}</p>

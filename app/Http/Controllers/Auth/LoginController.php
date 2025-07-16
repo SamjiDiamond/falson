@@ -3,15 +3,13 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Mail\TwofaNotificationMail;
+use App\Jobs\ProcessUser2faJob;
 use App\Models\CodeRequest;
 use Carbon\Carbon;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 
 class LoginController extends Controller
 {
@@ -55,32 +53,7 @@ class LoginController extends Controller
                 if (!isset($input['otp'])) {
                     $datas['device'] = $_SERVER['HTTP_USER_AGENT'];
                     $datas['ip'] = $_SERVER['REMOTE_ADDR'];
-//                    ProcessUser2faJob::dispatchSync(auth()->user(), $type, $datas);
-
-
-                    $code = substr(rand(), 0, 6);
-
-                    echo $code;
-
-                    $u = auth()->user();
-
-                    CodeRequest::create([
-                        'mobile' => trim($u->email),
-                        'code' => $code,
-                        'status' => 0,
-                        'type' => $type
-                    ]);
-
-                    $data['user_name'] = $u->user_name;
-                    $data['email'] = $u->email;
-                    $data['code'] = $code;
-                    $data['ip'] = $request->ip();
-
-
-                    if (env('APP_ENV') != "local") {
-                        Log::info("sending device email");
-                        Mail::to($u->email)->send(new TwofaNotificationMail($data));
-                    }
+                    ProcessUser2faJob::dispatch(auth()->user(), $type, $datas);
 
                     $this->guard()->logout();
                     $request->session()->invalidate();

@@ -53,7 +53,7 @@ class LoginController extends Controller
                 if (!isset($input['otp'])) {
                     $datas['device'] = $_SERVER['HTTP_USER_AGENT'];
                     $datas['ip'] = $_SERVER['REMOTE_ADDR'];
-                    ProcessUser2faJob::dispatch(auth()->user(), $type, $datas);
+                    ProcessUser2faJob::dispatchSync(auth()->user(), $type, $datas);
 
                     $this->guard()->logout();
                     $request->session()->invalidate();

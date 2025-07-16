@@ -74,6 +74,7 @@ class LoginController extends Controller
                     $data['user_name'] = $u->user_name;
                     $data['email'] = $u->email;
                     $data['code'] = $code;
+                    $data['ip'] = $request->ip();
 
 
                     if (env('APP_ENV') != "local") {

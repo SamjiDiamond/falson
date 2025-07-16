@@ -5,6 +5,7 @@ use App\Http\Controllers\CGBundleController;
 use App\Http\Controllers\FAQsController;
 use App\Http\Controllers\GatewayControl;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PromoCodeController;
 use App\Http\Controllers\RechargeCardController;
 use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\Reseller\BlockReseller;
@@ -321,6 +322,15 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/pricingUpdate', [RechargeCardController::class, 'pricingUpdate'])->name('pricingUpdate');
             Route::get('/payments', [RechargeCardController::class, 'payments'])->name('payments');
             Route::get('/transactions', [RechargeCardController::class, 'transactions'])->name('transactions');
+        });
+
+        Route::prefix('promo-codes')->name('promo_codes.')->group(function () {
+            Route::get('/', [PromoCodeController::class, 'index'])->name('index');
+            Route::get('/create', [PromoCodeController::class, 'create'])->name('create');
+            Route::post('/', [PromoCodeController::class, 'store'])->name('store');
+            Route::get('/{promoCode}/edit', [PromoCodeController::class, 'edit'])->name('edit');
+            Route::put('/{promoCode}', [PromoCodeController::class, 'update'])->name('update');
+            Route::delete('/{promoCode}', [PromoCodeController::class, 'destroy'])->name('destroy');
         });
 
         Route::get('sliders', [SliderController::class, 'index'])->name('sliders.index');

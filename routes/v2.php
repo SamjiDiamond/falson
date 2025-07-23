@@ -84,6 +84,7 @@ Route::prefix('v2')->group(function () {
         Route::get('transactions-electricity', [TransactionsController::class, 'transactionsElectricity']);
         Route::get('transactions-education', [TransactionsController::class, 'transactionsEducation']);
         Route::get('transactions-funding', [TransactionsController::class, 'transactionsFunding']);
+        Route::get('transactions-epin', [TransactionsController::class, 'transactionsEpin']);
         Route::get('commissions', [TransactionsController::class, 'commissions']);
         Route::get('bonus', [TransactionsController::class, 'bonus']);
         Route::get('gmtransactions', [OtherController::class, 'getGmTrans']);

@@ -105,6 +105,22 @@ class TransactionsController extends Controller
         return response()->json(['success' => 1, 'message' => 'Fetched successfully', 'data' => $trans]);
     }
 
+    public function transactionsEpin(Request $request)
+    {
+        $input = $request->all();
+        $date_from = $input['date_from'] ?? '';
+        $date_to = $input['date_to'] ?? '';
+        $limit = $input['limit'] ?? 100;
+
+        $trans = Transaction::where([['user_name', Auth::user()->user_name], ['code', 'airtimepin']])
+            ->when(isset($date_from) && $date_from != '' && isset($date_to) && $date_to != '', function ($query) use ($date_from, $date_to) {
+                $query->whereBetween('created_at', [Carbon::parse($date_from)->toDateTimeString(), Carbon::parse($date_to)->addDay()->toDateTimeString()]);
+            })
+            ->latest()->limit($limit)->get();
+
+        return response()->json(['success' => 1, 'message' => 'Fetched successfully', 'data' => $trans]);
+    }
+
     public function transactionsAirtime(Request $request)
     {
         $input = $request->all();

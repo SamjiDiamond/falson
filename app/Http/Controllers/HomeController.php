@@ -110,6 +110,11 @@ class HomeController extends Controller
             $response = curl_exec($curl);
 
             curl_close($curl);
+
+
+            Log::info("HW BALANCE CHECK");
+            Log::info($response);
+
             $hw = json_decode($response, true);
 
             $data['hw'] = $hw['data'];
@@ -140,6 +145,10 @@ class HomeController extends Controller
             $response = curl_exec($curl);
 
             curl_close($curl);
+
+            Log::info("Uzobest BALANCE CHECK");
+            Log::info($response);
+
             $hw = json_decode($response, true);
 
             $data['uzobest'] = $hw['user'];
@@ -171,6 +180,10 @@ class HomeController extends Controller
             $response = curl_exec($curl);
 
             curl_close($curl);
+
+            Log::info("IYII BALANCE CHECK");
+            Log::info($response);
+
             $hw = json_decode($response, true);
 
             $data['iyii'] = $hw['user'];
@@ -201,6 +214,10 @@ class HomeController extends Controller
             $response = curl_exec($curl);
 
             curl_close($curl);
+
+            Log::info("Autosync BALANCE CHECK");
+            Log::info($response);
+
             $hw = json_decode($response, true);
 
             $data['autosync'] = $hw['data']['user'];
@@ -237,6 +254,11 @@ class HomeController extends Controller
             $response = curl_exec($curl);
 
             curl_close($curl);
+
+
+            Log::info("Ringo BALANCE CHECK");
+            Log::info($response);
+
             $rep = json_decode($response, true);
 
             $data['ringo'] = $rep['wallet']['wallet'];

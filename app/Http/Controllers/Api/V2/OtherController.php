@@ -213,7 +213,7 @@ class OtherController extends Controller
         $validator = Validator::make($input, $rules);
 
         if (!$validator->passes()) {
-            return response()->json(['status' => 0, 'message' => 'Incomplete request', 'error' => $validator->errors()]);
+            return response()->json(['success' => 0, 'message' => 'Incomplete request', 'error' => $validator->errors()]);
         }
 
         $curl = curl_init();

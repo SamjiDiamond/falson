@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\AppCableTVControl;
 use App\Models\AppDataControl;
+use App\Models\CombineDataPlans;
 use App\Models\ResellerCableTV;
 use App\Models\ResellerDataPlans;
 use App\Models\ResellerElecticity;
@@ -136,6 +137,21 @@ class GenerateHWPlans extends Command
                 'server' => 1,
                 'status' => 1,
             ]);
+
+            CombineDataPlans::create([
+                'name' => $plans['name'] . " " . $plans['allowance'] . " - " . $plans['validity'],
+                'product_code' => $type[1] ?? 'DG',
+                'dataplan' => $allowance,
+                'network' => $plans['network'],
+                'coded' => $plans['planId'],
+                'plan_id' => $plans['planId'],
+                'duration' => strtolower($this->getDaysAndCategory($plans['validity'])),
+                'app_price' => $plans['price'],
+                'res_price' => $plans['price'],
+                'price' => $plans['price'],
+                'server' => 1,
+                'status' => 1,
+            ]);
         }
     }
 
@@ -256,6 +272,63 @@ class GenerateHWPlans extends Command
                 'server' => 1,
             ]);
         }
+    }
+
+    public static function getDaysAndCategory(string $validity): string
+    {
+        // Regular expression to extract the number and unit from the validity string
+        $pattern = '/(\d+)\s*(DAY|WEEK|MONTH|YEAR)S?/i';
+
+        // Match the validity string
+        if (preg_match($pattern, $validity, $matches)) {
+            $value = (int)$matches[1];
+            $unit = strtoupper($matches[2]);
+
+            $category = 'Other'; // Default category
+
+            // Assign a category based on the parsed value and unit
+            if ($unit === 'DAY') {
+                if ($value <= 3) {
+                    $category = 'Daily'; // 1, 2, or 3 Days are considered Daily
+                } elseif ($value <= 14) {
+                    $category = 'Weekly'; // 7 or 14 Days are considered Weekly
+                } elseif ($value <= 31) {
+                    $category = 'Monthly'; // 30 or 31 Days are considered Monthly
+                } else {
+                    $category = 'Other';
+                }
+            } elseif ($unit === 'WEEK') {
+                if ($value <= 2) {
+                    $category = 'Weekly'; // 1 or 2 Weeks
+                }
+            } elseif ($unit === 'MONTH') {
+                if ($value <= 1) {
+                    $category = 'Monthly'; // 1 Month
+                } elseif ($value <= 6) {
+                    $category = 'Other'; // 4, 6 Months etc.
+                }
+            } elseif ($unit === 'YEAR') {
+                $category = 'Yearly';
+            }
+
+            // A common case like '30 DAYS' should go to 'Monthly'
+            if ($validity === '30 DAYS' || $validity === '30 DAYS ') {
+                $category = 'Monthly';
+            }
+            if ($validity === '7 DAYS' || $validity === '7 DAYS ') {
+                $category = 'Weekly';
+            }
+            if ($validity === '1 DAY' || $validity === '1 DAY ') {
+                $category = 'Daily';
+            }
+            if ($validity === '365 DAYS') {
+                $category = 'Yearly';
+            }
+
+        } else {
+            $category = '';
+        }
+        return $category;
     }
 }
 

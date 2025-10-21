@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\AppCableTVControl;
 use App\Models\AppDataControl;
+use App\Models\CombineDataPlans;
 use App\Models\ResellerCableTV;
 use App\Models\ResellerDataPlans;
 use Illuminate\Console\Command;
@@ -330,6 +331,90 @@ class GenerateAutosyncng extends Command
             'server' => 7,
             'status' => 0,
         ]);
+
+        CombineDataPlans::create([
+            'name' => $type . " " . $plans['name'],
+            'product_code' => $type,
+            'dataplan' => $allowance,
+            'network' => $network,
+            'coded' => "7_" . $productId . "_" . $plans['code'],
+            'plan_id' => $plans['code'],
+            'duration' => strtolower($this->getDaysAndCategory($plans['name'])),
+            'app_price' => $plans['amount'],
+            'res_price' => $plans['amount'],
+            'price' => $plans['amount'],
+            'server' => 7,
+            'status' => 0,
+        ]);
     }
 
+    /**
+     * Extracts the duration in days from a product name and categorizes it.
+     *
+     * @param string $productName The name of the product (e.g., "MTN 1GB 30days", "11GB Weekly", "90GB 2-Month").
+     * @return array Contains 'days' (int|null) and 'category' (string).
+     */
+    public static function getDaysAndCategory(string $productName): string
+    {
+        $days = null;
+        $category = 'Unknown';
+        $productName = strtolower($productName);
+
+        // 1. Check for specific time-based keywords (Weekly, Monthly, Yearly, Day)
+        if (preg_match('/(\d+)\s*years?|yearly/', $productName, $matches)) {
+            $multiplier = $matches[1] ?? 1;
+            $days = (int)$multiplier * 365;
+            $category = 'Yearly';
+        } elseif (preg_match('/(\d+)\s*months?|monthly/', $productName, $matches)) {
+            $multiplier = $matches[1] ?? 1;
+            // Use an average of 30 days per month for categorization
+            $days = (int)$multiplier * 30;
+            $category = 'Monthly';
+        } elseif (preg_match('/(\d+)\s*weeks?|weekly/', $productName, $matches)) {
+            $multiplier = $matches[1] ?? 1;
+            $days = (int)$multiplier * 7;
+            $category = 'Weekly';
+        } elseif (preg_match('/(\d+)\s*(days?|day)/', $productName, $matches)) {
+            // Catches "30days", "2 Days", "1 Day", etc.
+            $days = (int)$matches[1];
+            if ($days === 1) {
+                $category = 'Daily';
+            } elseif ($days > 1 && $days <= 7) {
+                $category = 'Weekly'; // Treat 2-7 days as short-term/weekly-ish
+            } elseif ($days > 7 && $days <= 31) {
+                $category = 'Monthly'; // Treat 8-31 days as monthly-ish
+            } elseif ($days > 31) {
+                $category = 'Yearly'; // For very long durations in days
+            }
+        } elseif (str_contains($productName, 'daily')) {
+            $days = 1;
+            $category = 'Daily';
+        }
+
+        // Refine 'Daily' category for specific keywords that imply a single day
+        if ($days === 1 && $category !== 'Daily') {
+            $category = 'Daily';
+        }
+
+        // Final categorization based on extracted days (override if keyword categorization was too broad)
+        if ($days !== null) {
+            if ($days <= 1) {
+                $category = 'Daily';
+            } elseif ($days <= 7) {
+                $category = 'Weekly';
+            } elseif ($days <= 31) { // Up to 31 days
+                $category = 'Monthly';
+            } else { // 32 days and above
+                $category = 'Yearly';
+            }
+        }
+
+        // Handle cases like "Night Plan" which are typically daily/short duration
+        if (str_contains($productName, 'night plan') && $days === null) {
+            $days = 1;
+            $category = 'Daily';
+        }
+
+        return $category;
+    }
 }

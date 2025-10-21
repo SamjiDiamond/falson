@@ -28,6 +28,10 @@ Route::prefix('v3')->group(function () {
     Route::get('data/{network}', [ListController::class, 'dataCategory']);
     Route::get('data/{network}/{category}', [ListController::class, 'dataList']);
 
+    Route::get('cd/data/{network}', [ListController::class, 'dataCategorycd']);
+    Route::get('cd/data/{network}/{category}', [ListController::class, 'dataListcd']);
+    Route::get('cd/data/{network}/{category}/{duration}', [ListController::class, 'dataDurationcd']);
+
     Route::post('changepassword', [UserController::class, 'change_passwordv3']);
 
     Route::post('resetpassword', [AuthenticationController::class, 'resetpassword']);

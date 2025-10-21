@@ -36,9 +36,9 @@
                             <tr>
                                 <td>{{$account->account_number }}</td>
                                 <td>{{$account->bank_name}}</td>
-                                <td>{{$account->user->full_name}}</td>
-                                <td>{{$account->user->phoneno}}</td>
-                                <td>{{$account->user->email}}</td>
+                                <td>{{$account->user->full_name ?? "N/A"}}</td>
+                                <td>{{$account->user->phoneno ?? "N/A"}}</td>
+                                <td>{{$account->user->email ?? "N/A"}}</td>
                                 <td>{{$account->created_at}}</td>
                                 <td>
                                     @if($account->status==1)

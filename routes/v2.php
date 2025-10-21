@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\V2\PayController;
 use App\Http\Controllers\Api\V2\PinManagementController;
 use App\Http\Controllers\Api\V2\RechargeCardController;
 use App\Http\Controllers\Api\V2\ReportController;
+use App\Http\Controllers\Api\V2\RewardController;
 use App\Http\Controllers\Api\V2\TransactionsController;
 use App\Http\Controllers\Api\V2\UserController;
 use App\Http\Controllers\Api\V2\ValidationController;
@@ -190,6 +191,12 @@ Route::prefix('v2')->group(function () {
             Route::patch('/cancel/{id}', [AutobuyController::class, 'cancel']); // Cancel Autobuy
             Route::put('/update/{id}', [AutobuyController::class, 'update']); // Update Autobuy
         });
+
+        Route::post('/rewards/check-in', [RewardController::class, 'checkIn']);
+        Route::get('/rewards/check-ins', [RewardController::class, 'getCheckIns']);
+
+        Route::get('/rewards/spinwin', [RewardController::class, 'fetch']);
+        Route::post('/rewards/spinwin', [RewardController::class, 'continue']);
 
     });
 

@@ -57,10 +57,13 @@ Route::prefix('v2')->group(function () {
     Route::post('email-verification', [AuthenticationController::class, 'email_verify']);
     Route::post('email-verification-continue', [AuthenticationController::class, 'email_verify_continue']);
 
-    Route::post('set-pin', [UserController::class, 'set_pin']);
+    Route::post('set-passcode', [UserController::class, 'set_passcode']);
 
     Route::post('reset-pin', [PinManagementController::class, 'resetPin']);
     Route::put('reset-pin', [PinManagementController::class, 'completeResetPin']);
+
+    Route::post('reset-passcode', [PinManagementController::class, 'resetPasscode']);
+    Route::put('reset-passcode', [PinManagementController::class, 'completeResetPasscode']);
 
     Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('biometriclogin', [AuthenticationController::class, 'biometricLogin']);

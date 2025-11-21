@@ -20,7 +20,7 @@
                                 <tr>
                                     <td>
                                         <p>&nbsp;</p>
-                                        <p>Someone recently requested to reset your account pin for &ldquo;{{$data['user_name']}}&rdquo;.</p>
+                                        <p>Someone recently requested to reset your account {{$type}} for &ldquo;{{$data['user_name']}}&rdquo;.</p>
                                         <p>The verification code to use is:</p>
                                         <p><strong>{{$data['code']}}</strong></p>
                                         <br/>

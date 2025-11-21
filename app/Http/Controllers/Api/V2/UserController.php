@@ -191,12 +191,12 @@ class UserController extends Controller
 
     }
 
-    public function set_pin(Request $request)
+    public function set_passcode(Request $request)
     {
         $input = $request->all();
         $rules = array(
             'email' => 'required',
-            'pin' => 'required',
+            'passcode' => 'required|digits:6',
         );
 
         $validator = Validator::make($input, $rules);
@@ -211,14 +211,14 @@ class UserController extends Controller
             return response()->json(['success' => 0, 'message' => 'User not found']);
         }
 
-        if ($user->pin != "1234") {
-            return response()->json(['success' => 0, 'message' => 'You have set your pin already']);
+        if ($user->passcode != null) {
+            return response()->json(['success' => 0, 'message' => 'You have set your passcode already']);
         }
 
-        $user->pin = $input['pin'];
+        $user->passcode = Hash::make($input['passcode']);
         $user->save();
 
-        return response()->json(['success' => 1, 'message' => 'Pin set successfully']);
+        return response()->json(['success' => 1, 'message' => 'Passcode set successfully']);
     }
 
     public function referrals()

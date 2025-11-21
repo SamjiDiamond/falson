@@ -18,10 +18,12 @@ class PinVerificationMail extends Mailable
      * @return void
      */
     public $edata;
+    public $type;
 
-    public function __construct($edata)
+    public function __construct($edata, $type)
     {
         $this->edata = $edata;
+        $this->type = $type;
     }
 
 
@@ -33,7 +35,7 @@ class PinVerificationMail extends Mailable
     public function envelope()
     {
         return new Envelope(
-            subject: 'Pin Verification Code',
+            subject: $this->type . ' Verification Code',
         );
     }
 
@@ -47,7 +49,8 @@ class PinVerificationMail extends Mailable
         return new Content(
             view: 'mail.pin_verification',
             with: [
-                'data' => $this->edata
+                'data' => $this->edata,
+                'type' => $this->type
             ]
         );
     }

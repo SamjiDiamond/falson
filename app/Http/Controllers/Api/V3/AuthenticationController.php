@@ -16,6 +16,7 @@ use App\Models\LoginAttempt;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
@@ -260,6 +261,47 @@ class AuthenticationController extends Controller
 
         return response()->json(['success' => 1, 'message' => '2FA Verified Successfully', 'data' => $token, 'balance' => $user->wallet]);
     }
+
+    public function loginpasscode(Request $request)
+    {
+        $input = $request->all();
+        $rules = array(
+            'passcode' => 'required|digits:6',
+        );
+
+        $validator = Validator::make($input, $rules);
+
+        $input = $request->all();
+
+        if (!$validator->passes()) {
+            return response()->json(['success' => 0, 'message' => 'Required field(s) is missing', 'error' => implode(",", $validator->errors()->all())]);
+        }
+
+        $input['version'] = $request->header('version');
+
+        $device = $request->header('device') ?? $_SERVER['HTTP_USER_AGENT'];
+
+        $user = Auth::user();
+
+        if (!Hash::check($input['passcode'], $user->passcode)) {
+            return response()->json(['success' => 0, 'message' => 'Incorrect passcode. Kindly try again']);
+        }
+
+        if ($user->fraud != "" || $user->fraud != null) {
+            return response()->json(['success' => 0, 'message' => $user->fraud]);
+        }
+
+        $user->last_login = Carbon::now();
+        $user->save();
+
+        // Revoke all tokens...
+        $user->tokens()->delete();
+
+        $token = $user->createToken($device)->plainTextToken;
+
+        return response()->json(['success' => 1, 'message' => 'Login successfully', 'token' => $token, 'balance' => $user->wallet, 'bvn' => $user->bvn != ""]);
+    }
+
 
     public function resetpassword(Request $request)
     {

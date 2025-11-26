@@ -40,6 +40,7 @@ Route::prefix('v3')->group(function () {
 
     Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('securitySettings', [ProfileController::class, 'securitySettings']);
+        Route::post('login-passcode', [AuthenticationController::class, 'loginpasscode']);
     });
 
 });

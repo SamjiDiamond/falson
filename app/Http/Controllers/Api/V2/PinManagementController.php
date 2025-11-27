@@ -8,6 +8,7 @@ use App\Models\CodeRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
@@ -133,7 +134,7 @@ class PinManagementController extends Controller
             return response()->json(['success' => 0, 'message' => 'Invalid code supplied']);
         }
 
-        $user->passcode = $input['passcode'];
+        $user->passcode = Hash::make($input['passcode']);
         $user->save();
 
         $code->status = 1;

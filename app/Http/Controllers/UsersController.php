@@ -340,7 +340,7 @@ class UsersController extends Controller
 
         $ap = User::where('user_name', $input['user_name'])->first();
 
-        PushNotificationJob::dispatch($ap->user_name,$input['message'],"PlanetF");
+        PushNotificationJob::dispatch($ap->user_name, $input['message'], "PlanetF");
 
         DB::table('tbl_pushnotiflog')->insert(
             ['user_name' => $input["user_name"], 'message' => $input['message'], 'response' => "background"]
@@ -349,16 +349,63 @@ class UsersController extends Controller
         return redirect('profile/' . $input['user_name']);
     }
 
+    public function addgnewsold(Request $request)
+    {
+        $input = $request->all();
+
+        if (isset($input['image'])) {
+            $storage = Storage::put('public/banners', $input['image']);
+            $link = Storage::url($storage);
+            $image = explode("/", $link)[3];
+
+            $set = Settings::where('name', 'banner')->first();
+            $set->value = $image;
+            $set->save();
+        }
+
+        if (isset($input['push_notification'])) {
+            PushNotificationJob::dispatch('general_notification', $input['message'], "General Notification");
+        } else {
+            if ($input["user_name"] == "") {
+
+                if ($input['category'] == "all") {
+                    User::where('user_name', '!=', "")->update(['gnews' => $input["message"]]);
+
+                } else if ($input['category'] == "admin") {
+                    User::whereIn('status', ["admin", "superadmin"])->update(['gnews' => $input["message"]]);
+                } else if ($input['category'] == "reseller") {
+                    User::where('status', '=', "reseller")->update(['gnews' => $input["message"]]);
+                } else if ($input['category'] == "client") {
+                    User::where('status', '=', "client")->update(['gnews' => $input["message"]]);
+                } else if ($input['category'] == "top") {
+                    User::where('status', '=', "client")->update(['gnews' => $input["message"]]);
+                }
+
+
+            } else {
+                $user = User::where('user_name', '=', $input["user_name"])->exists();
+                if (!$user) {
+                    return redirect('/gnews')->with('success', 'Username does not exist!');
+                }
+
+                User::where('user_name', '=', $input["user_name"])->update(['gnews' => $input["message"]]);
+            }
+        }
+
+        return redirect('/gnews')->with('success', 'Message sent successfully!');
+
+    }
+
     public function addgnews(Request $request)
     {
         $input = $request->all();
 
-        if(isset($input['image'])){
-            $storage=Storage::put('public/banners', $input['image']);
-            $link=Storage::url($storage);
-            $image=explode("/", $link)[3];
+        if (isset($input['image'])) {
+            $storage = Storage::put('public/banners', $input['image']);
+            $link = Storage::url($storage);
+            $image = explode("/", $link)[3];
 
-            $set=Settings::where('name','banner')->first();
+            $set = Settings::where('name', 'banner')->first();
             $set->value=$image;
             $set->save();
         }

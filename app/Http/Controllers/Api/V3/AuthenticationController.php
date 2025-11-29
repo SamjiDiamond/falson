@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api\V3;
 
-use App\Events\NewDeviceEvent;
 use App\Http\Controllers\Controller;
 use App\Jobs\BudpayVirtualAccountJob;
 use App\Jobs\CreateCGWalletsJob;
@@ -20,6 +19,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
+use PragmaRX\Google2FA\Google2FA;
 
 class AuthenticationController extends Controller
 {
@@ -154,30 +154,23 @@ class AuthenticationController extends Controller
             return response()->json(['success' => 0, 'message' => $user->fraud]);
         }
 
-        if ($user->new_device_otp == 1) {
-            if ($user->user_name != "Ebunola") {
-                if ($user->devices != $input['device']) {
+        if ($user->user_name != "Ebunola") {
+            if ($user->devices != $input['device']) {
+                if ($user->twofa == 1 || $user->twofa_phone == 1 || $user->two_factor_enabled == 1) {
                     $datas['device'] = $input['device'];
                     $datas['ip'] = $_SERVER['REMOTE_ADDR'];
-                    NewDeviceEvent::dispatch($user, $datas);
+                    ProcessUser2faJob::dispatch($user, "2fa", $datas);
 
-                    $la->status = "new_device";
+                    $la->status = "authorized_2fa";
                     $la->save();
 
-                    return response()->json(['success' => 2, 'message' => 'Login successfully. Kindly verify your device.', '_links' => ['url' => route('api_newdevice'), 'method' => 'POST', 'payload' => ['user_name, code']]]);
+                    return response()->json(['success' => 3, 'message' => '2FA code sent to your mail successfully. It will expire in 10 minutes', 'data' => [
+                        'phone_number' => $user->twofa_phone,
+                        'email' => $user->twofa,
+                        'authenticator' => $user->two_factor_enabled,
+                    ], '_links' => ['url' => route('api_2falogin'), 'method' => 'POST', 'payload' => ['user_name, code']]]);
                 }
             }
-        }
-
-        if ($user->twofa == 1) {
-            $datas['device'] = $input['device'];
-            $datas['ip'] = $_SERVER['REMOTE_ADDR'];
-            ProcessUser2faJob::dispatch($user, "2fa", $datas);
-
-            $la->status = "authorized_2fa";
-            $la->save();
-
-            return response()->json(['success' => 3, 'message' => '2FA code sent to your mail successfully. It will expire in 10 minutes', '_links' => ['url' => route('api_2falogin'), 'method' => 'POST', 'payload' => ['user_name, code']]]);
         }
 
         $la->status = "authorized";
@@ -249,6 +242,64 @@ class AuthenticationController extends Controller
 
         $nl->status = 0;
         $nl->save();
+
+        $user->devices = $device;
+        $user->last_login = Carbon::now();
+        $user->save();
+
+        // Revoke all tokens...
+        $user->tokens()->delete();
+
+        $token = $user->createToken($device)->plainTextToken;
+
+        return response()->json(['success' => 1, 'message' => '2FA Verified Successfully', 'data' => $token, 'balance' => $user->wallet]);
+    }
+
+    public function login2faAuthenticator(Request $request)
+    {
+        $input = $request->all();
+        $rules = array(
+            'user_name' => 'required',
+            'password' => 'required',
+            'code' => 'required',
+        );
+
+        $validator = Validator::make($input, $rules);
+
+        $input = $request->all();
+
+        if (!$validator->passes()) {
+            return response()->json(['success' => 0, 'message' => 'Required field(s) is missing']);
+        }
+
+        $input['version'] = $request->header('version');
+
+        $device = $request->header('device') ?? $_SERVER['HTTP_USER_AGENT'];
+
+        $user = User::where('user_name', $input['user_name'])->orWhere('email', $input['user_name'])->first();
+
+        if (!$user) {
+            return response()->json(['success' => 0, 'message' => 'User does not exist']);
+        }
+
+        if (!Hash::check($input['password'], $user->mcdpassword)) {
+            return response()->json(['success' => 0, 'message' => 'Incorrect password attempt']);
+        }
+
+        if ($user->fraud != "" || $user->fraud != null) {
+            return response()->json(['success' => 0, 'message' => $user->fraud]);
+        }
+
+        if (!$user->two_factor_secret) {
+            return response()->json(['success' => 0, 'message' => '2FA not setup yet. Setup first.'], 400);
+        }
+
+        $google2fa = new Google2FA();
+        $valid = $google2fa->verifyKey($user->two_factor_secret, $request->code);
+
+        if (!$valid) {
+            return response()->json(['success' => 0, 'message' => 'Invalid TOTP code'], 403);
+        }
 
         $user->devices = $device;
         $user->last_login = Carbon::now();

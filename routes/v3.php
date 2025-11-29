@@ -24,6 +24,7 @@ Route::prefix('v3')->group(function () {
 
     Route::post('login', [AuthenticationController::class, 'login']);
     Route::post('login-2fa', [AuthenticationController::class, 'login2fa'])->name('api_2falogin');
+    Route::post('login-2fa-authenticator', [AuthenticationController::class, 'login2faAuthenticator'])->name('api_2faloginAuthen');
 
     Route::get('support', [UserController::class, 'supportv3']);
     Route::get('data/{network}', [ListController::class, 'dataCategory']);

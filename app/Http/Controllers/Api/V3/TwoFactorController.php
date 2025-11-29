@@ -81,13 +81,13 @@ class TwoFactorController extends Controller
         $user = $request->user();
 
         if (!$user->two_factor_secret) {
-            return response()->json(['success' => false, 'message' => '2FA not setup yet. Setup first.'], 400);
+            return response()->json(['success' => 0, 'message' => '2FA not setup yet. Setup first.'], 400);
         }
 
         $valid = $this->google2fa->verifyKey($user->two_factor_secret, $request->totp);
 
         if (!$valid) {
-            return response()->json(['success' => false, 'message' => 'Invalid TOTP code'], 403);
+            return response()->json(['success' => 0, 'message' => 'Invalid TOTP code'], 403);
         }
 
         if ($user->two_factor_enabled) {

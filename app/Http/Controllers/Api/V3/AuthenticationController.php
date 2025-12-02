@@ -168,6 +168,8 @@ class AuthenticationController extends Controller
                         'phone_number' => $user->twofa_phone,
                         'email' => $user->twofa,
                         'authenticator' => $user->two_factor_enabled,
+                        'user_email' => "*******" . substr($user->email, 5),
+                        'user_phone' => "*****" . substr($user->phoneno, 5),
                     ], '_links' => ['url' => route('api_2falogin'), 'method' => 'POST', 'payload' => ['user_name, code']]]);
                 }
             }

@@ -50,6 +50,7 @@ Route::prefix('v3')->group(function () {
         Route::post('2fas/sms/toggle', [ProfileController::class, 'smsToggle']);
         Route::post('2fas/authenticator/setup', [TwoFactorController::class, 'setup']);
         Route::post('2fas/authenticator/toggle', [TwoFactorController::class, 'toggle']);
+        Route::get('dashboard', [UserController::class, 'dashboard_v3']);
     });
 
 });

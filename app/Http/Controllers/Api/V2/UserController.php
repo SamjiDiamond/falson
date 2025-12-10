@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\PushNotificationController;
 use App\Jobs\AgentPdfGeneratorJob;
 use App\Jobs\PushNotificationJob;
+use App\Models\GNews;
 use App\Models\PndL;
 use App\Models\PromoCode;
 use App\Models\ReferralPlans;
@@ -114,6 +115,100 @@ class UserController extends Controller
         $pay['paylony_funding_charges'] = $sett['paylony_funding_charges'];
 
         return response()->json(['success' => 1, 'message' => 'Fetched successfully', 'data' => ['user' => $me, 'balances' => $balances, 'services' => $services, 'news' => $user->gnews, 'others' => $others, 'payment' => $pay]]);
+    }
+
+    public function dashboard_v3()
+    {
+        $user = Auth::user();
+
+        $settings = Settings::all();
+        foreach ($settings as $setting) {
+            $sett[$setting->name] = $setting->value;
+        }
+
+        $me['full_name'] = $user->full_name;
+        $me['user_name'] = $user->user_name;
+        $me['account_details'] = $user->account_number;
+        $me['referral_plan'] = $user->referral_plan;
+        $me['photo'] = $user->photo;
+        $me['email'] = $user->email;
+        $me['phoneno'] = $user->phoneno;
+        $me['target'] = $user->target ?? " ";
+        $me['level'] = $user->level;
+        $me['pin_enabled'] = $user->pin_enabled;
+        $me['pin'] = $user->pin;
+        $me['status'] = $user->status;
+        $me['api_key'] = $user->api_key ?? " ";
+        $me['bvn'] = $user->bvn != "";
+        $me['nin'] = $user->nin != "";
+        $me['address'] = $user->address;
+        $me['email_valid'] = $user->email_valid;
+        $me['twofa'] = $user->twofa;
+        $me['new_device_otp'] = $user->new_device_otp;
+
+        $balances['wallet'] = "$user->wallet";
+        $balances['bonus'] = "$user->bonus";
+        $balances['agent_commision'] = "$user->agent_commision";
+        $balances['points'] = "$user->points";
+        $balances['general_market'] = $sett['general_market'];
+
+
+        $services['airtime'] = $sett['airtime'];
+        $services['data'] = $sett['data'];
+        $services['paytv'] = $sett['paytv'];
+        $services['resultchecker'] = $sett['resultchecker'];
+        $services['rechargecard'] = $sett['resultchecker'];
+        $services['electricity'] = $sett['electricity'];
+        $services['betting'] = $sett['betting'];
+        $services['airtimeconverter'] = $sett['airtimeconverter'];
+        $services['biz_verification'] = $sett['biz_verification'];
+        $services['foreign_airtime'] = " ";
+
+
+        $others['min_funding'] = $sett['min_funding'];
+        $others['max_funding'] = $sett['max_funding'];
+        $others['funding_charges'] = $sett['funding_charges'];
+        $others['funding_message'] = $sett['funding_message'];
+        $others['live_chat'] = $sett['live_chat'];
+        $others['reseller_fee'] = $sett['reseller_fee'];
+        $others['support_email'] = $sett['support_email'];
+        $others['support_whatsapp'] = $sett['support_whatsapp'];
+        $others['support_call'] = $sett['support_call'];
+        $others['biz_verification_price_customer'] = $sett['biz_verification_price_customer'];
+        $others['reseller_terms'] = $sett['reseller_terms'];
+        $others['privacy_policy'] = $sett['privacy_policy'];
+        $others['banner'] = $sett['banner'];
+        $others['monnify_funding_message'] = $sett['monnify_funding_message'];
+        $others['budpay_funding_message'] = $sett['budpay_funding_message'];
+        $others['paylony_funding_message'] = $sett['paylony_funding_message'];
+        $others['enable_cg_wallet'] = $sett['enable_cg_wallet'];
+        $others['force_kyc_update'] = $sett['force_kyc_update'];
+
+        $pay['fund_rave'] = $sett['fund_rave'];
+        $pay['fund_paystack'] = $sett['fund_paystack'];
+        $pay['fund_monnify'] = $sett['fund_monnify'];
+        $pay['fund_budpay'] = $sett['fund_budpay'];
+        $pay['fund_paystack_details'] = $sett['fund_paystack_details'];
+        $pay['fund_paystack_secret'] = $sett['secret_paystack_details'];
+        $pay['fund_rave_details'] = $sett['fund_rave_details'];
+        $pay['fund_rave_key'] = $sett['fund_rave_key'];
+        $pay['fund_monnify_apikey'] = $sett['fund_monnify_apikey'];
+        $pay['fund_monnify_contractcode'] = $sett['fund_monnify_contractcode'];
+        $pay['fund_budpay_secret'] = $sett['fund_budpay_secret'];
+        $pay['fund_budpay_public'] = $sett['fund_budpay_public'];
+        $pay['min_funding'] = $sett['min_funding'];
+        $pay['max_funding'] = $sett['max_funding'];
+        $pay['funding_charges'] = $sett['funding_charges'];
+        $pay['funding_message'] = $sett['funding_message'];
+        $pay['monnify_funding_message'] = $sett['monnify_funding_message'];
+        $pay['budpay_funding_message'] = $sett['budpay_funding_message'];
+        $pay['monnify_funding_charges'] = $sett['monnify_funding_charges'];
+        $pay['budpay_funding_charges'] = $sett['budpay_funding_charges'];
+        $pay['paylony_funding_charges'] = $sett['paylony_funding_charges'];
+
+        $news = GNews::latest()->select("title", "content", "action")->get();
+
+        return response()->json(['success' => 1, 'message' => 'Fetched successfully', 'data' => ['user' => $me, 'balances' => $balances, 'services' => $services, 'news' => $news, 'others' => $others, 'payment' => $pay]]);
     }
 
     public function support()

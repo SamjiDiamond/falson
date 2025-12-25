@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('v3')->group(function () {
 
     Route::post('signup', [AuthenticationController::class, 'signup']);
+    Route::post('signup-verify', [AuthenticationController::class, 'signupVerify']);
 
     Route::post('login', [AuthenticationController::class, 'login']);
     Route::post('login-2fa', [AuthenticationController::class, 'login2fa'])->name('api_2falogin');

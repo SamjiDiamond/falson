@@ -1136,6 +1136,7 @@ class PayController extends Controller
         $tr['transid'] = $ref;
         $tr['status'] = "pending";
         $tr['extra'] = $discount;
+        $tr['commission'] = $discount;
         $tr['paid_with'] = $input['payment'];
 
         if ($input['payment'] == "wallet") {
@@ -1173,7 +1174,7 @@ class PayController extends Controller
             if ($input['payment'] == "wallet") {
                 if ($discount > 0) {
                     $tr['name'] = "Commission";
-                    $tr['description'] = "Commission on " . $ref;
+                    $tr['description'] = "Commission on " . $tr['description'];
                     $tr['code'] = "tcommission";
                     $tr['amount'] = $discount;
                     $tr['status'] = "successful";

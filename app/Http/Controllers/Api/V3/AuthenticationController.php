@@ -112,6 +112,51 @@ class AuthenticationController extends Controller
 
     }
 
+
+    public function signupVerify(Request $request)
+    {
+        $input = $request->all();
+        $rules = array(
+            'user_name' => 'required',
+            'phoneno' => 'required',
+            'email' => 'required',
+        );
+
+        $validator = Validator::make($input, $rules);
+
+        if (!$validator->passes()) {
+            return response()->json(['success' => 0, 'message' => 'Required field(s) is missing']);
+        }
+
+        $data = [];
+
+        $user_name = $input['user_name'];
+
+        $user = User::where('user_name', $user_name)->get();
+        if ($user->isEmpty()) {
+            $data[] = ['username' => 0, 'message' => 'Available'];
+        } else {
+            $data[] = ['username' => 1, 'message' => 'User name already exist'];
+        }
+
+        $user = User::where('email', $input['email'])->get();
+        if ($user->isEmpty()) {
+            $data[] = ['email' => 0, 'message' => 'Available'];
+        } else {
+            $data[] = ['email' => 1, 'message' => 'Email already exist'];
+        }
+
+        $user = User::where('phoneno', $input['phoneno'])->get();
+        if ($user->isEmpty()) {
+            $data[] = ['phoneno' => 0, 'message' => 'Available'];
+        } else {
+            $data[] = ['phoneno' => 1, 'message' => 'Phone Number already exist'];
+        }
+
+        return response()->json(['success' => 1, 'message' => 'Verified successfully', 'data' => $data]);
+    }
+
+
     public function login(Request $request)
     {
         $input = $request->all();

@@ -18,7 +18,7 @@ class Transaction extends Model implements Auditable
     protected $table = 'tbl_transactions';
 
     protected $fillable = [
-        'name', 'amount', 'status', 'description', 'date', 'user_name', 'ip_address', 'device_details', 'code', 'i_wallet', 'f_wallet', 'extra', 'server', 'server_response', 'ref'
+        'name', 'amount', 'status', 'description', 'date', 'user_name', 'ip_address', 'device_details', 'code', 'i_wallet', 'f_wallet', 'extra', 'server', 'server_response', 'ref', 'commission'
     ];
 
     function serverlog()

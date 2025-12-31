@@ -1274,10 +1274,14 @@ class PayController extends Controller
 
         }
 
-        $number_count=isset(explode(",", $input['number'])[1]);
+        $number_count = isset(explode(",", $input['number'])[1]);
 
-        if($number_count){
+        if ($number_count) {
             return $this->processMultiplePhones($request, $proceed);
+        }
+
+        if ($proceed['5'] == "data") {
+            $input['network'] = $proceed['1'];
         }
 
         Serverlog::create($input);

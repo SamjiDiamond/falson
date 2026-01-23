@@ -264,26 +264,28 @@
                                 <li><a href="{{route('cgbundle.trans')}}">CG Transactions</a></li>
                             @endcan
                         </ul>
-                    </li>
+                        </li>
                     @endcanany
 
                     @canany('users-list-view','users-search-view','login-attempt-view','resellers-view','dormant-users-view')
-                    <li class="has_sub">
-                        <a href="javascript:void(0);" class="waves-effect"><i class="dripicons-user-group"></i> <span>Users </span>
-                            <span class="float-right"><i class="mdi mdi-chevron-right"></i></span></a>
-                        <ul class="list-unstyled">
-                            @can('users-list-view')
-                                <li><a href="/users">Users</a></li>
-                            @endcan
+                        <li class="has_sub">
+                            <a href="javascript:void(0);" class="waves-effect"><i class="dripicons-user-group"></i>
+                                <span>Users </span>
+                                <span class="float-right"><i class="mdi mdi-chevron-right"></i></span></a>
+                            <ul class="list-unstyled">
+                                @can('users-list-view')
+                                    <li><a href="/users">Users</a></li>
+                                    <li><a href="{{route('promo_codes.index')}}">Promo Code</a></li>
+                                @endcan
 
-                            @can('users-search-view')
-                                <li><a href="/finduser">Search User(s)</a></li>
-                            @endcan
-                            {{--                            <li><a href="/agentpayment">Agent Payment</a></li>--}}
-                            @can('login-attempt-view')
-                                <li><a href="/loginattempts">Login Attempts</a></li>
-                            @endcan
-                            {{--                            <li><a href="/agents">Agents</a></li>--}}
+                                @can('users-search-view')
+                                    <li><a href="/finduser">Search User(s)</a></li>
+                                @endcan
+                                {{--                            <li><a href="/agentpayment">Agent Payment</a></li>--}}
+                                @can('login-attempt-view')
+                                    <li><a href="/loginattempts">Login Attempts</a></li>
+                                @endcan
+                                {{--                            <li><a href="/agents">Agents</a></li>--}}
                             @can('resellers-view')
                                 <li><a href="/resellers">Resellers</a></li>
                             @endcan

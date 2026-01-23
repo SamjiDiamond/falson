@@ -817,6 +817,13 @@ class PayController extends Controller
 
     }
 
+    public function ninvalidationPrice(Request $request)
+    {
+        $set = Settings::where('name', 'biz_verification_price_customer')->first();
+
+        return response()->json(['success' => 1, 'message' => 'Fetched successfully', 'data' => $set->value]);
+    }
+
     public function a2ca2b(Request $request)
     {
 

@@ -10,6 +10,7 @@ use App\Jobs\LoginAttemptApiFinderJob;
 use App\Jobs\ProcessUser2faJob;
 use App\Mail\EmailPasswordVerificationMail;
 use App\Mail\EmailVerificationMail;
+use App\Mail\TwofaNotificationMail;
 use App\Models\CodeRequest;
 use App\Models\LoginAttempt;
 use App\Models\User;
@@ -17,6 +18,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use PragmaRX\Google2FA\Google2FA;
@@ -202,9 +204,10 @@ class AuthenticationController extends Controller
         if ($user->user_name != "Ebunola") {
             if ($user->devices != $input['device']) {
                 if ($user->twofa == 1 || $user->twofa_phone == 1 || $user->two_factor_enabled == 1) {
-                    $datas['device'] = $input['device'];
-                    $datas['ip'] = $_SERVER['REMOTE_ADDR'];
-                    ProcessUser2faJob::dispatch($user, "2fa", $datas);
+                    //No need again as we have another endpoint that does this at uesers request
+//                    $datas['device'] = $input['device'];
+//                    $datas['ip'] = $_SERVER['REMOTE_ADDR'];
+//                    ProcessUser2faJob::dispatch($user, "2fa", $datas);
 
                     $la->status = "authorized_2fa";
                     $la->save();
@@ -243,6 +246,66 @@ class AuthenticationController extends Controller
         return response()->json(['success' => 1, 'message' => 'Login successfully', 'token' => $token, 'balance' => $user->wallet, 'bvn' => $user->bvn != ""]);
     }
 
+    public function init2fa(Request $request)
+    {
+        $input = $request->all();
+        $rules = array(
+            'user_name' => 'required',
+            'type' => 'required|in:email,phone,authenticator',
+        );
+
+        $validator = Validator::make($input, $rules);
+
+        $input = $request->all();
+
+        if (!$validator->passes()) {
+            return response()->json(['success' => 0, 'message' => implode($validator->errors()->all())]);
+        }
+
+        $type= $input['type'];
+
+        $input['version'] = $request->header('version');
+
+        $device = $request->header('device') ?? $_SERVER['HTTP_USER_AGENT'];
+
+        $user = User::where('user_name', $input['user_name'])->orWhere('email', $input['user_name'])->first();
+
+        if (!$user) {
+            return response()->json(['success' => 0, 'message' => 'User does not exist']);
+        }
+
+
+        $code = substr(rand(), 0, 6);
+
+        CodeRequest::create([
+            'mobile' => trim($user->email),
+            'code' => $code,
+            'status' => 0,
+            'type' => "2fa"
+        ]);
+
+
+        $data['device'] = $device;
+        $data['ip'] = $_SERVER['REMOTE_ADDR'];
+        $data['user_name'] = $user->user_name;
+        $data['email'] = $user->email;
+        $data['code'] = $code;
+
+
+        if($type == "email"){
+            if (env('APP_ENV') != "local") {
+                Log::info("sending device email");
+//                Mail::to($user->email)->send(new TwofaNotificationMail($data));
+            }
+        }
+
+        if($type == "phone"){
+            return response()->json(['success' => 0, 'message' => 'Service currently not available. Use another method']);
+        }
+
+        return response()->json(['success' => 1, 'message' => 'Code sent Successfully']);
+    }
+
     public function login2fa(Request $request)
     {
         $input = $request->all();
@@ -256,7 +319,7 @@ class AuthenticationController extends Controller
         $input = $request->all();
 
         if (!$validator->passes()) {
-            return response()->json(['success' => 0, 'message' => 'Required field(s) is missing']);
+            return response()->json(['success' => 0, 'message' => implode($validator->errors()->all())]);
         }
 
         $input['version'] = $request->header('version');

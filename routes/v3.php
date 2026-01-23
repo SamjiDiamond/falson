@@ -24,6 +24,7 @@ Route::prefix('v3')->group(function () {
     Route::post('signup-verify', [AuthenticationController::class, 'signupVerify']);
 
     Route::post('login', [AuthenticationController::class, 'login']);
+    Route::post('login-2fa-init', [AuthenticationController::class, 'init2fa'])->name('api_2fainit');
     Route::post('login-2fa', [AuthenticationController::class, 'login2fa'])->name('api_2falogin');
     Route::post('login-2fa-authenticator', [AuthenticationController::class, 'login2faAuthenticator'])->name('api_2faloginAuthen');
 

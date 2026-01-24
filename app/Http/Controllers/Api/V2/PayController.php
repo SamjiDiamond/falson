@@ -1181,7 +1181,11 @@ class PayController extends Controller
             if ($input['payment'] == "wallet") {
                 if ($discount > 0) {
                     $tr['name'] = "Commission";
-                    $tr['description'] = "Commission on " . $tr['description'];
+                    if ($requester == "airtime" || $requester == "electricity" || $requester == "betting") {
+                        $tr['description'] = "Commission earned on " . $input['provider'] . " NGN" . $input['amount'] . " " . $requester . " purchase for " . $input['number'];
+                    }else{
+                        $tr['description'] = "Commission earned on " . $input['coded'] . " " . $requester . " purchase for " . $input['number'];
+                    }
                     $tr['code'] = "tcommission";
                     $tr['amount'] = $discount;
                     $tr['status'] = "successful";

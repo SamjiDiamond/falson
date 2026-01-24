@@ -166,6 +166,7 @@ class UserController extends Controller
         $services['foreign_airtime'] = " ";
 
 
+        $others['hot_stuffs'] = explode(",", $sett['app_hot_stuffs']);
         $others['min_funding'] = $sett['min_funding'];
         $others['max_funding'] = $sett['max_funding'];
         $others['funding_charges'] = $sett['funding_charges'];

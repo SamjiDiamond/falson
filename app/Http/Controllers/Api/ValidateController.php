@@ -113,7 +113,7 @@ class ValidateController extends Controller
             if ($rep['status'] == '200') {
                 return response()->json(['success' => 1, 'message' => 'Validated successfully', 'data' => $rep['customerName'], 'others' => $rep]);
             } else {
-                return response()->json(['success' => 0, 'message' => 'Unable to validate number']);
+                return response()->json(['success' => 0, 'message' => $rep['message']]);
             }
         }catch (\Exception $e){
             return response()->json(['success' => 0, 'message' => 'Unable to validate number']);

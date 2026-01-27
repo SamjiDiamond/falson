@@ -128,7 +128,7 @@ Route::prefix('v2')->group(function () {
 
             Route::post('epins', [PayController::class, 'epins']);
 
-            Route::post('username/validate', [WalletTransferController::class, 'validateUsername']);
+            Route::post('username/validate', [WalletTransferController::class, 'validateUsername'])->withoutMiddleware('general_middleware');
             Route::post('w2w/transfer', [WalletTransferController::class, 'transfer'])->middleware('check_UDS_middleware:wallet_transfer');
         });
 

@@ -295,7 +295,7 @@ class AuthenticationController extends Controller
         if($type == "email"){
             if (env('APP_ENV') != "local") {
                 Log::info("sending device email");
-//                Mail::to($user->email)->send(new TwofaNotificationMail($data));
+                Mail::to($user->email)->send(new TwofaNotificationMail($data));
             }
         }
 

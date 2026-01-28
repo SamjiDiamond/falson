@@ -48,7 +48,7 @@ class WalletTransferController extends Controller
         }
 
 
-        return response()->json(['success' => 1, 'message' => 'Validated Successfully', 'data'=>$user->user_name]);
+        return response()->json(['success' => 1, 'message' => 'Validated Successfully', 'data'=>$user->user_name, 'name' =>$user->full_name]);
     }
 
     /**

@@ -243,7 +243,7 @@ class AuthenticationController extends Controller
         $token = $user->createToken($input['device'])->plainTextToken;
 
 
-        return response()->json(['success' => 1, 'message' => 'Login successfully', 'token' => $token, 'balance' => $user->wallet, 'bvn' => $user->bvn != ""]);
+        return response()->json(['success' => 1, 'message' => 'Login successfully', 'token' => $token, 'balance' => $user->wallet, 'bvn' => $user->bvn != "", 'user_name' => $user->user_name]);
     }
 
     public function init2fa(Request $request)
@@ -362,7 +362,7 @@ class AuthenticationController extends Controller
 
         $token = $user->createToken($device)->plainTextToken;
 
-        return response()->json(['success' => 1, 'message' => '2FA Verified Successfully', 'data' => $token, 'balance' => $user->wallet]);
+        return response()->json(['success' => 1, 'message' => '2FA Verified Successfully', 'data' => $token, 'balance' => $user->wallet, 'user_name' => $user->user_name]);
     }
 
     public function login2faAuthenticator(Request $request)

@@ -108,6 +108,9 @@ Route::prefix('v2')->group(function () {
 
         Route::get('airtime/operators/{country}', [ListController::class, 'airtimeCountry']);
 
+        Route::post('username/validate', [WalletTransferController::class, 'validateUsername']);
+        Route::get('ninvalidation-price', [PayController::class, 'ninvalidationPrice']);
+
         Route::middleware(['general_middleware'])->group(function () {
             Route::post('airtime', [PayController::class, 'buyairtime'])->middleware('check_UDS_middleware:airtime');
             Route::post('data', [PayController::class, 'buydata'])->middleware('check_UDS_middleware:data');
@@ -117,7 +120,6 @@ Route::prefix('v2')->group(function () {
             Route::post('jamb', [PayController::class, 'buyJamb']);
             Route::post('bizverification', [PayController::class, 'bizverification']);
             Route::post('ninvalidation', [PayController::class, 'ninvalidation']);
-            Route::get('ninvalidation-price', [PayController::class, 'ninvalidationPrice']);
 
             Route::post('bulkairtime', [UserController::class, 'bulkAirtime']);
 
@@ -128,7 +130,6 @@ Route::prefix('v2')->group(function () {
 
             Route::post('epins', [PayController::class, 'epins']);
 
-            Route::post('username/validate', [WalletTransferController::class, 'validateUsername'])->withoutMiddleware('general_middleware');
             Route::post('w2w/transfer', [WalletTransferController::class, 'transfer'])->middleware('check_UDS_middleware:wallet_transfer');
         });
 

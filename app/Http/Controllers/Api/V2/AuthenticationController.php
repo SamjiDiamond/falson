@@ -582,7 +582,7 @@ class AuthenticationController extends Controller
         }
 
         if ($fuser->email_valid == 1) {
-            return response()->json(['success' => 0, 'message' => 'Email is already verified']);
+            return response()->json(['success' => 1, 'message' => 'Email is already verified']);
         }
 
         $cr = CodeRequest::where([["mobile", $input['email']], ['status', 0], ['type', 'email_verify']])->latest()->first();

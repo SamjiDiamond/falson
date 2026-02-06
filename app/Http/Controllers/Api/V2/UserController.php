@@ -417,6 +417,38 @@ class UserController extends Controller
         return response()->json(['success' => 1, 'message' => 'Data submitted successfully']);
     }
 
+    public function submitAddress(Request $request)
+    {
+        $input = $request->all();
+        $rules = array(
+            'email' => 'required',
+            'street' => 'required',
+            'number' => 'required',
+            'state' => 'required',
+            'country' => 'required',
+            'zip' => 'required',
+        );
+
+        $validator = Validator::make($input, $rules);
+
+        $input = $request->all();
+
+        if (!$validator->passes()) {
+            return response()->json(['status' => 0, 'message' => 'Some forms are left out', 'error' => $validator->errors()]);
+        }
+
+        $user = User::where('email', $input['email'])->first();
+        if (!$user) {
+            return response()->json(['success' => 0, 'message' => 'User not found']);
+        }
+
+        $user->address = $input['number'] . "; " .$input['street'] . "; " . $input['state'] . "; " . $input['country']. "; " . $input['zip'];
+
+        $user->save();
+
+        return response()->json(['success' => 1, 'message' => 'Address submitted successfully']);
+    }
+
     public function requestAgent(Request $request)
     {
         $input = $request->all();

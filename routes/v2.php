@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\V2\AutobuyController;
 use App\Http\Controllers\Api\V2\CGWalletController;
 use App\Http\Controllers\Api\V2\ListController;
 use App\Http\Controllers\Api\V2\NotificationController;
+use App\Http\Controllers\Api\V2\OfflineController;
 use App\Http\Controllers\Api\V2\OtherController;
 use App\Http\Controllers\Api\V2\PayController;
 use App\Http\Controllers\Api\V2\PinManagementController;
@@ -53,6 +54,11 @@ Route::prefix('v2')->group(function () {
     Route::get('education', [ListController::class, 'education']);
     Route::get('betting', [ListController::class, 'betting']);
     Route::get('availableCommissions', [ListController::class, 'availableCommissions']);
+
+    Route::prefix('offline')->group(function () {
+        Route::post('airtime', [OfflineController::class, 'buyairtime']);
+        Route::post('data', [OfflineController::class, 'buydata']);
+    });
 
     Route::post('email-verification', [AuthenticationController::class, 'email_verify']);
     Route::post('email-verification-continue', [AuthenticationController::class, 'email_verify_continue']);

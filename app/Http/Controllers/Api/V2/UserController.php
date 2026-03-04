@@ -70,7 +70,7 @@ class UserController extends Controller
         $services['betting'] = $sett['betting'];
         $services['airtimeconverter'] = $sett['airtimeconverter'];
         $services['biz_verification'] = $sett['biz_verification'];
-        $services['foreign_airtime'] = " ";
+        $services['foreign_airtime'] = $sett['foreign_airtime'];;
 
 
         $others['hot_stuffs'] = explode(",", $sett['app_hot_stuffs']);
@@ -163,7 +163,7 @@ class UserController extends Controller
         $services['betting'] = $sett['betting'];
         $services['airtimeconverter'] = $sett['airtimeconverter'];
         $services['biz_verification'] = $sett['biz_verification'];
-        $services['foreign_airtime'] = " ";
+        $services['foreign_airtime'] = $sett['foreign_airtime'];;
 
 
         $others['hot_stuffs'] = explode(",", $sett['app_hot_stuffs']);

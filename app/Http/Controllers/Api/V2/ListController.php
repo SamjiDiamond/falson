@@ -115,9 +115,9 @@ class ListController extends Controller
 
         if ($sett->value == "RINGO" || $sett->value == "2") {
             if (strtolower($network) == "startimes") {
-                $server = 1;
+                $server = 7;
             } else {
-                $server = "2";
+                $server = 2;
             }
         } else {
             $server = $sett->value;

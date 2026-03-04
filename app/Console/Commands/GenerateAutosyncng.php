@@ -333,7 +333,7 @@ class GenerateAutosyncng extends Command
         ]);
 
         CombineDataPlans::create([
-            'name' => $type . " " . $plans['name'],
+            'name' => trim(explode("-",$plans['name'])[0]),
             'product_code' => $type,
             'dataplan' => $allowance,
             'network' => $network,
@@ -344,7 +344,7 @@ class GenerateAutosyncng extends Command
             'res_price' => $plans['amount'],
             'price' => $plans['amount'],
             'server' => 7,
-            'status' => 0,
+            'status' => 1,
         ]);
     }
 

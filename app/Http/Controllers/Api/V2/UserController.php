@@ -65,7 +65,7 @@ class UserController extends Controller
         $services['data'] = $sett['data'];
         $services['paytv'] = $sett['paytv'];
         $services['resultchecker'] = $sett['resultchecker'];
-        $services['rechargecard'] = $sett['resultchecker'];
+        $services['rechargecard'] = $sett['rechargecard'];
         $services['electricity'] = $sett['electricity'];
         $services['betting'] = $sett['betting'];
         $services['airtimeconverter'] = $sett['airtimeconverter'];
@@ -158,7 +158,7 @@ class UserController extends Controller
         $services['data'] = $sett['data'];
         $services['paytv'] = $sett['paytv'];
         $services['resultchecker'] = $sett['resultchecker'];
-        $services['rechargecard'] = $sett['resultchecker'];
+        $services['rechargecard'] = $sett['rechargecard'];
         $services['electricity'] = $sett['electricity'];
         $services['betting'] = $sett['betting'];
         $services['airtimeconverter'] = $sett['airtimeconverter'];

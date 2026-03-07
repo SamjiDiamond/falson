@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\OthersController;
 use App\Http\Controllers\Api\V2\AuthenticationController;
 use App\Http\Controllers\Api\V2\AutobuyController;
+use App\Http\Controllers\Api\V2\BulkController;
 use App\Http\Controllers\Api\V2\CGWalletController;
 use App\Http\Controllers\Api\V2\ListController;
 use App\Http\Controllers\Api\V2\NotificationController;
@@ -56,9 +57,14 @@ Route::prefix('v2')->group(function () {
     Route::get('availableCommissions', [ListController::class, 'availableCommissions']);
 
     Route::prefix('offline')->group(function () {
-        Route::post('validate-user', [OfflineController::class, 'valUser']);
         Route::post('airtime', [OfflineController::class, 'buyairtime']);
         Route::post('data', [OfflineController::class, 'buydata']);
+    });
+
+    Route::prefix('bulk')->group(function () {
+        Route::post('validate-user', [BulkController::class, 'valUser']);
+        Route::post('airtime', [BulkController::class, 'buyairtime']);
+        Route::post('data', [BulkController::class, 'buydata']);
     });
 
     Route::post('email-verification', [AuthenticationController::class, 'email_verify']);

@@ -56,6 +56,7 @@ Route::prefix('v2')->group(function () {
     Route::get('availableCommissions', [ListController::class, 'availableCommissions']);
 
     Route::prefix('offline')->group(function () {
+        Route::post('validate-user', [OfflineController::class, 'valUser']);
         Route::post('airtime', [OfflineController::class, 'buyairtime']);
         Route::post('data', [OfflineController::class, 'buydata']);
     });

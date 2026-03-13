@@ -70,6 +70,8 @@ Route::prefix('v2')->group(function () {
     Route::post('email-verification', [AuthenticationController::class, 'email_verify']);
     Route::post('email-verification-continue', [AuthenticationController::class, 'email_verify_continue']);
 
+    Route::post('hook/sprintcheck', [\App\Http\Controllers\SprintcheckController::class, 'index']);
+
     Route::post('submit-address', [UserController::class, 'submitAddress']);
 
     Route::post('set-passcode', [UserController::class, 'set_passcode']);

@@ -226,13 +226,13 @@ class AuthenticationController extends Controller
         $la->status = "authorized";
         $la->save();
 
-        $job = (new CreateCGWalletsJob($user->id))
-            ->delay(Carbon::now()->addSecond());
-        dispatch($job);
+//        $job = (new CreateCGWalletsJob($user->id))
+//            ->delay(Carbon::now()->addSecond());
+//        dispatch($job);
 
 //        CreateProvidusAccountJob::dispatch($user->id);
-        BudpayVirtualAccountJob::dispatch($user->id);
-        CreatePaylonyVirtualAccountJob::dispatch($user->id);
+//        BudpayVirtualAccountJob::dispatch($user->id);
+//        CreatePaylonyVirtualAccountJob::dispatch($user->id);
 
         $user->last_login = Carbon::now();
         $user->save();

@@ -31,6 +31,7 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
@@ -1075,228 +1076,287 @@ class PayController extends Controller
 
     public function debitUser(Request $request, $proceed, $provider, $amount, $discount, $server, $requester, $codedName, $ref)
     {
-        $input = $request->all();
-
-        $input['user_name'] = Auth::user()->user_name;
-        $input['version'] = $request->header('version');
-
         $user = Auth::user();
+
         if (!$user) {
-            return response()->json(['success' => 0, 'message' => 'Invalid API key. Kindly contact support']);
+            return response()->json([
+                'success' => 0,
+                'message' => 'Invalid API key. Kindly contact support'
+            ]);
         }
 
-        if ($input['payment'] == "wallet") {
-            if ($amount > $user->wallet) {
-                return response()->json(['success' => 0, 'message' => 'Insufficient balance to handle request']);
-            }
-        }else{
-            $cg=CGWallets::where([["user_id", Auth::id()], ['name', $input['payment']]])->first();
+        $payment = $request->payment;
 
-            if(!$cg){
-                return response()->json(['success' => 0, 'message' => 'Invalid payment selected']);
-            }
+        try {
 
-            if($cg->balance == "0"){
-                return response()->json(['success' => 0, 'message' => 'Insufficient balance. Kindly replenish your wallet']);
-            }
+            $transaction = DB::transaction(function () use ($request, $user, $proceed, $provider, $amount, $discount, $server, $requester, $codedName, $ref, $payment) {
 
-            Log::info("data bundle");
-            Log::info($proceed[7]);
+                // Lock user wallet
+                $user = User::where('id', $user->id)->lockForUpdate()->first();
 
-            Log::info("cg balance");
-            Log::info($cg->balance);
+                $cg = null;
 
+                if ($payment !== "wallet") {
 
-            if(doubleval($proceed[7]) > doubleval($cg->balance)){
-                return response()->json(['success' => 0, 'message' => 'Insufficient balance to handle request']);
-            }
-        }
+                    $cg = CGWallets::where([
+                        ['user_id', $user->id],
+                        ['name', $payment]
+                    ])->lockForUpdate()->first();
 
-
-        if ($requester == "airtime") {
-            $tr['name'] = strtoupper($provider) . " " . $requester;
-            $tr['description'] = $input['provider'] . " " . $input['amount'] . " airtime on " . $input['number'] . " using " . $input['payment'];
-            $tr['code'] = $requester;
-        } elseif ($requester == "electricity" || $requester == "betting") {
-            $tr['name'] = strtoupper($provider);
-            $tr['description'] = $input['provider'] . " " . $input['amount'] . " on " . $input['number'] . " using " . $input['payment'];
-            $tr['code'] = $requester;
-        } elseif($requester == "data") {
-            $tr['name'] = $requester;
-            $tr['description'] = $codedName . " on " . $input['number'] . " using " . $input['payment'];
-            $tr['code'] = $requester . "_" . $input['coded'];
-        } else {
-            $tr['name'] = $requester;
-            $tr['description'] = $input['coded'] . " on " . $input['number'] . " using " . $input['payment'];
-            $tr['code'] = $requester . "_" . $input['coded'];
-        }
-
-        $tr['amount'] = $amount;
-        $tr['date'] = Carbon::now();
-        $tr['device_details'] = $request->header('device') ?? $_SERVER['HTTP_USER_AGENT'];
-        $tr['ip_address'] = $_SERVER['REMOTE_ADDR'];
-        $tr['user_name'] = $user->user_name;
-        $tr['ref'] = $ref;
-        $tr['server'] = "server" . $server;
-        $tr['server_response'] = "";
-        $tr['payment_method'] = $input['payment'];
-        $tr['transid'] = $ref;
-        $tr['status'] = "pending";
-        $tr['extra'] = $discount;
-        $tr['commission'] = $discount;
-        $tr['paid_with'] = $input['payment'];
-
-        if ($input['payment'] == "wallet") {
-
-            $tr['i_wallet'] = $user->wallet;
-
-            $tr['f_wallet'] = $tr['i_wallet'] - $amount;
-
-            $user->wallet = $tr['f_wallet'];
-            $user->save();
-
-        }  else {
-            if ($requester == "data") {
-                $settings = Settings::where('name', 'enable_cg_wallet')->first();
-                if ($settings->value == "0") {
-                    return response()->json(['success' => 0, 'message' => 'CG Wallet is currently disabled. Kindly contact support']);
-                }
-
-                $cg->balance -= $proceed[7];
-                $cg->save();
-
-                $tr['i_wallet'] = $user->wallet;
-                $tr['f_wallet'] = $tr['i_wallet'];
-                $tr['extra'] = "$proceed[7]|" . $input['payment'] . "|" . Auth::id();
-            } else {
-                return response()->json(['success' => 0, 'message' => 'Payment method can not be applied']);
-            }
-        }
-
-        $t = Transaction::create($tr);
-
-        $settings = Settings::where('name', 'enable_commission')->first();
-
-        if ($settings->value == "1") {
-            if ($input['payment'] == "wallet") {
-                if ($discount > 0) {
-                    $tr['name'] = "Commission";
-                    if ($requester == "airtime" || $requester == "electricity" || $requester == "betting") {
-                        $tr['description'] = "Commission earned on " . $input['provider'] . " NGN" . $input['amount'] . " " . $requester . " purchase for " . $input['number'];
-                    }else{
-                        $tr['description'] = "Commission earned on " . $input['coded'] . " " . $requester . " purchase for " . $input['number'];
+                    if (!$cg) {
+                        throw new \Exception('Invalid payment selected');
                     }
-                    $tr['code'] = "tcommission";
-                    $tr['amount'] = $discount;
-                    $tr['status'] = "successful";
-                    $tr['i_wallet'] = $user->agent_commision;
-                    $tr['f_wallet'] = $tr['i_wallet'] + $discount;
-                    Transaction::create($tr);
-
-                    $user->agent_commision = $tr['f_wallet'];
-                    $user->save();
                 }
-            }
+
+                /**
+                 * Balance Validation
+                 */
+                if ($payment == "wallet") {
+
+                    if ($amount < 1) {
+                        throw new \Exception('Transaction cannot be processed');
+                    }
+
+                    if ($user->wallet < 1) {
+                        throw new \Exception('Insufficient Fund');
+                    }
+
+                    if ($user->wallet < $amount) {
+                        throw new \Exception('Insufficient balance to handle request');
+                    }
+
+                } else {
+
+                    if ($cg->balance < $proceed[7]) {
+                        throw new \Exception('Insufficient CG wallet balance');
+                    }
+                }
+
+                /**
+                 * Build Transaction Details
+                 */
+                $transactionName = $this->buildTransactionName($requester, $provider);
+
+                $description = $this->buildTransactionDescription(
+                    $request,
+                    $requester,
+                    $provider,
+                    $codedName
+                );
+
+                $initialWallet = $user->wallet;
+                $finalWallet = $initialWallet;
+
+                /**
+                 * Wallet Deduction
+                 */
+                if ($payment == "wallet") {
+
+                    $finalWallet = $initialWallet - $amount;
+
+                    $user->wallet = $finalWallet;
+                    $user->save();
+
+                } else {
+
+                    $cg->balance -= $proceed[7];
+                    $cg->save();
+                }
+
+                /**
+                 * Create Transaction
+                 */
+                $tr = Transaction::create([
+                    'name' => $transactionName,
+                    'description' => $description,
+                    'code' => $requester,
+                    'amount' => $amount,
+                    'date' => now(),
+                    'device_details' => $request->header('device') ?? $request->userAgent(),
+                    'ip_address' => $request->ip(),
+                    'user_name' => $user->user_name,
+                    'ref' => $ref,
+                    'server' => "server".$server,
+                    'server_response' => '',
+                    'payment_method' => $payment,
+                    'transid' => $ref,
+                    'status' => 'pending',
+                    'extra' => $discount,
+                    'commission' => $discount,
+                    'paid_with' => $payment,
+                    'i_wallet' => $initialWallet,
+                    'f_wallet' => $finalWallet
+                ]);
+
+                /**
+                 * Commission Handling
+                 */
+                if ($payment == "wallet" && $discount > 0) {
+
+                    $settings = Settings::where('name','enable_commission')->first();
+
+                    if ($settings && $settings->value == "1") {
+
+                        $commissionInitial = $user->agent_commision;
+                        $commissionFinal = $commissionInitial + $discount;
+
+                        Transaction::create([
+                            'name' => 'Commission',
+                            'description' => "Commission earned on {$description}",
+                            'code' => 'tcommission',
+                            'amount' => $discount,
+                            'status' => 'successful',
+                            'i_wallet' => $commissionInitial,
+                            'f_wallet' => $commissionFinal,
+                            'user_name' => $user->user_name
+                        ]);
+
+                        $user->agent_commision = $commissionFinal;
+                        $user->save();
+                    }
+                }
+
+                return $tr;
+            });
+
+        } catch (\Exception $e) {
+
+            return response()->json([
+                'success' => 0,
+                'message' => $e->getMessage()
+            ]);
         }
 
-        $input["service"] = $requester;
-//        $job = (new ServeRequestJob($input, "1", $tr, $user->id))
-//            ->delay(Carbon::now()->addSeconds(1));
-//        dispatch($job);
-
-        $dada['tid'] = $t->id;
-        $dada['amount'] = $amount;
-        $dada['discount'] = $discount;
+        /**
+         * Call Provider
+         */
+        $payload = [
+            'tid' => $transaction->id,
+            'amount' => $amount,
+            'discount' => $discount
+        ];
 
         switch ($requester) {
+
             case "airtime":
-                return $this->buyAirtimeCTD($request, $ref, $provider, $dada, $server);
+                return $this->buyAirtimeCTD($request,$ref,$provider,$payload,$server);
+
             case "data":
-                return $this->buyDataCTD($request, $ref, $provider, $dada, $server);
+                return $this->buyDataCTD($request,$ref,$provider,$payload,$server);
+
             case "tv":
-                return $this->buyTvCTD($request, $ref, $provider, $dada, $server);
+                return $this->buyTvCTD($request,$ref,$provider,$payload,$server);
+
             case "electricity":
-                return $this->buyElectricityCTD($request, $ref, $provider, $dada, $server);
+                return $this->buyElectricityCTD($request,$ref,$provider,$payload,$server);
+
             case "betting":
-                return $this->buyBettingCTD($request, $ref, $provider, $dada, $server);
+                return $this->buyBettingCTD($request,$ref,$provider,$payload,$server);
+
             case "jamb":
-                return $this->buyJambCTD($request, $ref, $provider, $dada, $server);
+                return $this->buyJambCTD($request,$ref,$provider,$payload,$server);
         }
     }
 
     public function handlePassage($request, $proceed)
     {
-        $input = $request->all();
-        $input['ip_address'] = $_SERVER['REMOTE_ADDR'];
-        $input['date'] = Carbon::now();
-        $input['phone'] = $input['number'];
-        $input['user_name'] = Auth::user()->user_name;
-        $input['payment_method'] = $input['payment'];
-//        $input['transid'] = "MCD_" . substr($input['user_name'], -3, 2) . "_" . Carbon::now()->timestamp . rand();
-        $input['transid'] = $input['ref'];
-        $input['version'] = $request->header('version');
-        $input['device_details'] = $request->header('device') ?? $_SERVER['HTTP_USER_AGENT'];
-        $input['wallet'] = Auth::user()->wallet;
-        $input['amount'] = $proceed['2'];
-        $input["service"] = $proceed['5'];
+        $user = Auth::user();
 
-        $re = Serverlog::where('transid', $input['transid'])->first();
-
-        if ($re) {
-            $input['status'] = 'Duplicate reference';
-            $input['transid'] = $input['transid'] . '_dup';
-            Serverlog::create($input);
-            return response()->json(['success' => 0, 'message' => 'Error, duplicate transaction']);
-        }
-
-
-        if (isset($input['provider'])) {
-            $input['network'] = $input['provider'];
-        }
-
-        $user = User::where("user_name", "=", $input['user_name'])->first();
         if (!$user) {
-            $input['status'] = 'Username does not exist';
-            Serverlog::create($input);
-            return response()->json(['success' => 0, 'message' => 'Error, invalid user name']);
+            return response()->json([
+                'success' => 0,
+                'message' => 'Unauthorized user'
+            ]);
         }
 
+        $ref = $request->ref;
+        $amount = $proceed[2];
+        $service = $proceed[5];
 
-        if ($input['payment'] == "wallet") {
-            if ($user->wallet <= 0) {
+        $input = [
+            'ip_address' => $request->ip(),
+            'date' => now(),
+            'phone' => $request->number,
+            'user_name' => $user->user_name,
+            'payment_method' => $request->payment,
+            'transid' => $ref,
+            'version' => $request->header('version'),
+            'device_details' => $request->header('device') ?? $request->userAgent(),
+            'wallet' => $user->wallet,
+            'amount' => $amount,
+            'service' => $service
+        ];
+
+        if ($request->provider ?? false) {
+            $input['network'] = $request->provider;
+        }
+
+        /**
+         * Prevent Duplicate Transactions
+         */
+        if (Serverlog::where('transid', $ref)->exists()) {
+
+            $input['status'] = 'Duplicate reference';
+            $input['transid'] = $ref . '_dup';
+
+            Serverlog::create($input);
+
+            return response()->json([
+                'success' => 0,
+                'message' => 'Duplicate transaction detected'
+            ]);
+        }
+
+        /**
+         * Wallet Balance Check
+         */
+        if ($request->payment === "wallet") {
+
+            if ($user->wallet <= 0 || $amount > $user->wallet) {
+
                 $input['status'] = 'Balance too low';
                 Serverlog::create($input);
-                return response()->json(['success' => 0, 'message' => 'Error, wallet balance too low']);
-            }
 
-            if($proceed['5'] == "airtime"){
-                if ($proceed['2'] > $user->wallet) {
-                    $input['status'] = 'Balance too low';
-                    Serverlog::create($input);
-                    return response()->json(['success' => 0, 'message' => 'Error, wallet balance too low']);
-                }
-            }else {
-                if ($input['amount'] > $user->wallet) {
-                    $input['status'] = 'Balance too low';
-                    Serverlog::create($input);
-                    return response()->json(['success' => 0, 'message' => 'Error, wallet balance too low']);
-                }
+                return response()->json([
+                    'success' => 0,
+                    'message' => 'Insufficient wallet balance'
+                ]);
             }
-
         }
 
-        $number_count = isset(explode(",", $input['number'])[1]);
-
-        if ($number_count) {
+        /**
+         * Handle Multiple Numbers
+         */
+        if (str_contains($request->number, ',')) {
             return $this->processMultiplePhones($request, $proceed);
         }
 
-        if ($proceed['5'] == "data") {
-            $input['network'] = $proceed['1'];
+        /**
+         * Data Network Override
+         */
+        if ($service === "data") {
+            $input['network'] = $proceed[1];
         }
 
+        /**
+         * Log Request
+         */
         Serverlog::create($input);
-        return $this->debitUser($request, $proceed, $proceed['1'], $proceed['2'], $proceed['3'], $proceed['4'], $proceed['5'], $proceed['6'] ?? '', $input['ref']);
+
+        /**
+         * Continue Transaction
+         */
+        return $this->debitUser(
+            $request,
+            $proceed,
+            $proceed[1],
+            $proceed[2],
+            $proceed[3],
+            $proceed[4],
+            $service,
+            $proceed[6] ?? '',
+            $ref
+        );
     }
 
     public function outputResp(Request $request, $ref, $status, $dada)
@@ -1355,75 +1415,150 @@ class PayController extends Controller
     }
 
 
-    function processMultiplePhones($request, $proceed){
-        $input = $request->all();
+    public function processMultiplePhones($request, $proceed)
+    {
+        $user = Auth::user();
 
-        $input['user_name'] = Auth::user()->user_name;
-        if (isset($input['provider'])) {
-            $input['network'] = $input['provider'];
+        if (!$user) {
+            return response()->json([
+                'success' => 0,
+                'message' => 'Unauthorized user'
+            ]);
         }
 
-        $user = User::where('user_name', $input['user_name'])->first();
-        $numbers = explode(",",$input['number']);
+        $numbers = array_filter(array_map('trim', explode(',', $request->number)));
+        $count = count($numbers);
 
-        $count=count($numbers);
+        if ($count == 0) {
+            return response()->json([
+                'success' => 0,
+                'message' => 'No valid phone numbers supplied'
+            ]);
+        }
 
-        $w_bal = $user->wallet;
 
-        if ($input['payment'] == "wallet") {
-            $charge = $count * $proceed[2];
+        $walletAmount = $proceed[2];
 
-            if ($charge > $user->wallet) {
-                return response()->json(['success' => 0, 'message' => 'Error, wallet balance too low to process for all the numbers']);
-            }
-
-            $user->wallet -= $charge;
-            $user->save();
+        if($proceed[5] == "data") {
+            $cgAmount = $proceed[7];
         }else{
-            $cg=CGWallets::where([["user_id", Auth::id()], ['name', $input['payment']]])->first();
-
-            if(!$cg){
-                return response()->json(['success' => 0, 'message' => 'Invalid payment selected']);
-            }
-
-            if($cg->balance == "0"){
-                return response()->json(['success' => 0, 'message' => 'Insufficient balance to handle request']);
-            }
-
-            $charge = $count * $proceed[7];
-
-            if($charge > $cg->balance){
-                return response()->json(['success' => 0, 'message' => 'Insufficient balance to handle request']);
-            }
-
-            $cg->balance-=$charge;
-            $cg->save();
+            $cgAmount = 0;
         }
 
-        $tr = 1;
+        $payment = $request->payment;
 
-        foreach ($numbers as $num){
-            $input['ip_address'] = $_SERVER['REMOTE_ADDR'];
-            $input['date'] = Carbon::now();
-            $input['phone'] = trim($num);
-            $input['user_name'] = Auth::user()->user_name;
-            $input['payment_method'] = $input['payment'];
-            $input['transid'] = $input['ref']."_$tr";
-            $input['version'] = $request->header('version');
-            $input['device_details'] = $request->header('device') ?? $_SERVER['HTTP_USER_AGENT'];
-            $input['wallet'] = $w_bal;
-            $input['amount'] = $proceed['2'];
-            $input["service"] = $proceed['5'];
-            $sl=Serverlog::create($input);
+        try {
 
-            $job = (new ATMtransactionserveJob($sl->id))
-                ->delay(Carbon::now()->addSeconds(2));
-            dispatch($job);
+            DB::transaction(function () use ($request, $user, $numbers, $count, $walletAmount, $cgAmount, $payment, $proceed) {
 
-            $tr++;
+                // Lock user row
+                $user = User::where('id', $user->id)->lockForUpdate()->first();
+
+                $charge = 0;
+
+                if ($payment === "wallet") {
+
+                    $charge = $count * $walletAmount;
+
+                    if ($charge > $user->wallet) {
+                        throw new \Exception('Wallet balance too low for all numbers');
+                    }
+
+                    $user->wallet -= $charge;
+                    $user->save();
+
+                } else {
+
+                    $cg = CGWallets::where([
+                        ['user_id', $user->id],
+                        ['name', $payment]
+                    ])->lockForUpdate()->first();
+
+                    if (!$cg) {
+                        throw new \Exception('Invalid payment selected');
+                    }
+
+                    $charge = $count * $cgAmount;
+
+                    if ($charge > $cg->balance) {
+                        throw new \Exception('Insufficient CG wallet balance');
+                    }
+
+                    $cg->balance -= $charge;
+                    $cg->save();
+                }
+
+                /**
+                 * Create Server Logs + Dispatch Jobs
+                 */
+                foreach ($numbers as $index => $num) {
+
+                    $log = Serverlog::create([
+                        'ip_address' => $request->ip(),
+                        'date' => now(),
+                        'phone' => $num,
+                        'user_name' => $user->user_name,
+                        'payment_method' => $payment,
+                        'transid' => $request->ref . "_" . ($index + 1),
+                        'version' => $request->header('version'),
+                        'device_details' => $request->header('device') ?? $request->userAgent(),
+                        'wallet' => $user->wallet,
+                        'amount' => $walletAmount,
+                        'service' => $proceed[5],
+                        'network' => $request->provider ?? null
+                    ]);
+
+                    dispatch(
+                        (new ATMtransactionserveJob($log->id))
+                            ->delay(now()->addSeconds(2))
+                    );
+                }
+
+            });
+
+        } catch (\Exception $e) {
+
+            return response()->json([
+                'success' => 0,
+                'message' => $e->getMessage()
+            ]);
         }
 
-        return response()->json(['success' => 1, 'message' => 'Transactions processed successfully. You will receive them within 2 minutes', 'ref' => $input['ref'], 'debitAmount' => $charge, 'discountAmount' => 0]);
+        return response()->json([
+            'success' => 1,
+            'message' => 'Transactions queued successfully. You will receive them within 2 minutes',
+            'ref' => $request->ref,
+            'debitAmount' => $count * $walletAmount,
+            'discountAmount' => 0
+        ]);
+    }
+
+    private function buildTransactionName($requester, $provider)
+    {
+        if ($requester == "airtime") {
+            return strtoupper($provider)." airtime";
+        }
+
+        return strtoupper($provider);
+    }
+
+    private function buildTransactionDescription($request, $requester, $provider, $codedName)
+    {
+        switch ($requester) {
+
+            case "airtime":
+                return "{$provider} {$request->amount} airtime on {$request->number}";
+
+            case "data":
+                return "{$codedName} on {$request->number}";
+
+            case "electricity":
+            case "betting":
+                return "{$provider} {$request->amount} on {$request->number}";
+
+            default:
+                return "{$request->coded} on {$request->number}";
+        }
     }
 
 }

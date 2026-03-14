@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Notifications\UserNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class WalletTransferController extends Controller
@@ -59,89 +60,143 @@ class WalletTransferController extends Controller
      */
     public function transfer(Request $request)
     {
-        $input = $request->all();
-        $rules = array(
+        $validator = Validator::make($request->all(), [
             'user_name' => 'required',
-            'amount' => 'required',
-            'reference' => 'required',
-            'narration' => 'required'
-        );
+            'amount' => 'required|numeric|min:1',
+            'reference' => 'required|string|max:100',
+            'narration' => 'nullable|string|max:255'
+        ]);
 
-        $validator = Validator::make($input, $rules);
-
-        if (!$validator->passes()) {
-            return response()->json(['success' => 0, 'message' => 'Required field(s) is missing']);
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => 0,
+                'message' => 'Required field(s) missing or invalid'
+            ]);
         }
 
-//       return response()->json(['success' => 0, 'message' => 'Currently under maintenance']);
+        $amount = $request->amount;
+        $reference = $request->reference;
 
-        $user=User::find(Auth::id());
+        try {
 
-        $r_user=User::where("user_name",$input['user_name'])->orwhere("email",$input['user_name'])->orwhere("phoneno",$input['user_name'])->first();
+            $response = DB::transaction(function () use ($request, $amount, $reference) {
 
-        if(!$r_user){
-            return response()->json(['success' => 0, 'message' => 'Invalid username']);
+                // Lock sender wallet row
+                $user = User::where('id', Auth::id())->lockForUpdate()->first();
+
+                // Find receiver
+                $r_user = User::where("user_name", $request->user_name)
+                    ->orWhere("email", $request->user_name)
+                    ->orWhere("phoneno", $request->user_name)
+                    ->lockForUpdate()
+                    ->first();
+
+                if (!$r_user) {
+                    return response()->json([
+                        'success' => 0,
+                        'message' => 'Invalid username'
+                    ]);
+                }
+
+                if ($r_user->id == $user->id) {
+                    return response()->json([
+                        'success' => 0,
+                        'message' => 'You cannot transfer to yourself'
+                    ]);
+                }
+
+                if($user->wallet < 1){
+                    return response()->json(['success' => 0, 'message' => 'Insufficient fund']);
+                }
+
+                if($amount < 1){
+                    return response()->json(['success' => 0, 'message' => 'Invalid amount']);
+                }
+
+                if ($user->wallet < $amount) {
+                    return response()->json([
+                        'success' => 0,
+                        'message' => 'Insufficient fund'
+                    ]);
+                }
+
+                // Prevent duplicate reference
+                if (Transaction::where("ref", $reference)->exists()) {
+                    return response()->json([
+                        'success' => 0,
+                        'message' => 'Reference already exists'
+                    ]);
+                }
+
+                $senderInitial = $user->wallet;
+                $receiverInitial = $r_user->wallet;
+
+                // Deduct sender wallet
+                $user->wallet -= $amount;
+                $user->save();
+
+                // Credit receiver wallet
+                $r_user->wallet += $amount;
+                $r_user->save();
+
+                $description = "Wallet Transfer from {$user->user_name} to {$r_user->user_name} with the sum of #{$amount}";
+
+                if ($request->narration) {
+                    $description .= ". " . $request->narration;
+                }
+
+                $device = $request->header('device') ?? $request->userAgent();
+
+                // Sender transaction
+                Transaction::create([
+                    'user_name' => $user->user_name,
+                    'name' => 'wallet transfer',
+                    'amount' => $amount,
+                    'status' => 'successful',
+                    'description' => $description,
+                    'code' => 'w2wtransfer',
+                    'i_wallet' => $senderInitial,
+                    'f_wallet' => $user->wallet,
+                    'ref' => $reference,
+                    'device_details' => $device,
+                    'ip_address' => $request->ip(),
+                    'date' => now()
+                ]);
+
+                // Receiver transaction
+                Transaction::create([
+                    'user_name' => $r_user->user_name,
+                    'name' => 'wallet transfer',
+                    'amount' => $amount,
+                    'status' => 'successful',
+                    'description' => $description,
+                    'code' => 'w2wtransfer',
+                    'i_wallet' => $receiverInitial,
+                    'f_wallet' => $r_user->wallet,
+                    'ref' => $reference . "_credit",
+                    'device_details' => $device,
+                    'ip_address' => $request->ip(),
+                    'date' => now()
+                ]);
+
+                // Notify receiver
+                $r_user->notify(new UserNotification($description, "Wallet Transfer"));
+
+                return response()->json([
+                    'success' => 1,
+                    'message' => 'Transfer Successful'
+                ]);
+            });
+
+            return $response;
+
+        } catch (\Exception $e) {
+
+            return response()->json([
+                'success' => 0,
+                'message' => 'Transfer failed. Try again.'
+            ]);
         }
-
-        if($r_user->user_name == $user->user_name){
-            return response()->json(['success' => 0, 'message' => 'You can not transfer to yourself']);
-        }
-
-        if($user->wallet < 1){
-            return response()->json(['success' => 0, 'message' => 'Insufficient fund']);
-        }
-
-        $amount=$input['amount'];
-
-        if($amount < 1){
-            return response()->json(['success' => 0, 'message' => 'Invalid amount']);
-        }
-
-        if($input['amount'] > $user->wallet){
-            return response()->json(['success' => 0, 'message' => 'Insufficient fund ']);
-        }
-
-        $reference=$input['reference'];
-
-        $check=Transaction::where("ref", $reference)->first();
-
-        if($check){
-            return response()->json(['success' => 0, 'message' => 'Reference already exist']);
-        }
-
-        $user->wallet-=$amount;
-        $user->save();
-
-        $input['device_details'] = $request->header('device') ?? $_SERVER['HTTP_USER_AGENT'];
-        $input['name'] = "wallet transfer";
-        $input['amount']=$amount;
-        $input['status']='successful';
-        $input['description']='Wallet Transfer from '. $user->user_name .' to '.$r_user->user_name.' with the sum of #'.$amount;
-        if(isset($input['narration'])){
-            $input['description'].=". ".$input['narration'];
-        }
-        $input['code']='w2wtransfer';
-        $input['user_name']=$user->user_name;
-        $input['i_wallet']=$user->wallet;
-        $input['f_wallet']=$user->wallet - $amount;
-        $input['ref']=$reference;
-        $input["ip_address"]=$_SERVER['REMOTE_ADDR'];
-        $input["date"]=date("y-m-d H:i:s");
-
-        Transaction::create($input);
-
-        $input['user_name'] = $r_user->user_name;
-        $input['i_wallet'] = $r_user->wallet;
-        $input['f_wallet'] = $r_user->wallet + $amount;
-
-        Transaction::create($input);
-
-        $r_user->wallet += $amount;
-        $r_user->save();
-
-        $r_user->notify(new UserNotification($input['description'], "Wallet Transfer"));
-
-        return response()->json(['success' => 1, 'message' => 'Transfer Successful']);
     }
 
 

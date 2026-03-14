@@ -147,7 +147,7 @@ Route::prefix('v2')->group(function () {
 
             Route::post('epins', [PayController::class, 'epins']);
 
-            Route::post('w2w/transfer', [WalletTransferController::class, 'transfer'])->middleware('check_UDS_middleware:wallet_transfer');
+            Route::post('w2w/transfer', [WalletTransferController::class, 'transfer'])->middleware('check_UDS_middleware:wallet_transfer')->middleware('throttle:2,1');
         });
 
         Route::get('profile', [UserController::class, 'profile']);

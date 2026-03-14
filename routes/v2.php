@@ -199,7 +199,7 @@ Route::prefix('v2')->group(function () {
 
         Route::get('getPromoCode', [OtherController::class, 'getPromoCode']);
 
-        Route::post('moveFunds', [OtherController::class, 'moveFunds']);
+        Route::post('moveFunds', [OtherController::class, 'moveFunds'])->middleware('throttle:2,1');;
 
         Route::get('beneficiary/{type}', [OtherController::class, 'beneficiary']);
 

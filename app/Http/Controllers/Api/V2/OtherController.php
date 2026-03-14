@@ -19,7 +19,9 @@ use App\Models\Withdraw;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class OtherController extends Controller
 {
@@ -491,85 +493,126 @@ class OtherController extends Controller
 
     public function moveFunds(Request $request)
     {
-        $input = $request->all();
-        $rules = array(
-            'wallet' => 'required',
-            'amount' => 'required',
-        );
+        $validator = Validator::make($request->all(), [
+            'wallet' => 'required|in:bonus,commission',
+            'amount' => 'required|numeric|min:1'
+        ]);
 
-        $validator = Validator::make($input, $rules);
-
-        if (!$validator->passes()) {
-            return response()->json(['success' => 0, 'message' => 'Required field(s) is missing']);
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => 0,
+                'message' => 'Invalid request data'
+            ]);
         }
 
-        $input['user_name'] = Auth::user()->user_name;
+        $user = Auth::user();
 
-        $input['version'] = $request->header('version');
-
-        $input['device_details'] = $request->header('device') ?? $_SERVER['HTTP_USER_AGENT'];
-
-        $u = User::where("user_name", $input['user_name'])->first();
-
-        $amount = $input['amount'];
-        $ref = "PLF_MV_" . time();
-        $prevb = 0;
-        $method = "";
-
-
-        if ($input['wallet'] == "bonus") {
-            $prevb = $u->bonus;
-            $method = "bonus";
-            if ($u->bonus < $input['amount']) {
-                return response()->json(['success' => 0, 'message' => 'Insufficient balance on your bonus wallet']);
-            }
-            $u->bonus -= $input['amount'];
+        if (!$user) {
+            return response()->json([
+                'success' => 0,
+                'message' => 'Unauthorized user'
+            ]);
         }
 
-        if ($input['wallet'] == "commission") {
-            $prevb = $u->agent_commision;
-            $method = "commission";
-            if ($u->agent_commision < $input['amount']) {
-                return response()->json(['success' => 0, 'message' => 'Insufficient balance on your commision wallet']);
-            }
-            $u->agent_commision -= $input['amount'];
+        $amount = (float) $request->amount;
+        $walletType = $request->wallet;
+        $ref = "PLF_MV_" . now()->timestamp . "_" . Str::random(6);
+
+        if($amount < 1){
+            return response()->json(['success' => 0, 'message' => 'Invalid amount']);
         }
 
-        if ($method == "") {
-            return response()->json(['success' => 0, 'message' => 'Kindly provide correct wallet type']);
+
+        try {
+
+            DB::transaction(function () use ($request, $user, $amount, $walletType, $ref) {
+
+                // Lock user row
+                $user = User::where('id', $user->id)->lockForUpdate()->first();
+
+                $sourceInitial = 0;
+
+                /**
+                 * Deduct source wallet
+                 */
+                if ($walletType === "bonus") {
+
+                    if ($user->bonus < $amount) {
+                        throw new \Exception('Insufficient balance on bonus wallet');
+                    }
+
+                    $sourceInitial = $user->bonus;
+                    $user->bonus -= $amount;
+
+                } elseif ($walletType === "commission") {
+
+                    if ($user->agent_commision < $amount) {
+                        throw new \Exception('Insufficient balance on commission wallet');
+                    }
+
+                    $sourceInitial = $user->agent_commision;
+                    $user->agent_commision -= $amount;
+                }
+
+                /**
+                 * Credit main wallet
+                 */
+                $walletInitial = $user->wallet;
+                $user->wallet += $amount;
+
+                $user->save();
+
+                /**
+                 * Wallet credit transaction
+                 */
+                Transaction::create([
+                    'name' => 'wallet funding',
+                    'description' => "Moved {$amount} {$walletType} to wallet",
+                    'amount' => $amount,
+                    'date' => now(),
+                    'device_details' => $request->header('device') ?? $request->userAgent(),
+                    'ip_address' => $request->ip(),
+                    'user_name' => $user->user_name,
+                    'ref' => $ref,
+                    'code' => 'mfunds',
+                    'status' => 'successful',
+                    'extra' => $walletType,
+                    'i_wallet' => $walletInitial,
+                    'f_wallet' => $user->wallet
+                ]);
+
+                /**
+                 * Source wallet debit transaction
+                 */
+                Transaction::create([
+                    'name' => ucfirst($walletType),
+                    'description' => "Debit {$amount} from {$walletType}",
+                    'amount' => $amount,
+                    'date' => now(),
+                    'device_details' => $request->header('device') ?? $request->userAgent(),
+                    'ip_address' => $request->ip(),
+                    'user_name' => $user->user_name,
+                    'ref' => $ref . "_src",
+                    'code' => 'mfunds',
+                    'status' => 'successful',
+                    'extra' => $walletType,
+                    'i_wallet' => $sourceInitial,
+                    'f_wallet' => $sourceInitial - $amount
+                ]);
+            });
+
+        } catch (\Exception $e) {
+
+            return response()->json([
+                'success' => 0,
+                'message' => $e->getMessage()
+            ]);
         }
 
-        $prevw = $u->wallet;
-        $u->wallet += $amount;
-        $u->save();
-
-
-        $tr['name'] = "wallet funding";
-        $tr['description'] = "Moved " . $amount . " " . $method . " to wallet";
-        $tr['amount'] = $amount;
-        $tr['date'] = Carbon::now();
-        $tr['device_details'] = $request->header('device') ?? $_SERVER['HTTP_USER_AGENT'];
-        $tr['ip_address'] = $_SERVER['REMOTE_ADDR'];
-        $tr['user_name'] = Auth::user()->user_name;
-        $tr['ref'] = $ref;
-        $tr['server'] = "";
-        $tr['server_response'] = "";
-        $tr['code'] = "mfunds";
-        $tr['status'] = "successful";
-        $tr['extra'] = $method;
-        $tr['i_wallet'] = $prevw;
-        $tr['f_wallet'] = $u->wallet;
-
-        $t = Transaction::create($tr);
-
-        $tr['name'] = ucfirst($method);
-        $tr['i_wallet'] = $prevb;
-        $tr['f_wallet'] = $tr['i_wallet'] - $amount;
-
-        $t = Transaction::create($tr);
-
-        return response()->json(['success' => 1, 'message' => 'Funds moved to your wallet successfully']);
-
+        return response()->json([
+            'success' => 1,
+            'message' => 'Funds moved to your wallet successfully'
+        ]);
     }
 
     public function beneficiary($type)

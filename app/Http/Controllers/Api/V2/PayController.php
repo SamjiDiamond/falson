@@ -1539,6 +1539,10 @@ class PayController extends Controller
             return strtoupper($provider)." airtime";
         }
 
+        if ($requester == "data") {
+            return strtoupper($provider)." DATA";
+        }
+
         return strtoupper($provider);
     }
 

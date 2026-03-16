@@ -23,6 +23,7 @@ class AutobuyController extends Controller
             'number' => 'required|string',
             'frequency' => 'required|in:daily,weekly,monthly,yearly',
             'start_date' => 'required|date',
+            'pin' => 'required',
         );
 
         $validator = Validator::make($input, $rules);
@@ -48,6 +49,10 @@ class AutobuyController extends Controller
                 break;
             default:
                 return response()->json(['success' => 0, 'message' => 'Invalid frequency value']);
+        }
+
+        if ($request->get('pin') != Auth::user()->pin) {
+            return response()->json(['success' => 0, 'message' => 'Kindly provide valid Pin']);
         }
 
         $input['next_date'] = $nextDate->toDateString();

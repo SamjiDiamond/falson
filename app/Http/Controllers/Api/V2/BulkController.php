@@ -131,7 +131,11 @@ class BulkController extends Controller
             return response()->json(['success' => 0, 'message' => 'Invalid Account Provided']);
         }
 
-        if(!Hash::check($request->pin,$user->pin)){
+//        if(!Hash::check($request->pin,$user->pin)){
+//            return response()->json(['success' => 0, 'message' => 'Incorrect Pin Supplied']);
+//        }
+
+        if ($request->get('pin') != $user->pin) {
             return response()->json(['success' => 0, 'message' => 'Incorrect Pin Supplied']);
         }
 

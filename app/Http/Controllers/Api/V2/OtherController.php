@@ -20,6 +20,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
@@ -622,6 +623,82 @@ class OtherController extends Controller
         $data = Serverlog::where(["user_name" => $userName, "service" => $type])->select('user_name', 'network', 'phone', 'service')->latest()->limit(10)->get();
 
         return response()->json(['success' => 1, 'message' => "Fetched successfully for $type", 'data' => $data]);
+    }
+
+    public function disputeReport(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'transaction_ref' => 'required',
+            'complaint' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => 0,
+                'message' => 'Incomplete request',
+                'error' => $validator->errors()
+            ]);
+        }
+
+        $user = Auth::user();
+
+        if (!$user) {
+            return response()->json([
+                'success' => 0,
+                'message' => 'Unauthorized'
+            ]);
+        }
+
+        $transactionRef = (string) $request->get('transaction_ref');
+        $complaint = (string) $request->get('complaint');
+
+        $transaction = Transaction::where('ref', $transactionRef)->first();
+
+        if (!$transaction) {
+            return response()->json([
+                'success' => 0,
+                'message' => 'Invalid transaction reference'
+            ]);
+        }
+
+        $subject = "Transaction Dispute | {$user->user_name} | {$transactionRef}";
+        $body = "New dispute/report submitted\n"
+            . "\nUser Name: {$user->user_name}"
+            . "\nEmail: {$user->email}"
+            . "\nPhone: {$user->phoneno}"
+            . "\n"
+            . "\nTransaction Ref: {$transactionRef}"
+            . "\nTransaction Name: {$transaction->name}"
+            . "\nAmount: {$transaction->amount}"
+            . "\nStatus: {$transaction->status}"
+            . "\nDate: {$transaction->date}"
+            . "\nDescription: {$transaction->description}"
+            . "\n"
+            . "\nComplaint:\n{$complaint}"
+            . "\n"
+            . "\nRequest Meta:"
+            . "\nIP: {$request->ip()}"
+            . "\nVersion: " . ($request->header('version') ?? '')
+            . "\nDevice: " . ($request->header('device') ?? $request->userAgent());
+
+        try {
+            Mail::raw($body, function ($message) use ($subject, $user) {
+                $message->to('support@planetf.ng')->subject($subject);
+                if (!empty($user->email)) {
+                    $message->replyTo($user->email, $user->user_name);
+                }
+            });
+        } catch (\Throwable $e) {
+            return response()->json([
+                'success' => 0,
+                'message' => 'Unable to send report at the moment'
+            ]);
+        }
+
+        return response()->json([
+            'success' => 1,
+            'message' => 'Report submitted successfully'
+        ]);
     }
 
 

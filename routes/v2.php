@@ -112,6 +112,7 @@ Route::prefix('v2')->group(function () {
 
         Route::post('changepassword', [UserController::class, 'change_password']);
         Route::get('paymentcheckout', [OtherController::class, 'paymentcheckout']);
+        Route::post('dispute-report', [OtherController::class, 'disputeReport']);
 
         Route::get('all-notifications', [NotificationController::class, 'notifications']);
         Route::get('unread-notifications', [NotificationController::class, 'unreadnotifications']);

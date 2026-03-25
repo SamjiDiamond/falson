@@ -1284,7 +1284,8 @@ class PayController extends Controller
             'device_details' => $request->header('device') ?? $request->userAgent(),
             'wallet' => $user->wallet,
             'amount' => $amount,
-            'service' => $service
+            'service' => $service,
+            'coded' => $request->coded
         ];
 
         if ($request->provider ?? false) {
@@ -1505,7 +1506,8 @@ class PayController extends Controller
                         'wallet' => $user->wallet,
                         'amount' => $walletAmount,
                         'service' => $proceed[5],
-                        'network' => $request->provider ?? null
+                        'network' => $request->provider ?? null,
+                        'coded' => $request->coded
                     ]);
 
                     dispatch(

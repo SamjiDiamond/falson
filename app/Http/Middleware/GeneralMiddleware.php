@@ -30,13 +30,13 @@ class GeneralMiddleware
         if ($user->pin_enabled == 1) {
             if (!$request->has('pin')) {
                 return response()->json([
-                    'success' => 0,
+                    'success' => 5,
                     'message' => 'Pin is required to complete your transaction'
                 ]);
             }
 
             if ($request->get('pin') != $user->pin) {
-                return response()->json(['success' => 0, 'message' => 'Kindly provide valid Pin']);
+                return response()->json(['success' => 5, 'message' => 'Kindly provide valid Pin']);
             }
         }
 

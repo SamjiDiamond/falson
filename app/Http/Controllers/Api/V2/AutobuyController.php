@@ -29,7 +29,7 @@ class AutobuyController extends Controller
         $validator = Validator::make($input, $rules);
 
         if (!$validator->passes()) {
-            return response()->json(['success' => 0, 'message' => 'Some forms are left out', 'error' => $validator->errors()]);
+            return response()->json(['success' => 0, 'message' => implode(",",$validator->errors()->all()), 'error' => $validator->errors()]);
         }
 
         // Calculate next_date based on frequency and start_date

@@ -47,9 +47,11 @@ class PaylonyHookController extends Controller
             return "User not found";
         }
 
+        $device_details=$input['gateway'] . "(".$accountNumber.")";
+
 
         $atm=new ATMmanagerController();
-        $atm->RAfundwallet($originatorname, $amount, $u->user_name, $reference, $fee, $input, $accountNumber,"Paylony");
+        $atm->RAfundwallet($originatorname, $amount, $u->user_name, $reference, $fee, $input, $accountNumber,"Paylony",$device_details);
 
         return "success";
 

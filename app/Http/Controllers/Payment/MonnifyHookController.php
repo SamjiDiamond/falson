@@ -64,8 +64,10 @@ class MonnifyHookController extends Controller
             $acctd_name= $input['eventData']['paymentSourceInformation'][0]['accountName'];
             $my_acctno= $input['eventData']['destinationAccountInformation']['accountNumber'];
 
+            $device_details=$input['eventData']['destinationAccountInformation']['bankName'] . "(".$my_acctno.")";
+
             $atm=new ATMmanagerController();
-            $atm->RAfundwallet($acctd_name, $paymentamount, $product_reference, $transactionreference, $cfee, $input, $my_acctno, "Monnify");
+            $atm->RAfundwallet($acctd_name, $paymentamount, $product_reference, $transactionreference, $cfee, $input, $my_acctno, "Monnify",$device_details);
         }
 
         return "success";

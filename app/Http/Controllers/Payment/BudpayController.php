@@ -79,9 +79,10 @@ class BudpayController extends Controller
         $gateway_response=$input['transferDetails'] ?? "";
         $accountNumber=$gateway_response['craccount'] ?? "";
         $originatorname=$gateway_response['originatorname'] ?? "";
+        $device_details=$input['data']['gateway'] . "(".$accountNumber.")";
 
         $atm=new ATMmanagerController();
-        $atm->RAfundwallet($originatorname, $amount, $u->user_name, $reference, $fee, $input, $accountNumber,"Budpay");
+        $atm->RAfundwallet($originatorname, $amount, $u->user_name, $reference, $fee, $input, $accountNumber,"Budpay",$device_details);
 
         return "success";
     }

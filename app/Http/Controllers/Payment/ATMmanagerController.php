@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Mail;
 
 class ATMmanagerController extends Controller
 {
-    public function RAfundwallet($name, $amount, $reference, $transactionreference, $cfee, $input, $account_number, $payment_method)
+    public function RAfundwallet($name, $amount, $reference, $transactionreference, $cfee, $input, $account_number, $payment_method,$device_details)
     {
 
         $u = User::where('user_name', '=', $reference)->first();
@@ -72,6 +72,7 @@ class ATMmanagerController extends Controller
             if ($u) {
                 $input['name'] = "wallet funding";
                 $input['amount'] = $crAmount;
+                $input['fee'] = $charges;
                 $input['status'] = 'successful';
                 $input['description'] = $u->user_name . ' wallet funded using Account Transfer(' . $account_number . ') with the sum of #' . $crAmount . ' from ' . $name;
                 $notimssg = $u->user_name . ' wallet funded using Account Transfer(' . $account_number . ') with the sum of #' . $crAmount . ' from ' . $name;
@@ -83,6 +84,7 @@ class ATMmanagerController extends Controller
                 $input["ref"] = $transactionreference;
                 $input["date"] = Carbon::now();
                 $input["server"] = $payment_method;
+                $input["device_details"] = strtoupper($device_details);
 
                 $tr = Transaction::create($input);
 

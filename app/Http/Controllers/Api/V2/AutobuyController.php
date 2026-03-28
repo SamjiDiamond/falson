@@ -52,8 +52,10 @@ class AutobuyController extends Controller
         }
 
         if ($request->get('pin') != Auth::user()->pin) {
-            return response()->json(['success' => 0, 'message' => 'Kindly provide valid Pin']);
+            return response()->json(['success' => 5, 'message' => 'Kindly provide valid Pin']);
         }
+
+        unset($input['pin']);
 
         $input['next_date'] = $nextDate->toDateString();
         $input['status'] = 1; // Default status to active

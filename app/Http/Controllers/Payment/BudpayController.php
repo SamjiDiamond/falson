@@ -47,7 +47,7 @@ class BudpayController extends Controller
 
         $status = $input['data']['status'];
         $reference = $input['data']['reference'];
-        $amount = $input['data']['amount'];
+        $amount = $input['data']['requested_amount'];
         $fee = $input['data']['fees'];
 
         if ($status != "success") {

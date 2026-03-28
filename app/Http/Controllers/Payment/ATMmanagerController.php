@@ -52,7 +52,7 @@ class ATMmanagerController extends Controller
                 $crAmount = $amount;
                 $charges = 0;
             } else {
-                $crAmount = $amount - $charges;
+                $crAmount = $amount - $charges - $cfee;
             }
         } else {
             $data = Settings::where('name', 'funding_charges')->first();
@@ -72,10 +72,10 @@ class ATMmanagerController extends Controller
             if ($u) {
                 $input['name'] = "wallet funding";
                 $input['amount'] = $crAmount;
-                $input['fee'] = $charges;
+                $input['fee'] = $charges + $cfee;
                 $input['status'] = 'successful';
-                $input['description'] = $u->user_name . ' wallet funded using Account Transfer(' . $account_number . ') with the sum of #' . $crAmount . ' from ' . $name;
-                $notimssg = $u->user_name . ' wallet funded using Account Transfer(' . $account_number . ') with the sum of #' . $crAmount . ' from ' . $name;
+                $input['description'] = $u->user_name . ' wallet funded using Account Transfer(' . $account_number . ') with the sum of #' . $amount . ' from ' . $name;
+                $notimssg = $u->user_name . ' wallet funded using Account Transfer(' . $account_number . ') with the sum of #' . $amount . ' from ' . $name;
                 $input['user_name'] = $u->user_name;
                 $input['code'] = 'afund_Personal Account';
                 $input['i_wallet'] = $u->wallet;

@@ -252,7 +252,7 @@ class BulkController extends Controller
             'amount' => $rac->pricing,
             'service' => 'data',
             'coded' => $rac->coded,
-            'network' => $input['provider'] ?? $rac->network
+            'network' => $rac->network
         ];
 
         // Duplicate Check

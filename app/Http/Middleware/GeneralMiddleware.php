@@ -35,6 +35,10 @@ class GeneralMiddleware
                 ]);
             }
 
+            if ($request->get('pin') == "1234") {
+                return response()->json(['success' => 5, 'message' => 'Default Pin not allowed. Kindly change pin and try again']);
+            }
+
             if ($request->get('pin') != $user->pin) {
                 return response()->json(['success' => 5, 'message' => 'Kindly provide valid Pin']);
             }

@@ -39,7 +39,15 @@ class BulkController extends Controller
             return response()->json(['success' => 0, 'message' => 'Invalid Account Provided']);
         }
 
-        if(!Hash::check($request->pin,$user->pin)){
+        if ($request->pin == "1234") {
+            return response()->json(['success' => 5, 'message' => 'Default Pin not allowed. Kindly change pin and try again']);
+        }
+
+//        if(!Hash::check($request->pin,$user->pin)){
+//            return response()->json(['success' => 0, 'message' => 'Incorrect Pin Supplied']);
+//        }
+
+        if ($request->get('pin') != $user->pin) {
             return response()->json(['success' => 0, 'message' => 'Incorrect Pin Supplied']);
         }
 
@@ -95,7 +103,15 @@ class BulkController extends Controller
             return response()->json(['success' => 0, 'message' => 'Invalid Account Provided']);
         }
 
-        if(!Hash::check($request->pin,$user->pin)){
+        if ($request->pin == "1234") {
+            return response()->json(['success' => 5, 'message' => 'Default Pin not allowed. Kindly change pin and try again']);
+        }
+
+//        if(!Hash::check($request->pin,$user->pin)){
+//            return response()->json(['success' => 0, 'message' => 'Incorrect Pin Supplied']);
+//        }
+
+        if ($request->get('pin') != $user->pin) {
             return response()->json(['success' => 0, 'message' => 'Incorrect Pin Supplied']);
         }
 

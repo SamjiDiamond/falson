@@ -100,7 +100,7 @@ class BulkController extends Controller
         }
 
 
-        $ref="BULK_AIRTIME_".rand().time();
+        $ref="BLK_AIR_".rand().time();
 
         try {
             $transaction = DB::transaction(function () use ($request, $user, $airtime, $discount, $input, $ref) {
@@ -120,8 +120,8 @@ class BulkController extends Controller
                 $finalWallet = $user->wallet;
 
                 Transaction::create([
-                    'name' => 'Airtime Purchase',
-                    'description' => $input['amount'] . ' Airtime to ' . $input['number'] . ' on ' . $airtime->network,
+                    'name' => strtoupper($input['provider']) . ' BULK Airtime',
+                    'description' => $airtime->network. " " .$input['amount'] . ' Airtime on ' . $input['number'],
                     'code' => $airtime->network,
                     'amount' => $amountToDebit,
                     'status' => 'pending',
@@ -191,7 +191,7 @@ class BulkController extends Controller
             return response()->json(['success' => 0, 'message' => 'Incorrect Pin Supplied']);
         }
 
-        $ref="BULK_DATA_".rand().time();
+        $ref="BLK_DATA_".rand().time();
 
         try {
             $transaction = DB::transaction(function () use ($request, $user, $rac, $input, $ref) {
@@ -213,8 +213,8 @@ class BulkController extends Controller
                 $finalWallet = $user->wallet;
 
                 Transaction::create([
-                    'name' => 'Data Purchase',
-                    'description' => $rac->name . ' Data to ' . $input['number'],
+                    'name' => strtoupper($input['provider'])." BULK DATA",
+                    'description' => $rac->name . ' Data on ' . $input['number'],
                     'code' => $rac->coded,
                     'amount' => $amountToDebit,
                     'status' => 'pending',

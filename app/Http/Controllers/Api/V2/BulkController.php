@@ -7,6 +7,7 @@ use App\Models\AppAirtimeControl;
 use App\Models\AppDataControl;
 use App\Models\User;
 use App\Models\Transaction;
+use App\Models\Serverlog;
 use App\Mail\InsufficientBalanceMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -118,14 +119,41 @@ class BulkController extends Controller
 
         $ref="BLK_AIR_".rand().time();
 
+        $logData = [
+            'ip_address' => $request->ip(),
+            'date' => now(),
+            'phone' => $input['number'],
+            'user_name' => $user->user_name,
+            'payment_method' => 'wallet',
+            'transid' => $ref,
+            'version' => '1.0',
+            'device_details' => $request->userAgent(),
+            'wallet' => $user->wallet,
+            'amount' => $input['amount'],
+            'service' => 'airtime',
+            'coded' => $input['provider'],
+            'network' => $input['provider']
+        ];
+
+        // Duplicate Check
+        if (Serverlog::where('transid', $ref)->exists()) {
+            $logData['status'] = 'Duplicate reference';
+            $logData['transid'] = $ref . '_dup';
+            Serverlog::create($logData);
+            return response()->json(['success' => 0, 'message' => 'Duplicate transaction detected']);
+        }
+
         try {
-            $transaction = DB::transaction(function () use ($request, $user, $airtime, $discount, $input, $ref) {
+            $transaction = DB::transaction(function () use ($request, $user, $airtime, $discount, $input, $ref, $logData) {
                 // Lock user wallet
                 $user = User::where('id', $user->id)->lockForUpdate()->first();
 
                 $amountToDebit = $input['amount'] - $discount;
 
                 if ($user->wallet < $amountToDebit) {
+                    $logData['status'] = 'Balance too low';
+                    Serverlog::create($logData);
+
                     Mail::to($user->email)->send(new InsufficientBalanceMail('Insufficient balance for user ' . $user->email . ' for airtime purchase of ' . $input['amount']));
                     return response()->json(['success' => 0, 'message' => 'Insufficient balance']);
                 }
@@ -134,6 +162,8 @@ class BulkController extends Controller
                 $user->wallet -= $amountToDebit;
                 $user->save();
                 $finalWallet = $user->wallet;
+
+                Serverlog::create($logData);
 
                 Transaction::create([
                     'name' => strtoupper($input['provider']) . ' BULK Airtime',
@@ -209,14 +239,41 @@ class BulkController extends Controller
 
         $ref="BLK_DATA_".rand().time();
 
+        $logData = [
+            'ip_address' => $request->ip(),
+            'date' => now(),
+            'phone' => $input['number'],
+            'user_name' => $user->user_name,
+            'payment_method' => 'wallet',
+            'transid' => $ref,
+            'version' => '1.0',
+            'device_details' => $request->userAgent(),
+            'wallet' => $user->wallet,
+            'amount' => $rac->amount,
+            'service' => 'data',
+            'coded' => $rac->coded,
+            'network' => $input['provider'] ?? $rac->network
+        ];
+
+        // Duplicate Check
+        if (Serverlog::where('transid', $ref)->exists()) {
+            $logData['status'] = 'Duplicate reference';
+            $logData['transid'] = $ref . '_dup';
+            Serverlog::create($logData);
+            return response()->json(['success' => 0, 'message' => 'Duplicate transaction detected']);
+        }
+
         try {
-            $transaction = DB::transaction(function () use ($request, $user, $rac, $input, $ref) {
+            $transaction = DB::transaction(function () use ($request, $user, $rac, $input, $ref, $logData) {
                 // Lock user wallet
                 $user = User::where('id', $user->id)->lockForUpdate()->first();
 
                 $amountToDebit = $rac->amount;
 
                 if ($user->wallet < $amountToDebit) {
+                    $logData['status'] = 'Balance too low';
+                    Serverlog::create($logData);
+
                     Mail::to($user->email)->send(new InsufficientBalanceMail('Insufficient balance for user ' . $user->email . ' for data purchase of ' . $rac->name));
                     return response()->json(['success' => 0, 'message' => 'Insufficient balance']);
                 }
@@ -227,6 +284,8 @@ class BulkController extends Controller
                 $user->wallet -= $amountToDebit;
                 $user->save();
                 $finalWallet = $user->wallet;
+
+                Serverlog::create($logData);
 
                 Transaction::create([
                     'name' => strtoupper($input['provider'])." BULK DATA",

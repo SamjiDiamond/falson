@@ -193,6 +193,7 @@ class BulkController extends Controller
             }
 
         } catch (\Exception $e) {
+            DB::rollBack();
             return response()->json(['success' => 0, 'message' => $e->getMessage()]);
         }
     }
@@ -288,7 +289,7 @@ class BulkController extends Controller
                 Serverlog::create($logData);
 
                 Transaction::create([
-                    'name' => strtoupper($input['provider'])." BULK DATA",
+                    'name' => strtoupper($rac->network)." BULK DATA",
                     'description' => $rac->name . ' Data on ' . $input['number'],
                     'code' => $rac->coded,
                     'amount' => $amountToDebit,
@@ -315,6 +316,7 @@ class BulkController extends Controller
             }
 
         } catch (\Exception $e) {
+            DB::rollBack();
             return response()->json(['success' => 0, 'message' => $e->getMessage()]);
         }
     }

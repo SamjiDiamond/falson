@@ -57,8 +57,8 @@ Route::prefix('v2')->group(function () {
     Route::get('availableCommissions', [ListController::class, 'availableCommissions']);
 
     Route::prefix('offline')->group(function () {
-        Route::post('airtime', [OfflineController::class, 'buyairtime']);
-        Route::post('data', [OfflineController::class, 'buydata']);
+        Route::post('airtime', [OfflineController::class, 'buyairtime'])->middleware('throttle:5000,1');
+        Route::post('data', [OfflineController::class, 'buydata'])->middleware('throttle:5000,1');
     });
 
     Route::prefix('bulk')->group(function () {
@@ -199,6 +199,7 @@ Route::prefix('v2')->group(function () {
         Route::post('report_daily', [ReportController::class, 'daily']);
 
         Route::get('getPromoCode', [OtherController::class, 'getPromoCode']);
+        Route::get('my-promo-codes', [OtherController::class, 'myPromoCodes']);
 
         Route::post('moveFunds', [OtherController::class, 'moveFunds'])->middleware('throttle:2,1');;
 

@@ -422,6 +422,26 @@ class OtherController extends Controller
         return response()->json(['success' => 1, 'message' => 'Fetched successfully', 'data' => $faqs]);
     }
 
+    public function myPromoCodes(Request $request)
+    {
+        $user = Auth::user();
+
+        if (!$user) {
+            return response()->json(['success' => 0, 'message' => 'Unauthorized']);
+        }
+
+        $codes = PromoCode::where('used', 0)
+            ->where(function ($query) use ($user) {
+                $query->where('generated_for', $user->user_name)
+                    ->orWhere('generated_for', 'all');
+            })
+            ->select('code', 'amount', 'used', 'reuseable', 'usedby', 'generated_for', 'created_at')
+            ->orderByDesc('id')
+            ->get();
+
+        return response()->json(['success' => 1, 'message' => 'Fetched successfully', 'data' => $codes]);
+    }
+
     public function getOtherService(Request $request)
     {
         $faqs=AppOtherServices::where('status', 1)->get();

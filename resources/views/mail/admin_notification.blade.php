@@ -1,5 +1,5 @@
 <x-mail::message>
-    # Hello Admin
+    # Hello There
 
     {!! $message !!}
 

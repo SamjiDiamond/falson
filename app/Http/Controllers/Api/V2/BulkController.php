@@ -6,9 +6,14 @@ use App\Http\Controllers\Controller;
 use App\Models\AppAirtimeControl;
 use App\Models\AppDataControl;
 use App\Models\User;
+use App\Models\Transaction;
+use App\Mail\InsufficientBalanceMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class BulkController extends Controller
 {
@@ -95,8 +100,55 @@ class BulkController extends Controller
         }
 
 
-        $ref="BULK_".rand().time();
-        return response()->json(['success' => 1, 'message' => 'Your transaction was successful', 'ref' => $ref]);
+        $ref="BULK_AIRTIME_".rand().time();
+
+        try {
+            $transaction = DB::transaction(function () use ($request, $user, $airtime, $discount, $input, $ref) {
+                // Lock user wallet
+                $user = User::where('id', $user->id)->lockForUpdate()->first();
+
+                $amountToDebit = $input['amount'] - $discount;
+
+                if ($user->wallet < $amountToDebit) {
+                    Mail::to($user->email)->send(new InsufficientBalanceMail('Insufficient balance for user ' . $user->email . ' for airtime purchase of ' . $input['amount']));
+                    return response()->json(['success' => 0, 'message' => 'Insufficient balance']);
+                }
+
+                $initialWallet = $user->wallet;
+                $user->wallet -= $amountToDebit;
+                $user->save();
+                $finalWallet = $user->wallet;
+
+                Transaction::create([
+                    'name' => 'Airtime Purchase',
+                    'description' => $input['amount'] . ' Airtime to ' . $input['number'] . ' on ' . $airtime->network,
+                    'code' => $airtime->network,
+                    'amount' => $amountToDebit,
+                    'status' => 'pending',
+                    'i_wallet' => $initialWallet,
+                    'f_wallet' => $finalWallet,
+                    'user_id' => $user->id,
+                    'ref' => $ref,
+                    'extra' => $discount,
+                    'commission' => $discount,
+                    'paid_with' => 'wallet',
+                    'date' => now(),
+                    'ip_address' => $request->ip(),
+                    'user_name' => $user->user_name,
+                ]);
+
+                return true;
+            });
+
+            if ($transaction) {
+                return response()->json(['success' => 1, 'message' => 'Your transaction was successful', 'ref' => $ref]);
+            } else {
+                return response()->json(['success' => 0, 'message' => 'Transaction failed']);
+            }
+
+        } catch (\Exception $e) {
+            return response()->json(['success' => 0, 'message' => $e->getMessage()]);
+        }
     }
 
         function buydata(Request $request)
@@ -139,8 +191,57 @@ class BulkController extends Controller
             return response()->json(['success' => 0, 'message' => 'Incorrect Pin Supplied']);
         }
 
-        $ref="BULK_".rand().time();
-        return response()->json(['success' => 1, 'message' => 'Your transaction was successful', 'ref' => $ref]);
+        $ref="BULK_DATA_".rand().time();
+
+        try {
+            $transaction = DB::transaction(function () use ($request, $user, $rac, $input, $ref) {
+                // Lock user wallet
+                $user = User::where('id', $user->id)->lockForUpdate()->first();
+
+                $amountToDebit = $rac->amount;
+
+                if ($user->wallet < $amountToDebit) {
+                    Mail::to($user->email)->send(new InsufficientBalanceMail('Insufficient balance for user ' . $user->email . ' for data purchase of ' . $rac->name));
+                    return response()->json(['success' => 0, 'message' => 'Insufficient balance']);
+                }
+
+                $discount = 0;
+
+                $initialWallet = $user->wallet;
+                $user->wallet -= $amountToDebit;
+                $user->save();
+                $finalWallet = $user->wallet;
+
+                Transaction::create([
+                    'name' => 'Data Purchase',
+                    'description' => $rac->name . ' Data to ' . $input['number'],
+                    'code' => $rac->coded,
+                    'amount' => $amountToDebit,
+                    'status' => 'pending',
+                    'i_wallet' => $initialWallet,
+                    'f_wallet' => $finalWallet,
+                    'user_id' => $user->id,
+                    'ref' => $ref,
+                    'extra' => $discount,
+                    'commission' => $discount,
+                    'paid_with' => 'wallet',
+                    'date' => now(),
+                    'ip_address' => $request->ip(),
+                    'user_name' => $user->user_name,
+                ]);
+
+                return true;
+            });
+
+            if ($transaction) {
+                return response()->json(['success' => 1, 'message' => 'Your transaction was successful', 'ref' => $ref]);
+            } else {
+                return response()->json(['success' => 0, 'message' => 'Transaction failed']);
+            }
+
+        } catch (\Exception $e) {
+            return response()->json(['success' => 0, 'message' => $e->getMessage()]);
+        }
     }
 
 }

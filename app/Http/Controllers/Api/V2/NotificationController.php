@@ -58,7 +58,7 @@ class NotificationController extends Controller
             ->when(isset($date_from) && $date_from != '' && isset($date_to) && $date_to != '', function ($query) use ($date_from, $date_to) {
                 $query->whereBetween('created_at', [Carbon::parse($date_from)->toDateTimeString(), Carbon::parse($date_to)->addDay()->toDateTimeString()]);
             })
-            ->limit(100)->get();
+            ->get();
 
         $customer = Auth::user();
 

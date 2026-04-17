@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V2;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\GenerateCustomerAccountStatement;
 use App\Mail\AccountStatementEmail;
 use App\Models\Transaction;
 use App\Notifications\UserNotification;
@@ -51,45 +52,10 @@ class NotificationController extends Controller
             return response()->json(['success' => 0, 'message' => implode(",", $validator->errors()->all())]);
         }
 
-        $date_from = $input['from'] ?? '';
-        $date_to = $input['to'] ?? '';
+        $input['user_name'] = Auth::user()->user_name;
+        $input['user_id'] = Auth::id();
 
-
-        $trans = Transaction::where('user_name', Auth::user()->user_name)->OrderBy('id', 'asc')
-            ->when(isset($date_from) && $date_from != '' && isset($date_to) && $date_to != '', function ($query) use ($date_from, $date_to) {
-                $query->whereBetween('created_at', [Carbon::parse($date_from)->toDateTimeString(), Carbon::parse($date_to)->addDay()->toDateTimeString()]);
-            })
-            ->get();
-
-        Log::info("Account Statement: ". Auth::user()->user_name . " Trans Count: " . count($trans));
-
-        $customer = Auth::user();
-
-        if ($input['format'] == "excel") {
-            $filePath = storage_path('app/statement_' . time() . '.xlsx');
-
-            (new FastExcel($trans))->export($filePath, function ($data) {
-                return [
-                    'Name' => $data->name,
-                    'Amount' => $data->amount,
-                    'Status' => strtoupper($data->status),
-                    'Reference' => $data->ref,
-                    'Description' => $data->description,
-                    'Date' => $data->date,
-                    'IP Address' => $data->ip_address,
-                    'Prev Balance' => $data->i_wallet,
-                    'New Balance' => $data->f_wallet,
-                ];
-            });
-        } else {
-            $filePath = storage_path('app/statement_' . time() . '.pdf');
-
-            $data = ['user' => $customer, 'trans' => $trans, 'i' => 1, 'startDate' => $input['from'], 'endDate' => $input['to']];
-            PDF::loadView('pdf_accountstatement', $data)->save($filePath);
-        }
-
-        Auth::user()->notify(new UserNotification("Hello " . $customer->user_name . ", Your " . $input['from'] . " - " . $input['to'] . " statement has been sent to your email address " . $customer->email, "Account Statement"));
-        Mail::to($customer->email)->queue(new AccountStatementEmail($customer, $filePath));
+        GenerateCustomerAccountStatement::dispatch($input)->onConnection('database');
 
         return response()->json(['success' => 1, 'message' => 'Action completed successfully. You will receive an email soon.']);
     }

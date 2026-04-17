@@ -10,6 +10,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Rap2hpoutre\FastExcel\FastExcel;
@@ -59,6 +60,8 @@ class NotificationController extends Controller
                 $query->whereBetween('created_at', [Carbon::parse($date_from)->toDateTimeString(), Carbon::parse($date_to)->addDay()->toDateTimeString()]);
             })
             ->get();
+
+        Log::info("Account Statement: ". Auth::user()->user_name . " Trans Count: " . count($trans));
 
         $customer = Auth::user();
 

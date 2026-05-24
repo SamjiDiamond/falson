@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V2;
 use App\Http\Controllers\Api\ValidateController;
 use App\Http\Controllers\Controller;
 use App\Jobs\CreateProvidusAccountJob;
+use App\Models\AppElectricityControl;
 use App\Models\PndL;
 use App\Models\Settings;
 use App\Models\Transaction;
@@ -35,7 +36,12 @@ class ValidationController extends Controller
 
         switch ($input['service']) {
             case "electricity":
-                return $s->electricity_server2($input['number'], strtoupper($input['provider']), strtoupper($input['type']));
+                $rac = AppElectricityControl::first();
+                if($rac->server == 2) {
+                    return $s->electricity_server2($input['number'], strtoupper($input['provider']), strtoupper($input['type']));
+                }else{
+                    return $s->electricity_server7($input['number'], strtoupper($input['provider']), strtoupper($input['type']));
+                }
             case "betting":
                 return $s->betting($input['number'], strtoupper($input['provider']));
             case "airtime":

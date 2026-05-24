@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\AppElectricityControl;
 use Illuminate\Support\Facades\Log;
 
 class ValidateController extends Controller
@@ -112,6 +113,83 @@ class ValidateController extends Controller
 
             if ($rep['status'] == '200') {
                 return response()->json(['success' => 1, 'message' => 'Validated successfully', 'data' => $rep['customerName'], 'others' => $rep]);
+            } else {
+                return response()->json(['success' => 0, 'message' => $rep['message']]);
+            }
+        }catch (\Exception $e){
+            return response()->json(['success' => 0, 'message' => 'Unable to validate number']);
+        }
+
+    }
+
+    public function electricity_server7($phone, $provider, $type, $requester = "nm", $sender = "nm")
+    {
+
+        $rac = AppElectricityControl::where("code", strtoupper($provider))->first();
+
+        $payload='{
+    "product_id": "' . $rac->autosync_plan_id . '",
+    "meter_number": "' . $phone . '",
+    "type": "' . $type . '"
+}';
+        try {
+            $curl = curl_init();
+
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => env('AUTOSYNCNG_BASEURL') . 'validate/electricity',
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'POST',
+                CURLOPT_POSTFIELDS => $payload,
+                CURLOPT_HTTPHEADER => array(
+                    'Authorization: Bearer ' . env('AUTOSYNCNG_AUTH'),
+                    'Content-Type: application/json'
+                ),
+            ));
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+
+            $response = curl_exec($curl);
+
+            curl_close($curl);
+
+//            {
+//                "status": "ok",
+//    "message": "Verified",
+//    "data": {
+//                "is_valid": true,
+//        "customer_name": " ADEGBOYE JOSHUA",
+//        "customer_address": null,
+//        "customer_district": null,
+//        "customer_phone": "7037279289",
+//        "type": null,
+//        "disco": "",
+//        "minimum_payable": 0,
+//        "outstanding_amount": 1145.140000000000100044417195022106170654296875
+//    }
+//}
+            $rep = json_decode($response, true);
+
+            Log::info("Autosync Validate Electricity. - " . $type);
+            Log::info("Payload : " . $payload);
+            Log::info($response);
+
+            if ($rep['message'] == 'Verified') {
+                return response()->json(['success' => 1, 'message' => 'Validated successfully', 'data' => $rep['data']['customer_name'], 'others' => [
+                      "meterNo"=> $phone,
+                      "customerName"=> $rep['data']['customer_name'],
+                      "customerAddress"=> $rep['data']['customer_address'],
+                      "customerDistrict"=> $rep['data']['customer_district'],
+                      "phoneNumber"=> $rep['data']['customer_phone'],
+                      "type"=> $type,
+                      "disco"=> $provider,
+                      "status"=> "200",
+                      "minimumPayable"=> $rep['data']['minimum_payable'],
+                      "outstadingAmount"=> $rep['data']['outstanding_amount']
+                ]]);
             } else {
                 return response()->json(['success' => 0, 'message' => $rep['message']]);
             }

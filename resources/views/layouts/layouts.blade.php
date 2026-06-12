@@ -505,6 +505,10 @@
                             @can('report-daily-view')
                             <li><a href="{{route('report_daily')}}">Daily Report</a></li>
                             @endcan
+
+                            @can('report-daily-view')
+                            <li><a href="{{route('report_earnings')}}">Earnings Report</a></li>
+                            @endcan
                         </ul>
                     @endcanany
 

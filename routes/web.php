@@ -314,6 +314,9 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/updateairtimeserver', [ServerController::class, 'changeserver'])->name('updateairtimeserver');
         Route::get('/reverse-transaction/{id}', [TransactionController::class, 'reverse'])->name('reverse');
         Route::any('/report_pnl', [ReportsController::class, 'pnl'])->name('report_pnl');
+        Route::get('/report_earnings', [ReportsController::class, 'earnings'])->name('report_earnings');
+        Route::get('/report_earnings/export/pdf', [ReportsController::class, 'earningsPdf'])->name('report_earnings.pdf');
+        Route::get('/report_earnings/export/excel', [ReportsController::class, 'earningsExcel'])->name('report_earnings.excel');
         Route::any('/report_yearly', [ReportsController::class, 'yearly'])->name('report_yearly');
         Route::any('/report_monthly', [ReportsController::class, 'monthly'])->name('report_monthly');
         Route::any('/report_daily', [ReportsController::class, 'daily'])->name('report_daily');

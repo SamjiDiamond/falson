@@ -14,7 +14,9 @@ use App\Mail\PasswordResetMail;
 use App\Models\CodeRequest;
 use App\Models\LoginAttempt;
 use App\Models\NewDevice;
+use App\Models\PromoCode;
 use App\Models\SocialLogin;
+use App\Models\Settings;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -23,6 +25,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class AuthenticationController extends Controller
 {
@@ -79,11 +82,36 @@ class AuthenticationController extends Controller
         $create["devices"] = $deviceid;
         $create["reg_date"] = Carbon::now();
 
-        if (User::create($create)) {
+        $user = User::create($create);
+        if ($user) {
             // successfully inserted into database
 //            $job = (new CreateProvidusAccountJob($create["user_name"]))
 //                ->delay(Carbon::now()->addSeconds(10));
 //            dispatch($job);
+
+            try {
+                $enabled = Settings::where('name', 'enable_new_user_reward')->first();
+                if ($enabled && (string) $enabled->value === "1") {
+                    $rewardAmount = Settings::where('name', 'new_user_reward_amount')->first();
+                    $amount = $rewardAmount ? (float) $rewardAmount->value : 0;
+
+                    if ($amount > 0) {
+                        do {
+                            $code = 'PLF-' . strtoupper(Str::random(8));
+                        } while (PromoCode::where('code', $code)->exists());
+
+                        PromoCode::create([
+                            'code' => $code,
+                            'amount' => $amount,
+                            'used' => 0,
+                            'reuseable' => 0,
+                            'usedby' => '',
+                            'generated_for' => $user->user_name,
+                        ]);
+                    }
+                }
+            } catch (\Throwable $e) {
+            }
 
             return response()->json(['success' => 1, 'message' => 'Account created successfully']);
         } else {

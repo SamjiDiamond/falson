@@ -23,64 +23,64 @@
                         </div>
                     @endif
 
+                    @if ($errors->any())
+                        <div class="alert alert-danger alert-dismissable">
+                            <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+                            {{ implode(', ', $errors->all()) }}
+                        </div>
+                    @endif
+
                     <form class="form-horizontal" method="POST" action="{{ route('promo_codes.store') }}">
                         @csrf
                         <div class="form-group row">
                             <div class="col-md-12">
                                 <div class="input-group mt-2">
-                                    <div class="input-group-prepend"><span class="input-group-text">Plan Name</span>
-                                    </div>
-                                    <input type="hidden" name="id" class="form-control" value="{{$data->id}}">
-                                    <input type="text" name="plan" placeholder="Enter plan name" class="form-control"
-                                           value="{{$data->plan}}">
+                                    <div class="input-group-prepend"><span class="input-group-text">Target</span></div>
+                                    <select class="custom-select form-control" name="target" required>
+                                        <option value="">Select target</option>
+                                        <option value="all_users" {{ old('target') === 'all_users' ? 'selected' : '' }}>All Users (single shared code)</option>
+                                        <option value="single_user" {{ old('target') === 'single_user' ? 'selected' : '' }}>Single User</option>
+                                        <option value="resellers" {{ old('target') === 'resellers' ? 'selected' : '' }}>Resellers (Top by sales)</option>
+                                        <option value="top_users" {{ old('target') === 'top_users' ? 'selected' : '' }}>Top Users (by sales)</option>
+                                        <option value="top_resellers" {{ old('target') === 'top_resellers' ? 'selected' : '' }}>Top Resellers (by sales)</option>
+                                        <option value="admins_all" {{ old('target') === 'admins_all' ? 'selected' : '' }}>All Admins</option>
+                                        <option value="admins_specific" {{ old('target') === 'admins_specific' ? 'selected' : '' }}>Specific Admins (by username)</option>
+                                        <option value="new_users" {{ old('target') === 'new_users' ? 'selected' : '' }}>New Users Auto-Reward (enable/disable)</option>
+                                    </select>
                                 </div>
 
                                 <div class="input-group mt-2">
-                                    <div class="input-group-prepend"><span class="input-group-text">Setup Fee</span>
-                                    </div>
-                                    <input type="text" name="amount" placeholder="Enter Amount" class="form-control"
-                                           value="{{$data->amount}}">
+                                    <div class="input-group-prepend"><span class="input-group-text">Reward Amount</span></div>
+                                    <input type="number" step="0.01" min="0" name="amount" placeholder="Enter amount" class="form-control" value="{{ old('amount') }}" required>
                                 </div>
 
                                 <div class="input-group mt-2">
-                                    <div class="input-group-prepend"><span class="input-group-text">MTN Price </span>
-                                    </div>
-                                    <input type="text" name="mtn" class="form-control"
-                                           placeholder="Enter Price" value="{{$data->mtn}}">
+                                    <div class="input-group-prepend"><span class="input-group-text">Count (for Top lists)</span></div>
+                                    <input type="number" min="1" name="count" placeholder="e.g. 10" class="form-control" value="{{ old('count') }}">
                                 </div>
 
                                 <div class="input-group mt-2">
-                                    <div class="input-group-prepend"><span
-                                            class="input-group-text">GLO Price </span></div>
-                                    <input type="text" name="glo" class="form-control" placeholder="Enter Price"
-                                           value="{{$data->glo}}">
+                                    <div class="input-group-prepend"><span class="input-group-text">Single User (username)</span></div>
+                                    <input type="text" name="user_name" placeholder="e.g. samji" class="form-control" value="{{ old('user_name') }}">
                                 </div>
 
                                 <div class="input-group mt-2">
-                                    <div class="input-group-prepend"><span
-                                            class="input-group-text">Airtel Price</span></div>
-                                    <input type="text" name="airtel" class="form-control" placeholder="Enter Price"
-                                           value="{{$data->airtel}}">
+                                    <div class="input-group-prepend"><span class="input-group-text">Specific Admins</span></div>
+                                    <textarea name="admin_usernames" class="form-control" rows="3" placeholder="Comma-separated usernames">{{ old('admin_usernames') }}</textarea>
                                 </div>
 
                                 <div class="input-group mt-2">
-                                    <div class="input-group-prepend"><span
-                                            class="input-group-text">9Mobile Price</span></div>
-                                    <input type="text" name="ninemobile" class="form-control" placeholder="Enter Price"
-                                           value="{{$data->ninemobile}}">
-                                </div>
-
-
-                                <div class="input-group mt-2">
-                                    <select class="custom-select form-control" name="status">
-                                        <option value="1" selected="{{$data->status == '1'}}">Activate</option>
-                                        <option value="0" selected="{{$data->status == '0'}}">Deactivate</option>
+                                    <div class="input-group-prepend"><span class="input-group-text">New User Reward Enabled</span></div>
+                                    <select class="custom-select form-control" name="enabled">
+                                        <option value="">Select</option>
+                                        <option value="1" {{ old('enabled') === '1' ? 'selected' : '' }}>Enable</option>
+                                        <option value="0" {{ old('enabled') === '0' ? 'selected' : '' }}>Disable</option>
                                     </select>
                                 </div>
 
                                 <div class="input-group mt-2" style="align-content: center">
                                     <button class="btn btn-gradient-primary btn-large" type="submit"
-                                            style="align-self: center; align-content: center">Update
+                                            style="align-self: center; align-content: center">Submit
                                     </button>
                                 </div>
 

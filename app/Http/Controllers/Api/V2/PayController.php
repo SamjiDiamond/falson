@@ -20,6 +20,7 @@ use App\Models\AppCableTVControl;
 use App\Models\AppDataControl;
 use App\Models\AppElectricityControl;
 use App\Models\CGWallets;
+use App\Models\CombineDataPlans;
 use App\Models\PndL;
 use App\Models\RCPricing;
 use App\Models\ResellerBetting;
@@ -131,7 +132,7 @@ class PayController extends Controller
         $input['device'] = $request->header('device') ?? $_SERVER['HTTP_USER_AGENT'];
 
 
-        $rac = AppDataControl::where("coded", strtolower($input['coded']))->first();
+        $rac = CombineDataPlans::where("coded", strtolower($input['coded']))->first();
 
         if ($rac == "") {
             return response()->json(['success' => 0, 'message' => 'Invalid coded supplied']);
@@ -141,8 +142,8 @@ class PayController extends Controller
             return response()->json(['success' => 0, 'message' => $rac->name . ' currently unavailable']);
         }
 
-        $discount = 0;
-        $debitAmount = $rac->pricing;
+        $discount = $rac->cashback;
+        $debitAmount = $rac->app_price;
 
         $proceed['1'] = $rac->network;
         $proceed['2'] = $debitAmount;

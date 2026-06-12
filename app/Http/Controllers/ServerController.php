@@ -8,6 +8,7 @@ use App\Models\AppCableTVControl;
 use App\Models\AppDataControl;
 use App\Models\AppElectricityControl;
 use App\Models\AppOtherServices;
+use App\Models\CombineDataPlans;
 use App\Models\dataserver;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -113,14 +114,14 @@ class ServerController
 
     public function dataserve2($network)
     {
-        $data = dataserver::where('network', strtoupper($network))->paginate(10);
-        $sme = dataserver::where([['product_code', 'SME'], ['network', strtoupper($network)], ['status', 1]])->count() > 0 ? 1 : 0;
-        $sme2 = dataserver::where([['product_code', 'SME2'], ['network', strtoupper($network)], ['status', 1]])->count() > 0 ? 1 : 0;
-        $cg = dataserver::where([['product_code', 'CG'], ['network', strtoupper($network)], ['status', 1]])->count() > 0 ? 1 : 0;
-        $dg = dataserver::where([['product_code', 'DG'], ['network', strtoupper($network)], ['status', 1]])->count() > 0 ? 1 : 0;
-        $dt = dataserver::where([['product_code', 'DATA TRANSFER'], ['network', strtoupper($network)], ['status', 1]])->count() > 0 ? 1 : 0;
-        $dc = dataserver::where([['product_code', 'DATA COUPONS'], ['network', strtoupper($network)], ['status', 1]])->count() > 0 ? 1 : 0;
-        $all = dataserver::where([['network', 'LIKE', strtoupper($network) . '%'], ['status', 1]])->count() > 0 ? 1 : 0;
+        $data = CombineDataPlans::where('network', strtoupper($network))->get();
+        $sme = CombineDataPlans::where([['product_code', 'SME'], ['network', strtoupper($network)], ['status', 1]])->count() > 0 ? 1 : 0;
+        $sme2 = CombineDataPlans::where([['product_code', 'SME2'], ['network', strtoupper($network)], ['status', 1]])->count() > 0 ? 1 : 0;
+        $cg = CombineDataPlans::where([['product_code', 'CG'], ['network', strtoupper($network)], ['status', 1]])->count() > 0 ? 1 : 0;
+        $dg = CombineDataPlans::where([['product_code', 'DG'], ['network', strtoupper($network)], ['status', 1]])->count() > 0 ? 1 : 0;
+        $dt = CombineDataPlans::where([['product_code', 'DATA TRANSFER'], ['network', strtoupper($network)], ['status', 1]])->count() > 0 ? 1 : 0;
+        $dc = CombineDataPlans::where([['product_code', 'DATA COUPONS'], ['network', strtoupper($network)], ['status', 1]])->count() > 0 ? 1 : 0;
+        $all = CombineDataPlans::where([['network', 'LIKE', strtoupper($network) . '%'], ['status', 1]])->count() > 0 ? 1 : 0;
 
         $server = 0;
         return view('datacontrol', compact('data', 'sme', 'sme2', 'cg', 'dg', 'dc', 'dt', 'all', 'server'));
@@ -128,21 +129,21 @@ class ServerController
 
     public function dataserve3($network, $server)
     {
-        $data = dataserver::where([['network', strtoupper($network)], ['server', $server]])->paginate(20);
-        $sme = dataserver::where([['product_code', 'SME'], ['network', strtoupper($network)], ['server', $server], ['status', 1]])->count() > 0 ? 1 : 0;
-        $sme2 = dataserver::where([['product_code', 'SME2'], ['network', strtoupper($network)], ['server', $server], ['status', 1]])->count() > 0 ? 1 : 0;
-        $cg = dataserver::where([['product_code', 'CG'], ['network', strtoupper($network)], ['server', $server], ['status', 1]])->count() > 0 ? 1 : 0;
-        $dg = dataserver::where([['product_code', 'DG'], ['network', strtoupper($network)], ['server', $server], ['status', 1]])->count() > 0 ? 1 : 0;
-        $dc = dataserver::where([['product_code', 'DATA COUPONS'], ['network', strtoupper($network)], ['server', $server], ['status', 1]])->count() > 0 ? 1 : 0;
-        $dt = dataserver::where([['product_code', 'DATA TRANSFER'], ['network', strtoupper($network)], ['server', $server], ['status', 1]])->count() > 0 ? 1 : 0;
-        $all = dataserver::where([['network', strtoupper($network)], ['server', $server], ['status', 1]])->count() > 0 ? 1 : 0;
+        $data = CombineDataPlans::where([['network', strtoupper($network)], ['server', $server]])->get();
+        $sme = CombineDataPlans::where([['product_code', 'SME'], ['network', strtoupper($network)], ['server', $server], ['status', 1]])->count() > 0 ? 1 : 0;
+        $sme2 = CombineDataPlans::where([['product_code', 'SME2'], ['network', strtoupper($network)], ['server', $server], ['status', 1]])->count() > 0 ? 1 : 0;
+        $cg = CombineDataPlans::where([['product_code', 'CG'], ['network', strtoupper($network)], ['server', $server], ['status', 1]])->count() > 0 ? 1 : 0;
+        $dg = CombineDataPlans::where([['product_code', 'DG'], ['network', strtoupper($network)], ['server', $server], ['status', 1]])->count() > 0 ? 1 : 0;
+        $dc = CombineDataPlans::where([['product_code', 'DATA COUPONS'], ['network', strtoupper($network)], ['server', $server], ['status', 1]])->count() > 0 ? 1 : 0;
+        $dt = CombineDataPlans::where([['product_code', 'DATA TRANSFER'], ['network', strtoupper($network)], ['server', $server], ['status', 1]])->count() > 0 ? 1 : 0;
+        $all = CombineDataPlans::where([['network', strtoupper($network)], ['server', $server], ['status', 1]])->count() > 0 ? 1 : 0;
 
         return view('datacontrol', compact('data', 'sme', 'sme2', 'cg', 'dg', 'dc', 'dt', 'all', 'server'));
     }
 
     public function dataserveedit($id)
     {
-        $data = dataserver::find($id);
+        $data = CombineDataPlans::find($id);
 
         if(!$data){
             return redirect()->route('datacontrol')->with('error', 'Plan does not exist');
@@ -173,14 +174,14 @@ class ServerController
             return redirect()->route('datanew')->withInput($input)->with('error', implode(",", $validator->errors()->all()));
         }
 
-        dataserver::create($input);
+        CombineDataPlans::create($input);
 
         return redirect()->route('datanew')->with('success', 'Data Plan created successfully');
     }
 
     public function dataserveED($id)
     {
-        $data = dataserver::find($id);
+        $data = CombineDataPlans::find($id);
 
         if(!$data){
             return redirect()->route('datacontrol')->with('error', 'Plan does not exist');
@@ -196,15 +197,16 @@ class ServerController
     {
         if($type == "ALL"){
             if($server == 0) {
-                dataserver::where([['network', strtoupper($network)]])->update(['status' => $status]);
+                CombineDataPlans::where([['network', strtoupper($network)]])->update(['status' => $status]);
+
             }else{
-                dataserver::where([['network', strtoupper($network)], ['server', $server]])->update(['status' => $status]);
+                CombineDataPlans::where([['network', strtoupper($network)], ['server', $server]])->update(['status' => $status]);
             }
         }else{
             if($server == 0) {
-                dataserver::where([['product_code', $type], ['network', strtoupper($network)]])->update(['status' => $status]);
+                CombineDataPlans::where([['product_code', $type], ['network', strtoupper($network)]])->update(['status' => $status]);
             }else{
-                dataserver::where([['product_code', $type], ['network', strtoupper($network)], ['server', $server]])->update(['status' => $status]);
+                CombineDataPlans::where([['product_code', $type], ['network', strtoupper($network)], ['server', $server]])->update(['status' => $status]);
             }
         }
 
@@ -223,7 +225,9 @@ class ServerController
             'id' => 'required',
             'product_name' => 'required',
             'provider_price' => 'required',
-            'amount' => 'required',
+            'app_price' => 'required',
+            'res_price' => 'required',
+            'cashback' => 'nullable',
             'status' => 'required',
             'server' => 'required',
             'product_code' => 'required',
@@ -236,17 +240,19 @@ class ServerController
 
 
         if (!$validator->passes()) {
-            return back()->with('error', 'Incomplete request. Kindly check and try again');
+            return back()->with('error', implode(",",$validator->errors()->all()));
         }
 
 
-        $data = AppDataControl::where('id', $request->id)->first();
+        $data = CombineDataPlans::where('id', $request->id)->first();
         if (!$data) {
             return back()->with('error', 'Kindly choose correct plan. Kindly check and try again');
         }
         $data->name = $input['product_name'];
         $data->price = $input['provider_price'];
-        $data->pricing = $input['amount'];
+        $data->app_price = $input['app_price'];
+        $data->res_price = $input['res_price'];
+        $data->cashback = $input['cashback'] ?? 0;
         $data->status = $input['status'];
         $data->server = $input['server'];
         $data->note = $input['note'];

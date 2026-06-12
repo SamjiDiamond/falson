@@ -41,10 +41,24 @@
                                 </div>
 
                                 <div class="input-group mt-2">
-                                    <div class="input-group-prepend"><span class="input-group-text">Your Price </span>
+                                    <div class="input-group-prepend"><span class="input-group-text">App Price </span>
                                     </div>
-                                    <input type="number" name="amount" class="form-control" placeholder="Enter Amount"
-                                           value="{{$data->pricing}}">
+                                    <input type="number" name="app_price" class="form-control" placeholder="Enter Amount"
+                                           value="{{$data->app_price}}">
+                                </div>
+
+                                <div class="input-group mt-2">
+                                    <div class="input-group-prepend"><span class="input-group-text">Reseller Price </span>
+                                    </div>
+                                    <input type="number" name="res_price" class="form-control" placeholder="Enter Amount"
+                                           value="{{$data->res_price}}">
+                                </div>
+
+                                <div class="input-group mt-2">
+                                    <div class="input-group-prepend"><span class="input-group-text">Cashback</span>
+                                    </div>
+                                    <input type="number" name="cashback" class="form-control" placeholder="Enter Amount"
+                                           value="{{$data->cashback}}">
                                 </div>
 
                                 <div class="input-group mt-2">

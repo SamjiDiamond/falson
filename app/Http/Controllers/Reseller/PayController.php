@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\PushNotificationController;
 use App\Models\Airtime2Cash;
 use App\Models\Airtime2CashSettings;
+use App\Models\CombineDataPlans;
 use App\Models\ResellerAirtimeControl;
 use App\Models\ResellerBetting;
 use App\Models\ResellerCableTV;
@@ -116,7 +117,7 @@ class PayController extends Controller
     public function buyData(Request $request){
         $input=$request->all();
 
-        $rac=ResellerDataPlans::where("code", strtolower($input['coded']))->first();
+        $rac=CombineDataPlans::where("code", strtolower($input['coded']))->first();
 
         if ($rac == "") {
             return response()->json(['success' => 0, 'message' => 'Invalid coded supplied']);
@@ -136,22 +137,24 @@ class PayController extends Controller
             return response()->json(['success' => 0, 'message' => 'Invalid API key. Kindly contact support']);
         }
 
-        switch ($user->level) {
-            case 1:
-                $debitAmount = $rac->level1;
-                break;
-            case 2:
-                $debitAmount = $rac->level2;
-                break;
-            case 3:
-                $debitAmount = $rac->level3;
-                break;
-            case 4:
-                $debitAmount = $rac->level4;
-                break;
-            default:
-                $debitAmount = $rac->level5;
-        }
+        $debitAmount = $rac->res_price;
+
+//        switch ($user->level) {
+//            case 1:
+//                $debitAmount = $rac->level1;
+//                break;
+//            case 2:
+//                $debitAmount = $rac->level2;
+//                break;
+//            case 3:
+//                $debitAmount = $rac->level3;
+//                break;
+//            case 4:
+//                $debitAmount = $rac->level4;
+//                break;
+//            default:
+//                $debitAmount = $rac->level5;
+//        }
 
         if ($debitAmount < 1) {
             return response()->json(['success' => 0, 'message' => 'You cannot purchase this plan. Kindly contact support']);

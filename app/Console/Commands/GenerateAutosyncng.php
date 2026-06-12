@@ -88,26 +88,15 @@ class GenerateAutosyncng extends Command
             $inte = $type['name'];
             $pid = $type['id'];
             foreach ($type['variations'] as $plans) {
-                ResellerCableTV::create([
-                    'name' => $plans['name'],
-                    'code' => $pid . "_" . $plans['code'],
-                    'amount' => $plans['amount'],
-                    'type' => strtolower($inte),
-                    'level1' => '1%',
-                    'level2' => '1%',
-                    'level3' => '1%',
-                    'level4' => '1%',
-                    'level5' => '1.5%',
-                    'status' => 1,
-                    'server' => 7,
-                ]);
 
-                AppCableTVControl::create([
+                CombineDataPlans::create([
                     'name' => strtolower($plans['name']),
                     'coded' => "7_" . $pid . "_" . $plans['code'],
-                    'code' => $plans['code'],
+                    'plan_id' => $plans['code'],
                     'price' => $plans['amount'],
-                    'type' => strtolower($inte),
+                    'app_price' => $plans['amount']+10,
+                    'res_price' => $plans['amount']+10,
+                    'product_code' => strtolower($inte),
                     'discount' => '1%',
                     'status' => 0,
                     'server' => 7,

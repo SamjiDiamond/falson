@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Reseller;
 
 use App\Http\Controllers\Controller;
+use App\Models\CombineDataPlans;
 use App\Models\ResellerAirtimeControl;
 use App\Models\ResellerCableTV;
 use App\Models\ResellerControl;
@@ -36,16 +37,16 @@ class ListController extends Controller
 
         switch (strtolower($input['coded'])) {
             case "m":
-                $plans = ResellerDataPlans::where([["network", "LIKE", "mtn%"], ["status", 1]])->get();
+                $plans = CombineDataPlans::where([["network","MTN"], ["status", 1]])->select('name', 'coded', 'res_price as price', 'network', 'status')->get();
                 break;
             case "a":
-                $plans = ResellerDataPlans::where([["network", "LIKE", "airtel%"], ["status", 1]])->get();
+                $plans = CombineDataPlans::where([["network", "AIRTEL"], ["status", 1]])->select('name', 'coded', 'res_price as price', 'network', 'status')->get();
                 break;
             case "9":
-                $plans = ResellerDataPlans::where([["network", "LIKE", "9mobile%"], ["status", 1]])->get();
+                $plans = CombineDataPlans::where([["network", "9MOBILE"], ["status", 1]])->select('name', 'coded', 'res_price as price', 'network', 'status')->get();
                 break;
             case "g":
-                $plans = ResellerDataPlans::where([["network", "LIKE", "glo%"], ["status", 1]])->get();
+                $plans = CombineDataPlans::where([["network", "GLO"], ["status", 1]])->select('name', 'coded', 'res_price as price', 'network', 'status')->get();
                 break;
             default:
                 $plans = "";

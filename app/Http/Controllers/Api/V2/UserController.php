@@ -145,6 +145,7 @@ class UserController extends Controller
         $me['bvn'] = $user->bvn != "";
         $me['nin'] = $user->nin != "";
         $me['address'] = $user->address;
+        $me['enforce_kyc'] = $user->enforce_kyc == 1 ? ($user->nin == "" || $user->bvn == "" ? 1 : 0) : 0;
         $me['email_valid'] = $user->email_valid;
         $me['twofa'] = $user->twofa;
         $me['new_device_otp'] = $user->new_device_otp;

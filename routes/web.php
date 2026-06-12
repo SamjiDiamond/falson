@@ -78,6 +78,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/update-service', [UsersController::class, 'updateService'])->name('updateService');
     Route::post('/user-password-reset', [UsersController::class, 'passwordReset'])->name('userPasswordReset');
     Route::post('/user-pin-reset', [UsersController::class, 'pinReset'])->name('userPinReset');
+    Route::post('/user-enforce-kyc', [UsersController::class, 'userEnforceKyc'])->name('userEnforceKyc');
     Route::get('/admin-password-reset/{id}', [UsersController::class, 'passwordResetAdmin'])->name('adminPasswordReset');
     Route::get('/admin-bann-user/{id}', [UsersController::class, 'bannUnbann'])->name('adminBannUnbann');
     Route::get('/admin-del-user/{id}', [UsersController::class, 'delUser'])->name('adminDelUser');

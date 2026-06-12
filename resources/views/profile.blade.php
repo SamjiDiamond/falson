@@ -992,6 +992,17 @@
                                                             Reset
                                                         </button>
                                                     </form>
+
+                                                    <form class="form-horizontal" method="POST"
+                                                          action="{{ route('userEnforceKyc') }}">
+                                                        @csrf
+                                                        <input type="hidden" name="id" class="form-control"
+                                                               value="{{$user->id}}">
+                                                        <button class="btn btn-gradient-danger btn-large ml-5"
+                                                                type="submit"
+                                                                style="align-self: center; align-content: center">Enforce KYC ({{$user->enforce_kyc == 0 ? "OFF" : "ON"}})
+                                                        </button>
+                                                    </form>
                                                 </div>
 
                                             </div>

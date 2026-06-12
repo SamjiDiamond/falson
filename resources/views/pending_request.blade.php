@@ -79,7 +79,7 @@
                         @foreach($users as $user)
                             <tr>
                                 <td>{{$user->user_name }}</td>
-                                <td>{{strpos($user->target, "Reseller in progress") !== false ? "Reseller" : "Agent" }}</td>
+                                <td>{{str_contains($user->target, "Reseller") ? "Reseller" : "Agent" }}</td>
                                 <td>{{$user->company_name }}</td>
                                 <td>{{$user->full_name }}</td>
                                 <td>{{$user->dob }}</td>

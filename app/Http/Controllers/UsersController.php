@@ -47,16 +47,19 @@ class UsersController extends Controller
 
     public function topusers(Request $request)
     {
+        $subquery = DB::table('tbl_transactions')
+            ->select('user_name', DB::raw('SUM(amount) as total_amount'))
+            ->where('name', '!=', 'wallet funding')
+            ->groupBy('user_name');
 
-        $topUsers = User::select('tbl_agents.id', 'tbl_agents.user_name', 'tbl_agents.wallet', 'tbl_agents.status', DB::raw('SUM(tbl_transactions.amount) as total_amount'))
-            ->join('tbl_transactions', 'tbl_agents.user_name', '=', 'tbl_transactions.user_name')
-            ->where('tbl_transactions.name', '!=', 'wallet funding')
-            ->groupBy('tbl_agents.id', 'tbl_agents.user_name', 'tbl_agents.wallet', 'tbl_agents.status')
+        $topUsers = User::select('tbl_agents.id', 'tbl_agents.user_name', 'tbl_agents.wallet', 'tbl_agents.status', 'transactions_sum.total_amount')
+            ->joinSub($subquery, 'transactions_sum', function ($join) {
+                $join->on('tbl_agents.user_name', '=', 'transactions_sum.user_name');
+            })
             ->orderByDesc('total_amount')
-            ->paginate(10);
+            ->get();
 
         return view('top_users', ['users' => $topUsers, 'i' => 1]);
-
     }
 
     public function agents(Request $request)
@@ -624,6 +627,17 @@ class UsersController extends Controller
         PushNotificationJob::dispatch($user->user_name, "Hi " . $user->user_name . ", your pin has been reset to 1234 by the admin.", "Pin Reset");
 
         return redirect()->route('profile', $user->user_name)->with("success", "User Pin has been reset to 1234");
+    }
+
+    public function userEnforceKyc(Request $request){
+        $input = $request->all();
+
+        $user=User::find($input['id']);
+
+        $user->enforce_kyc = $user->enforce_kyc == 0 ? 1 : 0;
+        $user->save();
+
+        return redirect()->route('profile', $user->user_name)->with("success", "User KYC Enforcement Toggled Successfully");
     }
 
     public function passwordResetAdmin($id){

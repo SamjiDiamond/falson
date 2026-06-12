@@ -37,7 +37,7 @@ class TransactionNotificationMail extends Mailable
         $adminE=Settings::where('name', 'transaction_email_copy')->first();
         return $this->view('mail.transaction')
             ->bcc(explode(',',$adminE->value))
-            ->subject($this->data['user_name'] . "| Transactional Alert |".$this->data['transid'])
+            ->subject($this->data['user_name'] . "| Transactional Alert |".$this->data['ref'])
             ->with(['data'=>$this->data, 'email_note'=>$set->value, 'support_email'=>$setE->value, 'email'=>$user->email]);
     }
 }

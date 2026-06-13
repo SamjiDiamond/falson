@@ -199,6 +199,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/datacontrol/{id}', [ServerController::class, 'dataserveedit'])->name('datacontrolEdit');
         Route::get('/datacontrol-multiple/{network}/{type}/{status}/{server}', [ServerController::class, 'dataserveMultipleedit'])->name('dataserveMultipleedit');
         Route::get('/dataserveED/{id}', [ServerController::class, 'dataserveED'])->name('dataserveED');
+        Route::get('/datacontrol-delete/{id}', [ServerController::class, 'dataserveDelete'])->name('datacontrolDelete');
         Route::post('/datacontrol', [ServerController::class, 'dataserveUpdate'])->name('datacontrolUpdate');
         Route::view('/datanew', 'datacontrol_new')->name('datanew');
         Route::post('/datanew', [ServerController::class, 'datanew'])->name('datanew');

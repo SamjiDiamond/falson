@@ -210,6 +210,19 @@ class ServerController
         return redirect()->route('dataplans', $data->network)->with("success", "Status Modified successfully");
     }
 
+    public function dataserveDelete($id)
+    {
+        $data = CombineDataPlans::find($id);
+
+        if(!$data){
+            return back()->with('error', 'Plan does not exist');
+        }
+
+        $data->delete();
+
+        return back()->with("success", $data->name." Data Deleted successfully");
+    }
+
     public function dataserveMultipleedit($network, $type, $status, $server)
     {
         if($type == "ALL"){

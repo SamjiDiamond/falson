@@ -353,10 +353,6 @@
                                     <li><a href="{{route('reseller.airtimecontrol')}}">Airtime Control</a></li>
                                 @endcan
 
-                                @can('reseller_data-view')
-                                    <li><a href="{{route('reseller.dataList', 'MTN')}}">Data Plans Control</a></li>
-                                @endcan
-
                                 @can('reseller_tv-view')
                                     <li><a href="{{route('reseller.tvcontrol')}}">TV Plans</a></li>
                                 @endcan

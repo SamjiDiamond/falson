@@ -185,7 +185,9 @@
                             <th>App Price</th>
                             <th>Reseller Price</th>
                             <th>Cashback</th>
+                            <th>PlanId</th>
                             <th>Server</th>
+                            <th>Note</th>
                             <th>Status</th>
                             <th>Date Modified</th>
                             <th>Action</th>
@@ -202,9 +204,9 @@
                                 <td class="center">&#8358;{{number_format($da['app_price'])}}</td>
                                 <td class="center">&#8358;{{number_format($da['res_price'])}}</td>
                                 <td class="center">&#8358;{{number_format($da['cashback'])}}</td>
-                                <td>
-                                    {{$da['server']}}
-                                </td>
+                                <td>{{$da['plan_id']}}</td>
+                                <td>{{$da['server']}}</td>
+                                <td>{{$da['note']}}</td>
                                 <td class="center">
                                     @if($da->status==1)
                                         <span class="badge badge-success">Active</span>
@@ -223,6 +225,7 @@
                                              {{$da->status =="1"? "Disable" : "Enable" }}
                                         </a>
                                         <a href="{{route('datacontrolEdit',$da->id )}}"  class="btn btn-secondary">Modify</a>
+                                        <a href="{{route('datacontrolDelete',$da->id )}}" class="btn btn-danger">Delete</a>
                                     @endcan
                                 </td>
                             </tr>

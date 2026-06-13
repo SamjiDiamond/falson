@@ -3,10 +3,8 @@
 namespace App\Console\Commands;
 
 use App\Models\AppCableTVControl;
-use App\Models\AppDataControl;
 use App\Models\CombineDataPlans;
 use App\Models\ResellerCableTV;
-use App\Models\ResellerDataPlans;
 use App\Models\ResellerElecticity;
 use Illuminate\Console\Command;
 
@@ -66,8 +64,7 @@ class GenerateHWPlans extends Command
     {
         $this->info("Truncating Reseller & App Data plans table");
 
-        ResellerDataPlans::where('server','1')->delete();
-        AppDataControl::where('server','1')->delete();
+        CombineDataPlans::where('server', '1')->update(['status' => 0]);
 
         $this->info("Fetching data plans");
 
@@ -110,50 +107,38 @@ class GenerateHWPlans extends Command
 
             $type = explode("_", $plans['name']);
 
-            ResellerDataPlans::create([
-                'name' => $plans['name'] . " " . $plans['allowance'] . " - " . $plans['validity'],
-                'product_code' => $type[1] ?? 'DG',
-                'code' => "1_" . $plans['planId'],
-                'level1' => $plans['price'],
-                'level2' => $plans['price'],
-                'level3' => $plans['price'],
-                'level4' => $plans['price'],
-                'level5' => $plans['price'],
-                'price' => $plans['price'],
-                'type' => $allowance,
-                'network' => $plans['network'],
-                'plan_id' => $plans['planId'],
-                'server' => 1,
-                'status' => 1,
-            ]);
+            $existingCombine = CombineDataPlans::where([['plan_id', $plans['planId']], ['server', 1]])->first();
 
-            AppDataControl::create([
-                'name' => $plans['name'] . " " . $plans['allowance'] . " - " . $plans['validity'],
-                'product_code' => $type[1] ?? 'DG',
-                'dataplan' => $allowance,
-                'network' => $plans['network'],
-                'coded' => $plans['planId'],
-                'plan_id' => $plans['planId'],
-                'pricing' => $plans['price'],
-                'price' => $plans['price'],
-                'server' => 1,
-                'status' => 1,
-            ]);
+            if($type == "DG"){
+                $price=$plans['amount'] * 0.98;
+            }else{
+                $price=$plans['amount'] + 10;
+            }
 
-            CombineDataPlans::create([
-                'name' => $plans['allowance'],
-                'product_code' => $type[1] ?? 'DG',
-                'dataplan' => $allowance,
-                'network' => $plans['network'],
-                'coded' => $plans['planId'],
-                'plan_id' => $plans['planId'],
-                'duration' => strtolower($this->getDaysAndCategory($plans['validity'])),
-                'app_price' => $plans['price'],
-                'res_price' => $plans['price'],
-                'price' => $plans['price'],
-                'server' => 1,
-                'status' => 1,
-            ]);
+            if ($existingCombine) {
+                $updateCombine = ['status' => 1];
+                if ($existingCombine->price != $plans['price']) {
+                    $updateCombine['price'] = $plans['price'];
+                    $updateCombine['app_price'] = $price;
+                    $updateCombine['res_price'] = $price;
+                }
+                $existingCombine->update($updateCombine);
+            } else {
+                CombineDataPlans::create([
+                    'name' => $plans['allowance'],
+                    'product_code' => $type[1] ?? 'DG',
+                    'dataplan' => $allowance,
+                    'network' => $plans['network'],
+                    'coded' => $plans['planId'],
+                    'plan_id' => $plans['planId'],
+                    'duration' => strtolower($this->getDaysAndCategory($plans['validity'])),
+                    'app_price' => $price,
+                    'res_price' => $price,
+                    'price' => $plans['price'],
+                    'server' => 1,
+                    'status' => 1,
+                ]);
+            }
         }
     }
 

@@ -44,8 +44,8 @@ class GenerateRingoPlans extends Command
     private function tvPlans()
     {
 
-        ResellerCableTV::where('server', '2')->delete();;
-        AppCableTVControl::where('server', '2')->delete();;
+        ResellerCableTV::where('server', '2')->update(['status' => 0]);
+        AppCableTVControl::where('server', '2')->update(['status' => 0]);
 
 
         $this->info("Fetching tv plans");
@@ -87,32 +87,48 @@ class GenerateRingoPlans extends Command
         $rep=$reps['product'];
 
         foreach ($rep as $plans) {
-            $this->info("Inserting record for " . $plans['name']);
+            $this->info("Inserting/Updating record for " . $plans['name']);
 
-            ResellerCableTV::create([
-                'name' => $plans['name'],
-                'code' => $plans['code'],
-                'amount' => $plans['price'],
-                'type' => strtolower(explode(" ", $plans['name'])[0]),
-                'level1' => '1%',
-                'level2' => '1%',
-                'level3' => '1%',
-                'level4' => '1%',
-                'level5' => '1.5%',
-                'status' => 1,
-                'server' => 2,
-            ]);
+            $existingReseller = ResellerCableTV::where([['code', $plans['code']], ['server', 2]])->first();
+            if ($existingReseller) {
+                $existingReseller->update([
+                    'amount' => $plans['price'],
+                    'status' => 1,
+                ]);
+            } else {
+                ResellerCableTV::create([
+                    'name' => $plans['name'],
+                    'code' => $plans['code'],
+                    'amount' => $plans['price'],
+                    'type' => strtolower(explode(" ", $plans['name'])[0]),
+                    'level1' => '1%',
+                    'level2' => '1%',
+                    'level3' => '1%',
+                    'level4' => '1%',
+                    'level5' => '1.5%',
+                    'status' => 1,
+                    'server' => 2,
+                ]);
+            }
 
-            AppCableTVControl::create([
-                'name' => $plans['name'],
-                'coded' => "2_".$plans['code'],
-                'code' => $plans['code'],
-                'price' => $plans['price'],
-                'type' => strtolower(explode(" ",$plans['name'])[0]),
-                'discount' => '1%',
-                'status' => 1,
-                'server' => 2,
-            ]);
+            $existingApp = AppCableTVControl::where([['code', $plans['code']], ['server', 2]])->first();
+            if ($existingApp) {
+                $existingApp->update([
+                    'price' => $plans['price'],
+                    'status' => 1,
+                ]);
+            } else {
+                AppCableTVControl::create([
+                    'name' => $plans['name'],
+                    'coded' => "2_".$plans['code'],
+                    'code' => $plans['code'],
+                    'price' => $plans['price'],
+                    'type' => strtolower(explode(" ",$plans['name'])[0]),
+                    'discount' => '1%',
+                    'status' => 1,
+                    'server' => 2,
+                ]);
+            }
         }
 
 
@@ -153,32 +169,48 @@ class GenerateRingoPlans extends Command
         $rep=$reps['product'];
 
         foreach ($rep as $plans) {
-            $this->info("Inserting record for " . $plans['name']);
+            $this->info("Inserting/Updating record for " . $plans['name']);
 
-            ResellerCableTV::create([
-                'name' => $plans['name'],
-                'code' => $plans['code'],
-                'amount' => $plans['price'],
-                'type' => strtolower(explode(" ", $plans['name'])[0]),
-                'level1' => '1%',
-                'level2' => '1%',
-                'level3' => '1%',
-                'level4' => '1%',
-                'level5' => '1.2%',
-                'status' => 1,
-                'server' => 2,
-            ]);
+            $existingReseller = ResellerCableTV::where([['code', $plans['code']], ['server', 2]])->first();
+            if ($existingReseller) {
+                $existingReseller->update([
+                    'amount' => $plans['price'],
+                    'status' => 1,
+                ]);
+            } else {
+                ResellerCableTV::create([
+                    'name' => $plans['name'],
+                    'code' => $plans['code'],
+                    'amount' => $plans['price'],
+                    'type' => strtolower(explode(" ", $plans['name'])[0]),
+                    'level1' => '1%',
+                    'level2' => '1%',
+                    'level3' => '1%',
+                    'level4' => '1%',
+                    'level5' => '1.2%',
+                    'status' => 1,
+                    'server' => 2,
+                ]);
+            }
 
-            AppCableTVControl::create([
-                'name' => $plans['name'],
-                'coded' => "2_".$plans['code'],
-                'code' => $plans['code'],
-                'price' => $plans['price'],
-                'type' => strtolower(explode(" ",$plans['name'])[0]),
-                'discount' => '1%',
-                'status' => 1,
-                'server' => 2,
-            ]);
+            $existingApp = AppCableTVControl::where([['code', $plans['code']], ['server', 2]])->first();
+            if ($existingApp) {
+                $existingApp->update([
+                    'price' => $plans['price'],
+                    'status' => 1,
+                ]);
+            } else {
+                AppCableTVControl::create([
+                    'name' => $plans['name'],
+                    'coded' => "2_".$plans['code'],
+                    'code' => $plans['code'],
+                    'price' => $plans['price'],
+                    'type' => strtolower(explode(" ",$plans['name'])[0]),
+                    'discount' => '1%',
+                    'status' => 1,
+                    'server' => 2,
+                ]);
+            }
         }
     }
 }

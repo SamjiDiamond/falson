@@ -3,10 +3,8 @@
 namespace App\Console\Commands;
 
 use App\Models\AppCableTVControl;
-use App\Models\AppDataControl;
 use App\Models\CombineDataPlans;
 use App\Models\ResellerCableTV;
-use App\Models\ResellerDataPlans;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 
@@ -88,15 +86,26 @@ class GenerateAutosyncng extends Command
             $inte = $type['name'];
             $pid = $type['id'];
             foreach ($type['variations'] as $plans) {
+                ResellerCableTV::create([
+                    'name' => $plans['name'],
+                    'code' => $pid . "_" . $plans['code'],
+                    'amount' => $plans['amount'],
+                    'type' => strtolower($inte),
+                    'level1' => '1%',
+                    'level2' => '1%',
+                    'level3' => '1%',
+                    'level4' => '1%',
+                    'level5' => '1.5%',
+                    'status' => 1,
+                    'server' => 7,
+                ]);
 
-                CombineDataPlans::create([
+                AppCableTVControl::create([
                     'name' => strtolower($plans['name']),
                     'coded' => "7_" . $pid . "_" . $plans['code'],
-                    'plan_id' => $plans['code'],
+                    'code' => $plans['code'],
                     'price' => $plans['amount'],
-                    'app_price' => $plans['amount']+10,
-                    'res_price' => $plans['amount']+10,
-                    'product_code' => strtolower($inte),
+                    'type' => strtolower($inte),
                     'discount' => '1%',
                     'status' => 0,
                     'server' => 7,
@@ -109,14 +118,12 @@ class GenerateAutosyncng extends Command
 
     private function dataPlans($type)
     {
-        Log::alert("Truncating Reseller & App Data plans table");
+        Log::alert("Setting status to 0 for Reseller, App & Combined Data plans");
 
         if ($type == "") {
-            ResellerDataPlans::where('server', '7')->delete();
-            AppDataControl::where('server', '7')->delete();
+            CombineDataPlans::where('server', '7')->update(['status' => 0]);
         } else {
-            ResellerDataPlans::where([['server', '7'], ['type', $type]])->delete();
-            AppDataControl::where([['server', '7'], ['network', $type]])->delete();
+            CombineDataPlans::where([['server', '7'], ['network', $type]])->update(['status' => 0]);
         }
 
         Log::alert("Fetching data plans data/sme");
@@ -291,50 +298,41 @@ class GenerateAutosyncng extends Command
 
         $plans['price'] = 0;
 
-        ResellerDataPlans::create([
-            'name' => $type . " " . substr($plans['name'], 0, 55),
-            'product_code' => $type,
-            'code' => "7_" . $productId . "_" . substr($plans['code'], 0, 20),
-            'level1' => $plans['amount'],
-            'level2' => $plans['amount'],
-            'level3' => $plans['amount'],
-            'level4' => $plans['amount'],
-            'level5' => $plans['amount'],
-            'price' => $plans['amount'],
-            'type' => $allowance,
-            'network' => $network,
-            'plan_id' => $plans['code'],
-            'server' => 7,
-            'status' => 0,
-        ]);
+        $existing = CombineDataPlans::where([
+            ['plan_id', $plans['code']],
+            ['server', 7]
+        ])->first();
 
-        AppDataControl::create([
-            'name' => $type . " " . $plans['name'],
-            'product_code' => $type,
-            'dataplan' => $allowance,
-            'network' => $network,
-            'coded' => "7_" . $productId . "_" . $plans['code'],
-            'plan_id' => $plans['code'],
-            'pricing' => $plans['amount'],
-            'price' => $plans['amount'],
-            'server' => 7,
-            'status' => 0,
-        ]);
+        if($type == "DG"){
+            $price=$plans['amount'] * 0.98;
+        }else{
+            $price=$plans['amount'] + 10;
+        }
 
-        CombineDataPlans::create([
-            'name' => trim(explode("-",$plans['name'])[0]),
-            'product_code' => $type,
-            'dataplan' => $allowance,
-            'network' => $network,
-            'coded' => "7_" . $productId . "_" . $plans['code'],
-            'plan_id' => $plans['code'],
-            'duration' => strtolower($this->getDaysAndCategory($plans['name'])),
-            'app_price' => $plans['amount'],
-            'res_price' => $plans['amount'],
-            'price' => $plans['amount'],
-            'server' => 7,
-            'status' => 1,
-        ]);
+        if ($existing) {
+            $updateData = ['status' => 1];
+            if ($existing->price != $plans['amount']) {
+                $updateData['price'] = $plans['amount'];
+                $updateData['app_price'] = $price;
+                $updateData['res_price'] = $price;
+            }
+            $existing->update($updateData);
+        } else {
+            CombineDataPlans::create([
+                'name' => trim(explode("-",$plans['name'])[0]),
+                'product_code' => $type,
+                'dataplan' => $allowance,
+                'network' => $network,
+                'coded' => "7_" . $productId . "_" . $plans['code'],
+                'plan_id' => $plans['code'],
+                'duration' => strtolower($this->getDaysAndCategory($plans['name'])),
+                'app_price' => $price,
+                'res_price' => $price,
+                'price' => $plans['amount'],
+                'server' => 7,
+                'status' => 1,
+            ]);
+        }
     }
 
     /**

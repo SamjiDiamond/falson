@@ -270,6 +270,14 @@ class GenerateAutosyncng extends Command
                     $type = "SME2";
                 } elseif (str_contains($dcn, "SME")) {
                     $type = "SME";
+                } elseif (str_contains($dcn, "AWOOF")) {
+                    $type = "AWOOF";
+                } elseif (str_contains($dcn, "XtraData") || str_contains($dcn, "Xtraspecial")) {
+                    $type = "XTRASPECIAL";
+                } elseif (str_contains($dcn, "XtraTalk")) {
+                    $type = "TALK";
+                } elseif (str_contains($dcn, "Broadband") || str_contains($dcn, "Unlimited")) {
+                    $type = "BROADBAND";
                 } else {
                     $type = $dcn;
                 }

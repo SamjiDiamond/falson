@@ -99,6 +99,7 @@
                                                 <option value="ROUTER" data-status="{{ $router }}">ROUTER</option>
                                                 <option value="MEGA" data-status="{{ $mega }}">MEGA</option>
                                                 <option value="TALK" data-status="{{ $talk }}">TALK</option>
+                                                <option value="BROADBAND" data-status="{{ $broadband }}">BROADBAND</option>
                                             @endcan
                                         </select>
                                         <button type="button" id="bulkActionButton" onclick="applyBulkAction()" class="btn btn-sm btn-secondary"></button>

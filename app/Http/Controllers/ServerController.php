@@ -129,9 +129,10 @@ class ServerController
         $mega = CombineDataPlans::where([['product_code', 'MEGA'], ['network', strtoupper($network)], ['status', 1]])->count() > 0 ? 1 : 0;
         $talk = CombineDataPlans::where([['product_code', 'TALK'], ['network', strtoupper($network)], ['status', 1]])->count() > 0 ? 1 : 0;
         $all = CombineDataPlans::where([['network', 'LIKE', strtoupper($network) . '%'], ['status', 1]])->count() > 0 ? 1 : 0;
+        $broadband = CombineDataPlans::where([['product_code', 'BROADBAND'], ['network', strtoupper($network)], ['status', 1]])->count() > 0 ? 1 : 0;
 
         $server = 0;
-        return view('datacontrol', compact('data', 'sme', 'sme2', 'cg', 'dg', 'dc', 'dt', 'awoof', 'share', 'xspecial', 'hynet', 'router', 'mega', 'talk', 'all', 'server'));
+        return view('datacontrol', compact('data', 'sme', 'sme2', 'cg', 'dg', 'dc', 'dt', 'awoof', 'share', 'xspecial', 'hynet', 'router', 'mega', 'talk', 'broadband', 'all', 'server'));
     }
 
     public function dataserve3($network, $server)
@@ -150,10 +151,11 @@ class ServerController
         $router = CombineDataPlans::where([['product_code', 'ROUTER'], ['network', strtoupper($network)], ['server', $server], ['status', 1]])->count() > 0 ? 1 : 0;
         $mega = CombineDataPlans::where([['product_code', 'MEGA'], ['network', strtoupper($network)], ['server', $server], ['status', 1]])->count() > 0 ? 1 : 0;
         $talk = CombineDataPlans::where([['product_code', 'TALK'], ['network', strtoupper($network)], ['server', $server], ['status', 1]])->count() > 0 ? 1 : 0;
+        $broadband = CombineDataPlans::where([['product_code', 'BROADBAND'], ['network', strtoupper($network)], ['server', $server], ['status', 1]])->count() > 0 ? 1 : 0;
 
         $all = CombineDataPlans::where([['network', strtoupper($network)], ['server', $server], ['status', 1]])->count() > 0 ? 1 : 0;
 
-        return view('datacontrol', compact('data', 'sme', 'sme2', 'cg', 'dg', 'dc', 'dt', 'awoof', 'share', 'xspecial', 'hynet', 'router', 'mega', 'talk', 'all', 'server'));
+        return view('datacontrol', compact('data', 'sme', 'sme2', 'cg', 'dg', 'dc', 'dt', 'awoof', 'share', 'xspecial', 'hynet', 'router', 'mega', 'talk', 'broadband', 'all', 'server'));
     }
 
     public function dataserveedit($id)

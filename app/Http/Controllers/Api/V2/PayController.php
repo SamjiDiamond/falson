@@ -101,6 +101,7 @@ class PayController extends Controller
         $proceed['3'] = $discount;
         $proceed['4'] = $server;
         $proceed['5'] = "airtime";
+        $proceed['8'] = "airtime|".$input['provider'];
 
         return $this->handlePassage($request, $proceed);
 
@@ -152,6 +153,7 @@ class PayController extends Controller
         $proceed['5'] = "data";
         $proceed['6'] = $rac->name;
         $proceed['7'] = $rac->dataplan;
+        $proceed['8'] = "data|".$rac->network."|".$rac->product_code;
 
         return $this->handlePassage($request, $proceed);
     }
@@ -205,6 +207,7 @@ class PayController extends Controller
         $proceed['3'] = $discount;
         $proceed['4'] = $rac->server;
         $proceed['5'] = "tv";
+        $proceed['8'] = "tv|".$rac->type;
 
         return $this->handlePassage($request, $proceed);
 
@@ -262,6 +265,7 @@ class PayController extends Controller
         $proceed['3'] = $discount;
         $proceed['4'] = $rac->server;
         $proceed['5'] = "electricity";
+        $proceed['8'] = "electricity|".$rac->name;
 
         return $this->handlePassage($request, $proceed);
 
@@ -318,6 +322,7 @@ class PayController extends Controller
         $proceed['3'] = $discount;
         $proceed['4'] = $rac->server;
         $proceed['5'] = "betting";
+        $proceed['8'] = "betting|".$rac->name;
 
         return $this->handlePassage($request, $proceed);
     }
@@ -1184,6 +1189,7 @@ class PayController extends Controller
                     'status' => 'pending',
                     'extra' => $discount,
                     'commission' => $discount,
+                    'category' => $proceed['8'] ?? 0,
                     'paid_with' => $payment,
                     'i_wallet' => $initialWallet,
                     'f_wallet' => $finalWallet
@@ -1368,6 +1374,8 @@ class PayController extends Controller
             $t = Transaction::find($dada['tid']);
             $t->status = "delivered";
             $t->server_response = $dada['server_response'];
+            $t->provider_price = $dada['provider_price'] ?? 0;
+            $t->profit = isset($dada['provider_price']) && $dada['provider_price'] !=0 ? $t->amount-$dada['provider_price'] : 0;
             $t->server_ref = $dada['server_ref'] ?? '';
             $t->save();
 

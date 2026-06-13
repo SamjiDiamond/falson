@@ -224,6 +224,20 @@
 {{--                    {{$data->links()}}--}}
 
                 </div>
+
+                <div class="card-body">
+
+
+                    <div class="row m-3">
+                        <a href="{{route('plansRefresh', "data")}}" class="btn btn-danger mr-3 mb-2">Refresh All Data Plans</a>
+                        <a href="{{route('plansRefresh', "data_hw")}}" class="btn btn-gradient-primary mr-3 mb-2">Refresh HW Data Plans</a>
+                        <a href="{{route('plansRefresh', "data_iyii")}}" class="btn btn-gradient-dark mr-3 mb-2">Refresh IYII Data Plans</a>
+                        <a href="{{route('plansRefresh', "data_ogdams")}}" class="btn btn-gradient-secondary mr-3 mb-2">Refresh OGDAMS Data Plans</a>
+                        <a href="{{route('plansRefresh', "data_uzobest")}}" class="btn btn-gradient-purple mr-3 mb-2">Refresh UZOBEST Data Plans</a>
+                        <a href="{{route('plansRefresh', "data_autosyncng")}}" class="btn btn-gradient-pink mr-3 mb-2">Refresh Autosyncng Data Plans</a>
+                    </div>
+
+                </div>
             </div>
         </div>
     </div>

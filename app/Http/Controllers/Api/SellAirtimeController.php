@@ -346,6 +346,7 @@ class SellAirtimeController extends Controller
 
         if ($rep['data']['transaction']['status'] == "successful") {
             $dada['server_ref'] = $rep['data']['transaction']['reference'];
+            $dada['provider_price'] = $rep['data']['transaction']['amount'] ?? 0;
             if ($requester == "reseller") {
                 return $rs->outputResponse($request, $transid, 1, $dada);
             } else {
@@ -353,6 +354,7 @@ class SellAirtimeController extends Controller
             }
         } elseif ($rep['data']['transaction']['status'] == "pending") {
             $dada['server_ref'] = $rep['data']['transaction']['reference'];
+            $dada['provider_price'] = $rep['data']['transaction']['amount'] ?? 0;
             if ($requester == "reseller") {
                 return $rs->outputResponse($request, $transid, 4, $dada);
             } else {

@@ -312,6 +312,7 @@ class HomeController extends Controller
     public function plansRefresh($type){
 
         if($type == "data"){
+            Artisan::queue('samji:autosyncng --command=data');
             Artisan::queue('samji:hw --command=data');
             Artisan::queue('samji:iyii --command=data');
             Artisan::queue('samji:ogdams --command=data');
@@ -348,6 +349,8 @@ class HomeController extends Controller
             Artisan::queue('samji:uzobest --command=data --type=AIRTEL');
         } elseif ($type == "data_uzobest_9mobile") {
             Artisan::queue('samji:uzobest --command=data --type=9MOBILE');
+        } elseif ($type == "data_autosyncng") {
+            Artisan::queue('samji:autosyncng --command=data');
         } elseif ($type == "data_autosyncng_mtn") {
             Artisan::queue('samji:autosyncng --command=data --type=MTN');
         } elseif ($type == "data_autosyncng_glo") {
@@ -367,7 +370,7 @@ class HomeController extends Controller
             return redirect()->route('allsettings')->with('error', 'Invalid Type');
         }
 
-        return redirect()->route('allsettings')->with('success', 'Plans has started refreshing in background');
+        return back()->with('success', 'Plans has started refreshing in background');
 
     }
 

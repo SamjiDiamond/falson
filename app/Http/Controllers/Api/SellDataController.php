@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Reseller\PayController;
 use App\Models\AppDataControl;
+use App\Models\CombineDataPlans;
 use App\Models\ResellerDataPlans;
 use Carbon\Carbon;
 use Exception;
@@ -15,11 +16,7 @@ class SellDataController extends Controller
     public function server1($request, $code, $phone, $transid, $net, $input, $dada, $requester)
     {
 
-        if ($requester == "reseller") {
-            $rac = ResellerDataPlans::where("code", strtolower($input['coded']))->first();
-        } else {
-            $rac = AppDataControl::where("coded", strtolower($input['coded']))->first();
-        }
+        $rac = CombineDataPlans::where("coded", strtolower($input['coded']))->first();
 
         if (env('FAKE_TRANSACTION', 1) == 0) {
 
@@ -222,11 +219,7 @@ class SellDataController extends Controller
     public function server3($request, $code, $phone, $transid, $net, $input, $dada, $requester)
     {
 
-        if ($requester == "reseller") {
-            $rac = ResellerDataPlans::where("code", strtolower($input['coded']))->first();
-        } else {
-            $rac = AppDataControl::where("coded", strtolower($input['coded']))->first();
-        }
+        $rac = CombineDataPlans::where("coded", strtolower($input['coded']))->first();
 
         switch ($rac->network) {
             case "MTN":
@@ -326,6 +319,7 @@ class SellDataController extends Controller
                 }
             }else{
                 $dada['server_ref'] = $rep['id'];
+                $dada['provider_price'] = $rep['plan_amount'] ?? 0;
                 if ($requester == "reseller") {
                     return $rs->outputResponse($request, $transid, 1, $dada);
                 } else {
@@ -344,11 +338,7 @@ class SellDataController extends Controller
     public function server4($request, $code, $phone, $transid, $net, $input, $dada, $requester)
     {
 
-        if ($requester == "reseller") {
-            $rac = ResellerDataPlans::where("code", strtolower($input['coded']))->first();
-        } else {
-            $rac = AppDataControl::where("coded", strtolower($input['coded']))->first();
-        }
+        $rac = CombineDataPlans::where("coded", strtolower($input['coded']))->first();
 
         switch ($rac->network) {
             case "MTN":
@@ -454,11 +444,7 @@ class SellDataController extends Controller
     public function server5($request, $code, $phone, $transid, $net, $input, $dada, $requester)
     {
 
-        if ($requester == "reseller") {
-            $rac = ResellerDataPlans::where("code", strtolower($input['coded']))->first();
-        } else {
-            $rac = AppDataControl::where("coded", strtolower($input['coded']))->first();
-        }
+        $rac = CombineDataPlans::where("coded", strtolower($input['coded']))->first();
 
 
         switch ($rac->network) {
@@ -693,11 +679,7 @@ class SellDataController extends Controller
 
     public function server7($request, $code, $phone, $transid, $net, $input, $dada, $requester)
     {
-        if ($requester == "reseller") {
-            $rac = ResellerDataPlans::where("code", strtolower($input['coded']))->first();
-        } else {
-            $rac = AppDataControl::where("coded", strtolower($input['coded']))->first();
-        }
+        $rac = CombineDataPlans::where("coded", strtolower($input['coded']))->first();
 
         $url = "data";
 
@@ -706,7 +688,7 @@ class SellDataController extends Controller
                 $url = "data/sme";
                 break;
 
-            case "DATA TRANSFER":
+            case "DATA TRANSFER"||"DG":
                 $url = "data/transfer";
                 break;
 
@@ -786,6 +768,7 @@ class SellDataController extends Controller
         }
 
         $dada['server_ref'] = $rep['data']['transaction']['reference'];
+        $dada['provider_price'] = $rep['data']['transaction']['amount'] ?? 0;
 
         if ($rep['data']['transaction']['status'] == "successful") {
             if ($requester == "reseller") {

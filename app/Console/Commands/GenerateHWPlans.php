@@ -110,9 +110,9 @@ class GenerateHWPlans extends Command
             $existingCombine = CombineDataPlans::where([['plan_id', $plans['planId']], ['server', 1]])->first();
 
             if($type == "DG"){
-                $price=$plans['amount'] * 0.98;
+                $price=$plans['price'] * 0.98;
             }else{
-                $price=$plans['amount'] + 10;
+                $price=$plans['price'] + 10;
             }
 
             if ($existingCombine) {

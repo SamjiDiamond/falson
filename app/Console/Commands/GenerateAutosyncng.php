@@ -306,7 +306,11 @@ class GenerateAutosyncng extends Command
         if($type == "DG"){
             $price=$plans['amount'] * 0.98;
         }else{
-            $price=$plans['amount'] + 10;
+            if($plans['amount'] == 0) {
+                $price = 0;
+            }else{
+                $price = $plans['amount'] + 10;
+            }
         }
 
         if ($existing) {

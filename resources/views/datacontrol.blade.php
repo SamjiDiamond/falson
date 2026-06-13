@@ -92,6 +92,13 @@
                                                 <option value="DG" data-status="{{ $dg }}">DG</option>
                                                 <option value="DATA COUPONS" data-status="{{ $dc }}">Coupons</option>
                                                 <option value="DATA TRANSFER" data-status="{{ $dt }}">Transfer</option>
+                                                <option value="AWOOF" data-status="{{ $awoof }}">AWOOF</option>
+                                                <option value="SHARE" data-status="{{ $share }}">SHARE</option>
+                                                <option value="XTRASPECIAL" data-status="{{ $xspecial }}">XTRASPECIAL</option>
+                                                <option value="HYNET" data-status="{{ $hynet }}">HYNET</option>
+                                                <option value="ROUTER" data-status="{{ $router }}">ROUTER</option>
+                                                <option value="MEGA" data-status="{{ $mega }}">MEGA</option>
+                                                <option value="TALK" data-status="{{ $talk }}">TALK</option>
                                             @endcan
                                         </select>
                                         <button type="button" id="bulkActionButton" onclick="applyBulkAction()" class="btn btn-sm btn-secondary"></button>

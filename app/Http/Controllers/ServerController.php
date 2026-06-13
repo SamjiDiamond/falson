@@ -121,10 +121,17 @@ class ServerController
         $dg = CombineDataPlans::where([['product_code', 'DG'], ['network', strtoupper($network)], ['status', 1]])->count() > 0 ? 1 : 0;
         $dt = CombineDataPlans::where([['product_code', 'DATA TRANSFER'], ['network', strtoupper($network)], ['status', 1]])->count() > 0 ? 1 : 0;
         $dc = CombineDataPlans::where([['product_code', 'DATA COUPONS'], ['network', strtoupper($network)], ['status', 1]])->count() > 0 ? 1 : 0;
+        $awoof = CombineDataPlans::where([['product_code', 'AWOOF'], ['network', strtoupper($network)], ['status', 1]])->count() > 0 ? 1 : 0;
+        $share = CombineDataPlans::where([['product_code', 'SHARE'], ['network', strtoupper($network)], ['status', 1]])->count() > 0 ? 1 : 0;
+        $xspecial= CombineDataPlans::where([['product_code', 'XTRASPECIAL'], ['network', strtoupper($network)], ['status', 1]])->count() > 0 ? 1 : 0;
+        $hynet = CombineDataPlans::where([['product_code', 'HYNET'], ['network', strtoupper($network)], ['status', 1]])->count() > 0 ? 1 : 0;
+        $router = CombineDataPlans::where([['product_code', 'ROUTER'], ['network', strtoupper($network)], ['status', 1]])->count() > 0 ? 1 : 0;
+        $mega = CombineDataPlans::where([['product_code', 'MEGA'], ['network', strtoupper($network)], ['status', 1]])->count() > 0 ? 1 : 0;
+        $talk = CombineDataPlans::where([['product_code', 'TALK'], ['network', strtoupper($network)], ['status', 1]])->count() > 0 ? 1 : 0;
         $all = CombineDataPlans::where([['network', 'LIKE', strtoupper($network) . '%'], ['status', 1]])->count() > 0 ? 1 : 0;
 
         $server = 0;
-        return view('datacontrol', compact('data', 'sme', 'sme2', 'cg', 'dg', 'dc', 'dt', 'all', 'server'));
+        return view('datacontrol', compact('data', 'sme', 'sme2', 'cg', 'dg', 'dc', 'dt', 'awoof', 'share', 'xspecial', 'hynet', 'router', 'mega', 'talk', 'all', 'server'));
     }
 
     public function dataserve3($network, $server)
@@ -136,9 +143,17 @@ class ServerController
         $dg = CombineDataPlans::where([['product_code', 'DG'], ['network', strtoupper($network)], ['server', $server], ['status', 1]])->count() > 0 ? 1 : 0;
         $dc = CombineDataPlans::where([['product_code', 'DATA COUPONS'], ['network', strtoupper($network)], ['server', $server], ['status', 1]])->count() > 0 ? 1 : 0;
         $dt = CombineDataPlans::where([['product_code', 'DATA TRANSFER'], ['network', strtoupper($network)], ['server', $server], ['status', 1]])->count() > 0 ? 1 : 0;
+        $awoof = CombineDataPlans::where([['product_code', 'AWOOF'], ['network', strtoupper($network)], ['server', $server],  ['status', 1]])->count() > 0 ? 1 : 0;
+        $share = CombineDataPlans::where([['product_code', 'SHARE'], ['network', strtoupper($network)], ['server', $server], ['status', 1]])->count() > 0 ? 1 : 0;
+        $xspecial= CombineDataPlans::where([['product_code', 'XTRASPECIAL'], ['network', strtoupper($network)], ['server', $server], ['status', 1]])->count() > 0 ? 1 : 0;
+        $hynet = CombineDataPlans::where([['product_code', 'HYNET'], ['network', strtoupper($network)], ['server', $server], ['status', 1]])->count() > 0 ? 1 : 0;
+        $router = CombineDataPlans::where([['product_code', 'ROUTER'], ['network', strtoupper($network)], ['server', $server], ['status', 1]])->count() > 0 ? 1 : 0;
+        $mega = CombineDataPlans::where([['product_code', 'MEGA'], ['network', strtoupper($network)], ['server', $server], ['status', 1]])->count() > 0 ? 1 : 0;
+        $talk = CombineDataPlans::where([['product_code', 'TALK'], ['network', strtoupper($network)], ['server', $server], ['status', 1]])->count() > 0 ? 1 : 0;
+
         $all = CombineDataPlans::where([['network', strtoupper($network)], ['server', $server], ['status', 1]])->count() > 0 ? 1 : 0;
 
-        return view('datacontrol', compact('data', 'sme', 'sme2', 'cg', 'dg', 'dc', 'dt', 'all', 'server'));
+        return view('datacontrol', compact('data', 'sme', 'sme2', 'cg', 'dg', 'dc', 'dt', 'awoof', 'share', 'xspecial', 'hynet', 'router', 'mega', 'talk', 'all', 'server'));
     }
 
     public function dataserveedit($id)

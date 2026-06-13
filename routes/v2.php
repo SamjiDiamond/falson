@@ -61,7 +61,8 @@ Route::prefix('v2')->group(function () {
         Route::post('data', [OfflineController::class, 'buydata'])->middleware('throttle:5000,1');
     });
 
-    Route::prefix('bulk')->group(function () {
+    Route::prefix('bulk')->withoutMiddleware('throttle:api')
+        ->middleware('throttle:600,1')->group(function () {
         Route::post('validate-user', [BulkController::class, 'valUser']);
         Route::post('airtime', [BulkController::class, 'buyairtime']);
         Route::post('data', [BulkController::class, 'buydata']);

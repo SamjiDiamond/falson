@@ -260,7 +260,15 @@ class GenerateAutosyncng extends Command
         foreach ($rep['data']['category']['products'] as $networks) {
             foreach ($networks['variations'] as $plans) {
                 $dcn = strtoupper($rep['data']['category']['name']);
-                if (str_contains($dcn, "GIFTING") || str_contains($dcn, "Data Gifting")) {
+                if (str_contains($plans['name'], "XtraData") || str_contains($plans['name'], "Xtraspecial")) {
+                    $type = "XTRASPECIAL";
+                } elseif (str_contains($plans['name'], "XtraTalk")) {
+                    $type = "TALK";
+                } elseif (str_contains($plans['name'], "Broadband") || str_contains($plans['name'], "Unlimited")) {
+                    $type = "BROADBAND";
+                } elseif (str_contains($plans['name'], "AWOOF")) {
+                    $type = "AWOOF";
+                } elseif (str_contains($dcn, "GIFTING") || str_contains($dcn, "Data Gifting")) {
                     $type = "DG";
                 } elseif (str_contains($dcn, "CORPORATE") || str_contains($dcn, "CDG")) {
                     $type = "CG";
@@ -270,14 +278,6 @@ class GenerateAutosyncng extends Command
                     $type = "SME2";
                 } elseif (str_contains($dcn, "SME")) {
                     $type = "SME";
-                } elseif (str_contains($plans['name'], "AWOOF")) {
-                    $type = "AWOOF";
-                } elseif (str_contains($plans['name'], "XtraData") || str_contains($plans['name'], "Xtraspecial")) {
-                    $type = "XTRASPECIAL";
-                } elseif (str_contains($plans['name'], "XtraTalk")) {
-                    $type = "TALK";
-                } elseif (str_contains($plans['name'], "Broadband") || str_contains($plans['name'], "Unlimited")) {
-                    $type = "BROADBAND";
                 } else {
                     $type = $dcn;
                 }

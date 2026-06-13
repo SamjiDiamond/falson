@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V2;
 use App\Http\Controllers\Controller;
 use App\Models\AppAirtimeControl;
 use App\Models\AppDataControl;
+use App\Models\CombineDataPlans;
 use App\Models\User;
 use App\Models\Transaction;
 use App\Models\Serverlog;
@@ -214,7 +215,7 @@ class BulkController extends Controller
             return response()->json(['success' => 0, 'message' => 'Required field(s) is missing']);
         }
 
-        $rac = AppDataControl::where("coded", strtolower($input['coded']))->first();
+        $rac = CombineDataPlans::where("coded", strtolower($input['coded']))->first();
 
         if ($rac == "") {
             return response()->json(['success' => 0, 'message' => 'Invalid coded supplied']);
@@ -250,7 +251,7 @@ class BulkController extends Controller
             'version' => '1.0',
             'device_details' => $request->userAgent(),
             'wallet' => $user->wallet,
-            'amount' => $rac->pricing,
+            'amount' => $rac->app_price,
             'service' => 'data',
             'coded' => $rac->coded,
             'network' => $rac->network

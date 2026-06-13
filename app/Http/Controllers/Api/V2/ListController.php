@@ -104,9 +104,9 @@ class ListController extends Controller
     {
 
         if (strtoupper($network) == "ALL") {
-            $datasets = AppDataControl::where([['status', 1]])->select('name', 'coded', 'pricing as price', 'network', 'status')->get();
+            $datasets = CombineDataPlans::where([['status', 1]])->select('name', 'coded', 'app_price as price', 'network', 'status')->get();
         }else{
-            $datasets = AppDataControl::where([['network', '=', strtoupper($network)], ['status', 1]])->select('name', 'coded', 'pricing as price', 'network', 'status')->get();
+            $datasets = CombineDataPlans::where([['network', '=', strtoupper($network)], ['status', 1]])->select('name', 'coded', 'app_price as price', 'network', 'status')->get();
         }
 
 

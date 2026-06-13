@@ -270,13 +270,13 @@ class GenerateAutosyncng extends Command
                     $type = "SME2";
                 } elseif (str_contains($dcn, "SME")) {
                     $type = "SME";
-                } elseif (str_contains($dcn, "AWOOF")) {
+                } elseif (str_contains($plans['name'], "AWOOF")) {
                     $type = "AWOOF";
-                } elseif (str_contains($dcn, "XtraData") || str_contains($dcn, "Xtraspecial")) {
+                } elseif (str_contains($plans['name'], "XtraData") || str_contains($plans['name'], "Xtraspecial")) {
                     $type = "XTRASPECIAL";
-                } elseif (str_contains($dcn, "XtraTalk")) {
+                } elseif (str_contains($plans['name'], "XtraTalk")) {
                     $type = "TALK";
-                } elseif (str_contains($dcn, "Broadband") || str_contains($dcn, "Unlimited")) {
+                } elseif (str_contains($plans['name'], "Broadband") || str_contains($plans['name'], "Unlimited")) {
                     $type = "BROADBAND";
                 } else {
                     $type = $dcn;

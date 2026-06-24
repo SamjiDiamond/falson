@@ -270,7 +270,7 @@ class BulkController extends Controller
                 // Lock user wallet
                 $user = User::where('id', $user->id)->lockForUpdate()->first();
 
-                $amountToDebit = $rac->pricing;
+                $amountToDebit = $rac->app_price;
 
                 if ($user->wallet < $amountToDebit) {
                     $logData['status'] = 'Balance too low';

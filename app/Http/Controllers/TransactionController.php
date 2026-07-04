@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Jobs\ATMtransactionserveJob;
 use App\Jobs\PushNotificationJob;
+use App\Jobs\ReverseTransactionJob;
 use App\Models\Airtime2Cash;
 use App\Models\Airtime2CashSettings;
 use App\Models\CGWallets;
@@ -272,63 +273,18 @@ class TransactionController extends Controller
 
             foreach ($numbers as $id) {
 
-
                 $tran = Transaction::find($id);
 
-                $desc = "Being reversal of " . $tran->description;
-                $user_name = $tran->user_name;
-
-                $rtran = Transaction::where('ref', '=', $tran->ref)->get();
-
-                foreach ($rtran as $tran) {
-                    $tran->status = "reversed";
-                    $tran->save();
-
-                    $amount = $tran->amount;
-
-                    $user = User::where("user_name", "=", $tran->user_name)->first();
-
-                    if ($tran->code == "tcommission") {
-                        $nBalance = $user->agent_commision - $tran->amount;
-
-                        $input["description"] = "Being reversal of " . $tran->description;
-                        $input["name"] = "Reversal";
-                        $input["status"] = "successful";
-                        $input["code"] = "reversal";
-                        $input["amount"] = $amount;
-                        $input["user_name"] = $tran->user_name;
-                        $input["i_wallet"] = $user->agent_commision;
-                        $input["f_wallet"] = $nBalance;
-                        $input["extra"] = 'Initiated by ' . Auth::user()->full_name;
-
-                        $user->update(["agent_commision" => $nBalance]);
-                        Transaction::create($input);
-                    } else {
-                        $nBalance = $user->wallet + $tran->amount;
-
-                        $input["description"] = "Being reversal of " . $tran->description;
-                        $input["name"] = "Reversal";
-                        $input["status"] = "successful";
-                        $input["code"] = "reversal";
-                        $input["amount"] = $amount;
-                        $input["user_name"] = $tran->user_name;
-                        $input["i_wallet"] = $user->wallet;
-                        $input["f_wallet"] = $nBalance;
-                        $input["extra"] = 'Initiated by ' . Auth::user()->full_name;
-
-                        $user->update(["wallet" => $nBalance]);
-                        Transaction::create($input);
-
-                    }
+                if (!$tran) {
+                    return redirect()->route('trans_pending')->with('success',$tran->ref. ' Transaction doesnt exist!');
                 }
 
-                try {
-                    $at = new PushNotificationController();
-                    $at->PushNoti($user_name, $desc, "Reversal");
-                } catch (Exception $e) {
-                    echo "error while sending notification";
+                if ($tran->status == "reversed") {
+    //                return redirect()->route('trans_pending')->with('success',$tran->ref. ' Transaction already reversed!');
+                    continue;
                 }
 
+                ReverseTransactionJob::dispatch($tran, Auth::user()->full_name);
             }
         }
 
@@ -729,81 +685,18 @@ class TransactionController extends Controller
 
         $tran = Transaction::find($id);
 
-        $desc = "Being reversal of " . $tran->description;
-        $user_name = $tran->user_name;
 
-        $rtran = Transaction::where('ref', '=', $tran->ref)->get();
-
-        foreach ($rtran as $tran) {
-            $tran->status = "reversed";
-            $tran->save();
-
-            $amount = $tran->amount;
-
-            $user = User::where("user_name", "=", $tran->user_name)->first();
-
-            if ($tran->code == "tcommission") {
-                $nBalance = $user->agent_commision - $tran->amount;
-
-                $input["description"] = "Being reversal of " . $tran->description;
-                $input["name"] = "Reversal";
-                $input["status"] = "successful";
-                $input["code"] = "reversal";
-                $input["amount"] = $amount;
-                $input["user_name"] = $tran->user_name;
-                $input["i_wallet"] = $user->agent_commision;
-                $input["f_wallet"] = $nBalance;
-                $input["extra"] = 'Initiated by ' . Auth::user()->full_name;
-
-                $user->update(["agent_commision" => $nBalance]);
-                Transaction::create($input);
-            } else {
-                if ($tran->name == "data") {
-                    $extra=explode("|",$tran->extra);
-
-                    if(isset($extra[2])){
-                        $cg=CGWallets::where([["user_id", $extra[2]], ['name', $extra[1]]])->first();
-
-                        if(!$cg){
-                            return redirect('/reversal')->with('success', 'Invalid payment selected encounter while reversing');
-                        }
-
-                        $cg->balance+=doubleval($extra[0]);
-                        $cg->save();
-                        $nBalance = $user->wallet;
-                    }else{
-                        $amount = $tran->amount;
-                        $nBalance = $user->wallet + $amount;
-                    }
-
-                } else {
-                    $nBalance = $user->wallet + $tran->amount;
-                }
-
-                $input["description"] = "Being reversal of " . $tran->description;
-                $input["name"] = "Reversal";
-                $input["status"] = "successful";
-                $input["code"] = "reversal";
-                $input["amount"] = $amount;
-                $input["user_name"] = $tran->user_name;
-                $input["i_wallet"] = $user->wallet;
-                $input["f_wallet"] = $nBalance;
-                $input["extra"] = 'Initiated by ' . Auth::user()->full_name;
-
-                $user->update(["wallet" => $nBalance]);
-                Transaction::create($input);
-
-            }
+        if (!$tran) {
+            return redirect('/reversal')->with('success', 'Transaction doesnt exist!');
         }
 
-        try {
-            $at = new PushNotificationController();
-            $at->PushNoti($user_name, $desc, "Reversal");
-        } catch (Exception $e) {
-            echo "error while sending notification";
+        if ($tran->status == "reversed") {
+            return redirect('/reversal')->with('success', 'Transaction already reversed!');
         }
 
-        return redirect('/reversal')->with('success', 'Transaction reversed successfully!');
+        ReverseTransactionJob::dispatch($tran, Auth::user()->full_name);
+
+        return redirect('/reversal')->with('success', 'Transaction reversal successfully Logged!');
 
     }
 
@@ -813,81 +706,17 @@ class TransactionController extends Controller
 
         $tran = Transaction::find($id);
 
-        $desc = "Being reversal of " . $tran->description;
-        $user_name = $tran->user_name;
-
-        $rtran = Transaction::where('ref', '=', $tran->ref)->get();
-
-        foreach ($rtran as $tran) {
-            $tran->status = "reversed";
-            $tran->save();
-
-            $amount = $tran->amount;
-
-            $user = User::where("user_name", "=", $tran->user_name)->first();
-
-            if ($tran->code == "tcommission") {
-                $nBalance = $user->agent_commision - $tran->amount;
-
-                $input["description"] = "Being reversal of " . $tran->description;
-                $input["name"] = "Reversal";
-                $input["status"] = "successful";
-                $input["code"] = "reversal";
-                $input["amount"] = $amount;
-                $input["user_name"] = $tran->user_name;
-                $input["i_wallet"] = $user->agent_commision;
-                $input["f_wallet"] = $nBalance;
-                $input["extra"] = 'Initiated by ' . Auth::user()->full_name;
-
-                $user->update(["agent_commision" => $nBalance]);
-                Transaction::create($input);
-            } else {
-                if ($tran->name == "data") {
-                    $extra=explode("|",$tran->extra);
-
-                    if(isset($extra[2])){
-                        $cg=CGWallets::where([["user_id", $extra[2]], ['name', $extra[1]]])->first();
-
-                        if(!$cg){
-                            return redirect()->route('trans_pending')->with('success', 'Invalid payment selected encounter while reversing');
-                        }
-
-                        $cg->balance+=doubleval($extra[0]);
-                        $cg->save();
-                        $nBalance = $user->wallet;
-                    }else{
-                        $amount = $tran->amount;
-                        $nBalance = $user->wallet + $amount;
-                    }
-
-                } else {
-                    $nBalance = $user->wallet + $tran->amount;
-                }
-
-                $input["description"] = "Being reversal of " . $tran->description;
-                $input["name"] = "Reversal";
-                $input["status"] = "successful";
-                $input["code"] = "reversal";
-                $input["amount"] = $amount;
-                $input["user_name"] = $tran->user_name;
-                $input["i_wallet"] = $user->wallet;
-                $input["f_wallet"] = $nBalance;
-                $input["extra"] = 'Initiated by ' . Auth::user()->full_name;
-
-                $user->update(["wallet" => $nBalance]);
-                Transaction::create($input);
-
-            }
+        if (!$tran) {
+            return redirect()->route('trans_pending')->with('success', 'Transaction doesnt exist!');
         }
 
-        try {
-            $at = new PushNotificationController();
-            $at->PushNoti($user_name, $desc, "Reversal");
-        } catch (Exception $e) {
-            echo "error while sending notification";
+        if ($tran->status == "reversed") {
+            return redirect()->route('trans_pending')->with('success', 'Transaction already reversed!');
         }
 
-        return redirect()->route('trans_pending')->with('success', 'Transaction reversed successfully!');
+        ReverseTransactionJob::dispatch($tran, Auth::user()->full_name);
+
+        return redirect()->route('trans_pending')->with('success', 'Transaction reversal logged successfully!');
 
     }
 

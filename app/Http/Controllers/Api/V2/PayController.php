@@ -1215,7 +1215,12 @@ class PayController extends Controller
                             'status' => 'successful',
                             'i_wallet' => $commissionInitial,
                             'f_wallet' => $commissionFinal,
-                            'user_name' => $user->user_name
+                            'user_name' => $user->user_name,
+                            'ref' => $ref,
+                            'device_details' => $request->header('device') ?? $request->userAgent(),
+                            'ip_address' => $request->ip(),
+                            'category' => $proceed['8'] ?? 0,
+                            'server' => "server".$server,
                         ]);
 
                         $user->agent_commision = $commissionFinal;

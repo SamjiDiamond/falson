@@ -51,6 +51,14 @@
                                 </div>
 
                                 <div class="input-group mt-2">
+                                    <select class="custom-select form-control" name="wallet_type">
+                                        <option value="wallet" selected="selected">Main Wallet</option>
+                                        <option value="commission">Commission</option>
+                                        <option value="bonus">Bonus</option>
+                                    </select>
+                                </div>
+
+                                <div class="input-group mt-2">
                                     <div class="input-group-prepend"><span class="input-group-text">Description </span></div>
                                     <input type="text" name="odescription" placeholder="Enter Additional Description (Optional)" class="form-control input-lg m-b">
                                 </div>

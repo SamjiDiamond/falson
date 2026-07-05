@@ -67,18 +67,29 @@ class WalletController extends Controller
         $rules = array(
             'user_name'      => 'required',
             'type'      => 'required',
+            'wallet_type'      => 'required',
             'amount' => 'required');
 
         $validator = Validator::make($input, $rules);
 
         if ($validator->passes()) {
             $amount=$input["amount"];
+            $walletType=$input['wallet_type'];
+
             $user= User::where('user_name', trim($input["user_name"]))->orwhere('email', trim($input["user_name"]))->orwhere('phoneno', trim($input["user_name"]))->first();
-            $notify_description="Dear ".$user->user_name.", your wallet balance has been ".$input['type']."ed with ".$amount.". Thanks for choosing PLANETF.";
+            $notify_description="Dear ".$user->user_name.", your ".$walletType." balance has been ".$input['type']."ed with ".$amount.". Thanks for choosing PLANETF.";
 
             if($user){
-                $input["description"]=$input["user_name"] . " wallet ".$input["type"]. " with the sum of #".$input["amount"]." ". $input["odescription"];
-                $input["i_wallet"]=$user->wallet;
+                $input["description"]=$input["user_name"] . " ".$walletType." ".$input["type"]. " with the sum of #".$input["amount"]." ". $input["odescription"];
+
+                if($walletType == "wallet"){
+                    $input["i_wallet"]=$user->wallet;
+                }elseif ($walletType == "bonus"){
+                    $input["i_wallet"]=$user->bonus;
+                }else{
+                    $input["i_wallet"]=$user->agent_commision;
+                }
+
 
                 if($input['type'] == "credit"){
                     $input["f_wallet"]=$input["i_wallet"] + $input["amount"];
@@ -95,15 +106,22 @@ class WalletController extends Controller
 
                 Transaction::create($input);
 
-                $user->wallet = $input["f_wallet"];
-                $user->save();
 
+                if($walletType == "wallet"){
+                    $user->wallet = $input["f_wallet"];
+                }elseif ($walletType == "bonus"){
+                    $user->bonus = $input["f_wallet"];
+                }else{
+                    $user->agent_commision = $input["f_wallet"];
+                }
+
+                $user->save();
 
                 $user->notify(new UserNotification($notify_description, "Wallet " . $input['type'] . "ed"));
 
-                PushNotificationJob::dispatch($input['user_name'], $notify_description, "Wallet " . $input['type'] . "ed");
+                PushNotificationJob::dispatch($input['user_name'], $notify_description, $walletType." " . $input['type'] . "ed");
 
-                return redirect('/addfund')->with('success', $input["user_name"] . ' wallet ' . $input['type'] . 'ed' . ' successfully!');
+                return redirect('/addfund')->with('success', $input["user_name"] . ' '.$walletType.' ' . $input['type'] . 'ed' . ' successfully!');
             }else{
                 $validator->errors()->add('username', 'The username does not exist!');
 

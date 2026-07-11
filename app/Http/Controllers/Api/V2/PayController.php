@@ -33,6 +33,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
@@ -766,40 +767,29 @@ class PayController extends Controller
         $input['name'] = $net;
         $input['status'] = 'delivered';
         $input['code'] = 'ninv';
-
-        $curl = curl_init();
-
-        $payload = array('ref' => $input['ref'], 'number' => $input['number']);
+        $input['category'] = 'nin';
+        $input['profit'] = $input['amount'];
 
 
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => env('MCD_BASEURL') . '/ninvalidation',
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_SSL_VERIFYHOST => false,
-            CURLOPT_SSL_VERIFYPEER => false,
-            CURLOPT_POSTFIELDS => $payload,
-            CURLOPT_HTTPHEADER => array(
-                'Authorization: Bearer ' . env('MCD_KEY')
-            ),
-        ));
-        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        $encrytion_key=env('SPRINTCHECK_ENCRYPTION_KEY');
+        $api_key=env('SPRINTCHECK_API_KEY');
 
-        $response = curl_exec($curl);
+        $payload = ["number" => $input['number'], "identifier" => $input['ref']];
+        $signature = hash_hmac("SHA512", json_encode($payload), $encrytion_key);
 
-        curl_close($curl);
+        $response=Http::withHeaders([
+            "signature" => $signature,
+            "Authorization" => $api_key,
+            "Content-Type" => "application/json",
+        ])->withoutVerifying()->post(env('SPRINTCHECK_BASEURL')."/nin",$payload);
 
-        Log::info("NIN Verification - ");
-        Log::info(json_encode($payload));
-        Log::info($response);
+        Log::info(json_encode($payload)." - NIN Verification - ".json_encode($response->body()));
 
+        if($response->failed()){
+            return response()->json(['success' => 0, 'message' => 'Something went wrong, try again later']);
+        }
 
-        $rep = json_decode($response, true);
+        $rep = $response->json();
 
         if ($rep['success'] != 1) {
             return response()->json(['success' => 0, 'message' => $rep['message']]);

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V2;
 use App\Http\Controllers\Api\ValidateController;
 use App\Http\Controllers\Controller;
 use App\Jobs\CreateProvidusAccountJob;
+use App\Models\AppCableTVControl;
 use App\Models\AppElectricityControl;
 use App\Models\PndL;
 use App\Models\Settings;
@@ -36,7 +37,7 @@ class ValidationController extends Controller
 
         switch ($input['service']) {
             case "electricity":
-                $rac = AppElectricityControl::first();
+                $rac = AppElectricityControl::where("code", strtoupper($input['provider']))->first();
                 if($rac->server == 2) {
                     return $s->electricity_server2($input['number'], strtoupper($input['provider']), strtoupper($input['type']));
                 }else{
@@ -49,9 +50,11 @@ class ValidationController extends Controller
             case "jamb":
                 return $s->jamb($input['number'], strtoupper($input['provider']));
             case "tv":
-                $sett = Settings::where('name', 'tv_server')->first();
-                if ($sett->value == "RINGO" || $sett->value == "2") {
+                $rac = AppCableTVControl::where('type',$input['provider'])->first();
+                if($rac->server == 2) {
                     return $s->tv_server2($input['number'], strtolower($input['provider']));
+                } else if($rac->server == 7) {
+                    return $s->tv_server7($input['number'], strtolower($input['provider']));
                 } else {
                     return $s->tv_server1($input['number'], strtolower($input['provider']));
                 }

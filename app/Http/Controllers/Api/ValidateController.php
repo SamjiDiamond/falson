@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\AppCableTVControl;
 use App\Models\AppElectricityControl;
 use Illuminate\Support\Facades\Log;
 
@@ -301,6 +302,59 @@ class ValidateController extends Controller
         }
 
     }
+
+
+    public function tv_server7($phone, $type, $requester = "nm", $sender = "nm")
+    {
+
+        $rac = AppCableTVControl::where("type", strtolower($type))->first();
+        $pid = explode("_", $rac->coded)[1];
+
+        $payload='{
+    "product_id": "' . $pid . '",
+    "iuc_number": "' . $phone . '"
+}';
+        try {
+            $curl = curl_init();
+
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => env('AUTOSYNCNG_BASEURL') . 'validate/cable',
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'POST',
+                CURLOPT_POSTFIELDS => $payload,
+                CURLOPT_HTTPHEADER => array(
+                    'Authorization: Bearer ' . env('AUTOSYNCNG_AUTH'),
+                    'Content-Type: application/json'
+                ),
+            ));
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+
+            $response = curl_exec($curl);
+
+            curl_close($curl);
+
+            $rep = json_decode($response, true);
+
+            Log::info("Autosync Validate Cabletv. - " . $type);
+            Log::info("Payload : " . $payload);
+            Log::info($response);
+
+            if ($rep['message'] == 'Verified') {
+                return response()->json(['success' => 1, 'message' => 'Validated successfully', 'data' => $rep['data']['customer_name'], 'details' => $rep['data']]);
+            } else {
+                return response()->json(['success' => 0, 'message' => $rep['message']]);
+            }
+        }catch (\Exception $e){
+            return response()->json(['success' => 0, 'message' => 'Unable to validate number']);
+        }
+
+    }
+
 
     public function betting($phone, $type, $requester = "nm", $sender = "nm")
     {

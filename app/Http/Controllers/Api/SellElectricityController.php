@@ -252,9 +252,9 @@ class SellElectricityController extends Controller
             $customerName = $matches[1] ?? null;
 
             $formattedResponse['customerName']=$customerName;
-            $formattedResponse['unit']=$rep['data']['units'];
-            $formattedResponse['disco']=$rep['data']['type'];
-            $formattedResponse['token']=$rep['data']['token'];
+            $formattedResponse['unit']=$rep['data']['transaction']['units'];
+            $formattedResponse['disco']=$rep['data']['transaction']['type'];
+            $formattedResponse['token']=$rep['data']['transaction']['token'];
 
             $dada['server_response'] = json_encode($formattedResponse);
 

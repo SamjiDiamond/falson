@@ -247,6 +247,17 @@ class SellElectricityController extends Controller
         $dada['server_ref'] = $rep['data']['transaction']['reference'];
 
         if ($rep['data']['transaction']['status'] == "successful") {
+            $details = $rep['data']['transaction']['details'];
+            $customerName = preg_match('/<strong>Customer Name<\/strong>: (.+)<br\/>/', $details, $matches);
+            $customerName = $matches[1] ?? null;
+
+            $formattedResponse['customerName']=$customerName;
+            $formattedResponse['unit']=$rep['data']['units'];
+            $formattedResponse['disco']=$rep['data']['type'];
+            $formattedResponse['token']=$rep['data']['token'];
+
+            $dada['server_response'] = json_encode($formattedResponse);
+
             $dada['token'] = $rep['data']['transaction']['token'];
             if ($requester == "reseller") {
                 return $rs->outputResponse($request, $transid, 1, $dada);

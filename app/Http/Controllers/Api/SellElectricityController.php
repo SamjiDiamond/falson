@@ -248,10 +248,13 @@ class SellElectricityController extends Controller
 
         if ($rep['data']['transaction']['status'] == "successful") {
             $details = $rep['data']['transaction']['details'];
-            $customerName = preg_match('/<strong>Customer Name<\/strong>: (.+)<br\/>/', $details, $matches);
+            $customerName = preg_match('/<strong>Customer Name<\/strong>: (.+?)<br\/>/', $details, $matches);
+            $customerAddress = preg_match('/<strong>Customer Address<\/strong>: (.+?)<br\/>/', $details, $matchesA);
             $customerName = $matches[1] ?? null;
+            $customerAddress = $matchesA[1] ?? null;
 
             $formattedResponse['customerName']=$customerName;
+            $formattedResponse['customerAddress']=$customerAddress;
             $formattedResponse['unit']=$rep['data']['transaction']['units'];
             $formattedResponse['disco']=$rep['data']['transaction']['type'];
             $formattedResponse['token']=$rep['data']['transaction']['token'];

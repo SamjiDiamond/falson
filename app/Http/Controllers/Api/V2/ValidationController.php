@@ -50,10 +50,10 @@ class ValidationController extends Controller
             case "jamb":
                 return $s->jamb($input['number'], strtoupper($input['provider']));
             case "tv":
-                $rac = AppCableTVControl::where('type',$input['provider'])->first();
-                if($rac->server == 2) {
+                $sett = Settings::where('name', 'tv_server')->first();
+                if ($sett->value == "RINGO" || $sett->value == "2") {
                     return $s->tv_server2($input['number'], strtolower($input['provider']));
-                } else if($rac->server == 7) {
+                } else if($sett->value == 7) {
                     return $s->tv_server7($input['number'], strtolower($input['provider']));
                 } else {
                     return $s->tv_server1($input['number'], strtolower($input['provider']));

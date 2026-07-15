@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\PndL;
 use App\Models\RCPricing;
 use App\Models\Transaction;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -42,7 +43,7 @@ class RechargeCardController extends Controller
             return response()->json(['success' => 0, 'message' => 'Invalid Plan ID supplied or currently disabled']);
         }
 
-        $user = Auth::user();
+        $user = User::where('id',Auth::id())->lockForUpdate()->first();
 
         if ($user->rc_price_plan_id == $input['id']) {
             return response()->json(['success' => 0, 'message' => 'You are already on this plan. Kindly choose another plan']);
@@ -52,14 +53,19 @@ class RechargeCardController extends Controller
             return response()->json(['success' => 0, 'message' => 'Insufficient balance']);
         }
 
+        $input['i_wallet'] = $user->wallet;
+        $input['f_wallet'] = $input['i_wallet'] - $pricing->amount;
+
+        $user->wallet=$input['f_wallet'];
+        $user->rc_price_plan_id = $pricing->id;
+        $user->save();
+
         $input['name'] = "RechargeCard Upgrade";
         $input['amount'] = $pricing->amount;
         $input['status'] = 'successful';
         $input['description'] = "Being fee charged for RechargeCard upgrade";
         $input['user_name'] = $user->user_name;
         $input['code'] = 'rc_setup';
-        $input['i_wallet'] = $user->wallet;
-        $input['f_wallet'] = $input['i_wallet'] - $pricing->amount;
         $input["ip_address"] = "127.0.0.1:A";
         $input["date"] = date("y-m-d H:i:s");
         $input["extra"] = $pricing->plan . "|" . $pricing->id;
@@ -74,8 +80,6 @@ class RechargeCardController extends Controller
 
         PndL::create($inputa);
 
-        $user->rc_price_plan_id = $pricing->id;
-        $user->save();
 
         return response()->json(['success' => 1, 'message' => 'Payment successful', 'data' => $t, 'current' => $pricing->id]);
     }

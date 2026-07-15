@@ -47,7 +47,9 @@ class SprintcheckController extends Controller
             return response()->json(['message' => 'User not found'], 400);
         }
 
-        $name= $input['kyc_details']['surname'] . " " . $input['kyc_details']['firstName']. " " . $input['kyc_details']['middleName'];
+        $sname=$input['kyc_details']['surname'] ?? $input['kyc_details']['lastName'];
+
+        $name= $sname . " " . $input['kyc_details']['firstName']. " " . $input['kyc_details']['middleName'];
 
         KYC::create([
             "user_name" => $user->user_name,
@@ -62,7 +64,7 @@ class SprintcheckController extends Controller
         if($input['event_type'] == "BVN VERIFICATION") {
             $user->bvn = $input['number'];
             $user->photo=$input['image'];
-            $user->dob=$input['kyc_details']['birthDate'] ?? "";
+            $user->dob=$input['kyc_details']['birthDate'] ?? $input['kyc_details']['dateOfBirth'];
             $user->full_name=$name;
         }else{
             $user->nin = $input['number'];

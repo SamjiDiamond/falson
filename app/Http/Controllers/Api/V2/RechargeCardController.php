@@ -66,6 +66,7 @@ class RechargeCardController extends Controller
         $input['description'] = "Being fee charged for RechargeCard upgrade";
         $input['user_name'] = $user->user_name;
         $input['code'] = 'rc_setup';
+        $input['ref'] = 'rc_setup_'.time();
         $input["ip_address"] = "127.0.0.1:A";
         $input["date"] = date("y-m-d H:i:s");
         $input["extra"] = $pricing->plan . "|" . $pricing->id;

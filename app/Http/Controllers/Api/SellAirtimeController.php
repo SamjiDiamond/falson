@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Reseller\PayController;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class SellAirtimeController extends Controller
@@ -368,6 +369,64 @@ class SellAirtimeController extends Controller
             }
         }
     }
+
+    public function server8($request, $amnt, $phone, $transid, $net, $input, $dada, $requester)
+    {
+
+        if (env('FAKE_TRANSACTION', 1) == 0) {
+
+            $payload = [
+                "provider" => $net,
+                "amount" => $amnt,
+                "number" => $phone,
+                "ref" => $transid,
+                "country" => "NG",
+                "payment" => "wallet",
+                "promo" => "0",
+                "operatorID" => 0
+            ];
+
+            $response=Http::withHeaders([
+                "Authorization" => 'Bearer ' . env('MCD_KEY'),
+                "Content-Type" => "application/json",
+            ])->withoutVerifying()->post(env('MCD_BASEURL') . '/airtime',$payload);
+
+            Log::info(json_encode($payload)." - MCD AIRTIME - ".$response->body());
+
+            if($response->failed()){
+                return response()->json(['success' => 0, 'message' => 'Something went wrong, try again later']);
+            }
+
+            $response = $response->body();
+
+        } else {
+            $response = '{"success":1,"message":"Your transaction is successful","ref":"6410310486","debitAmount":"100","discountAmount":3,"prevBalance":"3666.36","currentBalance":3566.36}';
+        }
+
+        $rep = json_decode($response, true);
+
+
+        $rs = new PayController();
+        $ms = new V2\PayController();
+
+        $dada['server_response'] = json_encode($rep);
+
+        if($rep['success'] == 1) {
+            $dada['server_ref'] = $rep['ref'];
+            if ($requester == "reseller") {
+                return $rs->outputResponse($request, $transid, 1, $dada);
+            } else {
+                return $ms->outputResp($request, $transid, 1, $dada);
+            }
+        } else {
+            if ($requester == "reseller") {
+                return $rs->outputResponse($request, $transid, 0, $dada);
+            } else {
+                return $ms->outputResp($request, $transid, 0, $dada);
+            }
+        }
+    }
+
 
     public function server9($request, $amnt, $phone, $transid, $net, $input, $dada, $requester)
     {

@@ -37,16 +37,19 @@ class ListController extends Controller
 
         switch (strtolower($input['coded'])) {
             case "m":
-                $plans = CombineDataPlans::where([["network","MTN"], ["status", 1]])->select('name', 'coded', 'res_price as price', 'network', 'status')->get();
+                $plans = CombineDataPlans::where([["network","MTN"], ["status", 1]])->select('name', 'coded', 'res_price as price', 'network', 'product_code', 'status')->get();
                 break;
             case "a":
-                $plans = CombineDataPlans::where([["network", "AIRTEL"], ["status", 1]])->select('name', 'coded', 'res_price as price', 'network', 'status')->get();
+                $plans = CombineDataPlans::where([["network", "AIRTEL"], ["status", 1]])->select('name', 'coded', 'res_price as price', 'network', 'product_code', 'status')->get();
                 break;
             case "9":
-                $plans = CombineDataPlans::where([["network", "9MOBILE"], ["status", 1]])->select('name', 'coded', 'res_price as price', 'network', 'status')->get();
+                $plans = CombineDataPlans::where([["network", "9MOBILE"], ["status", 1]])->select('name', 'coded', 'res_price as price', 'network', 'product_code', 'status')->get();
                 break;
             case "g":
-                $plans = CombineDataPlans::where([["network", "GLO"], ["status", 1]])->select('name', 'coded', 'res_price as price', 'network', 'status')->get();
+                $plans = CombineDataPlans::where([["network", "GLO"], ["status", 1]])->select('name', 'coded', 'res_price as price', 'network', 'product_code', 'status')->get();
+                break;
+            case "all":
+                $plans = CombineDataPlans::where([["status", 1]])->select('name', 'coded', 'res_price as price', 'network', 'product_code', 'status')->get();
                 break;
             default:
                 $plans = "";
@@ -56,7 +59,7 @@ class ListController extends Controller
             return response()->json(['success' => 0, 'message' => 'Invalid coded supplied']);
         }
 
-        return response()->json(['success' => 1, 'message' => 'Fetched successfully', 'data' => $plans->makeHidden(['price','product_code','plan_id','network','level2','level3','level4','level5'])]);
+        return response()->json(['success' => 1, 'message' => 'Fetched successfully', 'data' => $plans]);
     }
 
     public function electricity()

@@ -113,6 +113,9 @@ class UserController extends Controller
         $pay['funding_message'] = $sett['funding_message'];
         $pay['monnify_funding_message'] = $sett['monnify_funding_message'];
         $pay['budpay_funding_message'] = $sett['budpay_funding_message'];
+        $pay['paylony_funding_message'] = $sett['paylony_funding_message'];
+        $pay['funding_message'] = $sett['funding_message'];
+        $pay['funding_charges'] = $sett['funding_charges'];
         $pay['monnify_funding_charges'] = $sett['monnify_funding_charges'];
         $pay['budpay_funding_charges'] = $sett['budpay_funding_charges'];
         $pay['paylony_funding_charges'] = $sett['paylony_funding_charges'];

@@ -33,7 +33,7 @@ class MonnifyHookController extends Controller
         $paymentreference= $input['eventData']['paymentReference'];
         $paymentamount= $input['eventData']['amountPaid'];
         $paymentmethod= $input['eventData']['paymentMethod'];
-        $paymentdesc =$input['eventData']['paymentDescription'];
+        $paymentdesc =$input['eventData']['paymentDescription'] ?? "";
         $paidon= $input['eventData']['paidOn'];
         $product_type= $input['eventData']['product']['type'];
         $product_reference= $input['eventData']['product']['reference'];

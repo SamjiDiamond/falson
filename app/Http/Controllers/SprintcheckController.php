@@ -64,7 +64,7 @@ class SprintcheckController extends Controller
         if($input['event_type'] == "BVN VERIFICATION") {
             $user->bvn = $input['number'];
             $user->photo=$input['image'];
-            $user->dob=$input['kyc_details']['birthDate'] ?? $input['kyc_details']['dateOfBirth'];
+            $user->dob=$input['kyc_details']['birthDate'] ?? $input['kyc_details']['dateOfBirth'] ?? "";
             $user->full_name=$name;
         }else{
             $user->nin = $input['number'];

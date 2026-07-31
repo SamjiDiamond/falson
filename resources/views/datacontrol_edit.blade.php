@@ -83,6 +83,15 @@
                                 </div>
 
                                 <div class="input-group mt-2">
+                                    <select class="custom-select form-control" name="duration">
+                                        <option value="daily" {{$data->duration == 'daily' ? 'selected': ''}}>Daily</option>
+                                        <option value="weekly" {{$data->status == 'weekly' ? 'selected': ''}}>Weekly</option>
+                                        <option value="monthly" {{$data->status == 'monthly' ? 'selected': ''}}>Monthly</option>
+                                        <option value="yearly" {{$data->status == 'yearly' ? 'selected': ''}}>Yearly</option>
+                                    </select>
+                                </div>
+
+                                <div class="input-group mt-2">
                                     <select class="custom-select form-control" name="status">
                                         <option value="1" {{$data->status == '1' ? 'selected': ''}}>Activate</option>
                                         <option value="0" {{$data->status == '0' ? 'selected': ''}}>Deactivate</option>

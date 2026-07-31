@@ -182,6 +182,7 @@ class ServerController
             'plan_id' => 'sometimes',
             'product_code' => 'sometimes',
             'server' => 'required',
+            'duration' => 'required|in:daily,weekly,monthly,yearly',
             'note' => 'sometimes'
         );
 
@@ -264,6 +265,7 @@ class ServerController
             'product_code' => 'required',
             'coded' => 'required',
             'plan_id' => 'required',
+            'duration' => 'required|in:daily,weekly,monthly,yearly',
             'note' => 'nullable'
         );
 
@@ -290,6 +292,7 @@ class ServerController
         $data->product_code = $input['product_code'];
         $data->coded = $input['coded'];
         $data->plan_id = $input['plan_id'];
+        $data->duration = $input['duration'];
         $data->save();
 
         return redirect()->route('dataplans', $data->network)->with('success', $data->name . ' has been updated successfully');

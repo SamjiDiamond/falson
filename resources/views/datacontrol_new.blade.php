@@ -93,6 +93,17 @@
                                            placeholder="Enter the category you want the plan to belong to (Optional)">
                                 </div>
 
+
+                                <div class="input-group mt-2">
+                                    <div class="input-group-prepend"><span class="input-group-text">Duration </span></div>
+                                    <select class="custom-select form-control" name="duration">
+                                        <option>daily</option>
+                                        <option>weekly</option>
+                                        <option>monthly</option>
+                                        <option>yearly</option>
+                                    </select>
+                                </div>
+
                                 <div class="input-group mt-2">
                                     <div class="input-group-prepend"><span class="input-group-text">Server </span></div>
                                     <select class="custom-select form-control" name="server">
@@ -105,6 +116,7 @@
                                         <option value="6">6</option>
                                         <option value="7">7</option>
                                         <option value="8">8</option>
+                                        <option value="9">9</option>
                                     </select>
                                 </div>
 

@@ -180,6 +180,7 @@
                             <th>id</th>
                             <th>Network</th>
                                 <th>Category</th>
+                                <th>Duration</th>
                             <th>Product Name</th>
                             <th>Provider Price</th>
                             <th>App Price</th>
@@ -199,6 +200,7 @@
                                 <td>{{$da['id']}}</td>
                                 <td class="center">{{$da['network']}}</td>
                                 <td class="center">{{$da['product_code']}}</td>
+                                <td class="center">{{$da['duration']}}</td>
                                 <td>{{$da['name']}}</td>
                                 <td class="center">&#8358;{{number_format($da['price'])}}</td>
                                 <td class="center">&#8358;{{number_format($da['app_price'])}}</td>

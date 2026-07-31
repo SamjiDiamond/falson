@@ -49,7 +49,7 @@
                                         <option value="5" {{$data->server == 5 ? "selected" : ''}}>5</option>
                                         <option value="6" {{$data->server == 6 ? "selected" : ''}}>6</option>
                                         <option value="7" {{$data->server == 7 ? "selected" : ''}}>7</option>
-                                        {{--                                        <option value="8" {{$data->server == 8 ? "selected" : ''}}>8</option>--}}
+                                        <option value="8" {{$data->server == 8 ? "selected" : ''}}>8</option>
                                     </select>
                                 </div>
 
@@ -73,6 +73,7 @@
                     Server 5 - Uzobest <br/>
                     Server 6 - VTPass <br/>
                     Server 7 - Autosyncng <br/>
+                    Server 8 - MCD <br/>
 
                 </div>
             </div>

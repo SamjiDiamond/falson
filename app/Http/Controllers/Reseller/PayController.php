@@ -119,7 +119,7 @@ class PayController extends Controller
     public function buyData(Request $request){
         $input=$request->all();
 
-        $rac=CombineDataPlans::where("code", strtolower($input['coded']))->first();
+        $rac=CombineDataPlans::where("coded", strtolower($input['coded']))->first();
 
         if ($rac == "") {
             return response()->json(['success' => 0, 'message' => 'Invalid coded supplied']);
